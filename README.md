@@ -8,6 +8,15 @@ Patchy88은 PC-8801용 IPS 패치를 안전하게 배포하기 위한 패처입�
 
 > **중요:** 이 저장소에는 원본 게임 D88, 원본 KANJI ROM, 패치 완료 게임 이미지가 포함되지 않습니다.
 
+## 배포
+
+완성된 사용자용 ZIP은 저장소 본문에 넣지 않고 **GitHub Releases**에서 배포합니다.
+
+- 저장소: 소스, IPS, 매니페스트, 검증 자료, 문서
+- Releases: Windows x64/x86 실행파일이 포함된 배포 ZIP, Python 배포 ZIP, SHA-256 파일
+
+배포 ZIP을 소스 트리의 `dist/`에 중복 보관하지 않습니다.
+
 ## 현재 구성
 
 ### 몽환전사 바리스
@@ -120,7 +129,7 @@ ae9e0d57219763cc575e66d38e92c78e7f3fc7a6acdeba0e5f13d7f7dd920a44
 백업 폴더를 따로 만들지 않습니다.
 
 ```text
-game.d88     → game.d88.bak
+game.d88       → game.d88.bak
 기존 .bak 존재 → game.d88.1.bak
 또 존재        → game.d88.2.bak
 ```
@@ -180,14 +189,12 @@ Patchy88/
 ├─ profiles/
 │  ├─ valis1/
 │  └─ valis2/
-├─ patches/
-│  ├─ valis1/
-│  └─ valis2/
-└─ dist/
-   ├─ Patchy88_Valis1_PC88_v1.0.7.zip
-   ├─ Patchy88_Valis1_PC88_Python_v1.0.7.zip
-   └─ Patchy88_Valis2_PC88_v1.0.0.zip
+└─ patches/
+   ├─ valis1/
+   └─ valis2/
 ```
+
+완성 배포 ZIP은 위 트리에 넣지 않고 GitHub Releases에 첨부합니다.
 
 ## 바리스 II 기준 패치 결과 SHA-256
 
