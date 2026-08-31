@@ -4,10 +4,37 @@ PC-8801 《몽환전사 바리스 II》 한글패치용 Patchy88 문서입니다
 
 ## 현재 버전
 
-- Windows x64/x86 독립 실행판: **Patchy88 Valis2 v1.0.0**
+- Windows x64/x86 독립 실행판: **Patchy88 Valis2 v1.0.1**
 - 대상
   - Disk A~G D88
   - KANJI1 ROM
+
+### v1.0.1 변경 사항
+
+- Disk A IPS를 최종 확인 완성본과 바이트 단위로 일치하는 교체 IPS로 갱신
+- Disk B IPS를 최종 확인 완성본과 바이트 단위로 일치하는 교체 IPS로 갱신
+- Disk C~G와 KANJI1 IPS는 변경 없음
+- A/B 교체 IPS 기준으로 검증 매니페스트와 패치 결과 해시를 재생성
+
+교체 후 확인 결과:
+
+```text
+Disk A
+IPS SHA-256:
+6db84cbe1a0ff3d7197ae0df143ddd216c892ed0ad3a21732b1dc972043bad31
+IPS records: 434
+패치 결과 SHA-256:
+4a2cd146c410d01c207670778e47ac6a670c00caf93ef7c52db412b26832040d
+
+Disk B
+IPS SHA-256:
+f8b855b31757d038786ecfddf3824d52baeff2fc98e2435bc8b6fe6372c33adb
+IPS records: 450
+패치 결과 SHA-256:
+5ab755cfe2aeaef68e4cbe4582c979fe6449482d2f09ab72d0e44918cbae1d6b
+```
+
+새 A/B IPS를 각각 기준 원본에 적용한 결과는 최종 확인된 `Valis2_KOR_Disk_A.d88`, `Valis2_KOR_Disk_B.d88`와 **바이트 차이 0**입니다.
 
 ## 사용 방법
 
@@ -74,29 +101,32 @@ game.d88.2.bak
 
 ## 검증 방식
 
-Patchy88은 각 IPS가 실제로 건드리는 원본 영역의 적용 전/후 SHA-256을 기준으로 상태를 판정합니다.
+Patchy88은 전체 D88 이미지 해시 일치를 강제하지 않습니다. 각 IPS가 실제로 건드리는 원본 영역의 적용 전/후 SHA-256을 기준으로 상태를 판정합니다.
 
 - 모든 대상 영역이 적용 전 값과 일치 → `ORIGINAL`
 - 모든 대상 영역이 적용 후 값과 일치 → `ALREADY_PATCHED`
 - 적용 전/후 상태가 혼재 → `PARTIAL`
 - 어느 쪽에도 맞지 않는 대상 영역 존재 → `INCOMPATIBLE`
 
+즉 **전체 이미지 SHA-256이 달라도 IPS 대상 데이터가 모두 일치하면 패치할 수 있습니다.** 단, 현재 구현은 D88 파일 오프셋 기준이므로 패치 대상 오프셋 배치 자체가 달라진 이미지는 호환되지 않을 수 있습니다.
+
 `PARTIAL`, `INCOMPATIBLE` 상태가 하나라도 있으면 8개 전체 패치를 시작하지 않습니다.
 
 ## 실제 자동 식별 검증
 
-테스트에서 Disk A~G와 KANJI1의 파일명을 임의로 바꿔도 8개를 내용으로 정확히 식별했습니다.
+- Disk A~G와 KANJI1 원본 8개가 각각 정확히 자기 대상으로만 `ORIGINAL` 판정
+- 다른 디스크를 다른 대상으로 잘못 식별하는 교차 오인 없음
+- 8개 IPS 적용 후 각각 `ALREADY_PATCHED` 판정
+- Disk A에 첫 IPS 레코드만 적용한 부분 패치 시험에서 `PARTIAL` 판정
+- Disk A/B 새 IPS 결과는 확인 완성본과 바이트 단위 동일
+- Disk C~G 결과도 기존 확인 완성본과 바이트 단위 동일
 
-또한 Disk A에 IPS 레코드 일부만 적용해 `PARTIAL` 상태를 만든 경우에는 전체 패치를 거부하고 `.bak`이나 `(K)` 파일을 하나도 생성하지 않는 것을 확인했습니다.
-
-## 기준 원본 및 패치 결과 해시
-
-CRC64는 **CRC-64/ECMA-182** 기준입니다.
+## 기준 원본 및 패치 결과 SHA-256
 
 | 대상 | 원본 SHA-256 | IPS 패치 결과 SHA-256 |
 |---|---|---|
-| Disk A | `4E1E3F5A21B66BB9C57AB20F6522C95C8074DC9120F92D395EACDB673D9A3BD8` | `B96D108D5BA75023E67AD7C66BE370E5E1AAC8A6A73E8F8D5BD248F65C0ABF9A` |
-| Disk B | `6537B681F8C24AA92BE608F99DC61EF8DA9AFA1B6569450DBA1DD5D7D00E3919` | `2368B443A1A536AFAB78F28C582DA268196A2C28F7305B2BAEDF11CCE2A161B4` |
+| Disk A | `4E1E3F5A21B66BB9C57AB20F6522C95C8074DC9120F92D395EACDB673D9A3BD8` | `4A2CD146C410D01C207670778E47AC6A670C00CAF93EF7C52DB412B26832040D` |
+| Disk B | `6537B681F8C24AA92BE608F99DC61EF8DA9AFA1B6569450DBA1DD5D7D00E3919` | `5AB755CFE2AEAEF68E4CBE4582C979FE6449482D2F09AB72D0E44918CBAE1D6B` |
 | Disk C | `396F79DF59D3263B801126943D03F0C63B232A52A6256A0994254D83031FABDA` | `C6652CF326B9C5250C3C91F11BE9936BE430FD1182D1736CB1132AFC7CF36570` |
 | Disk D | `BD453F4576705A224A6B1775D2E7D0D2D499EFD49075FF0B2B4B0B419549DD6D` | `5964758193523428947B0681E2A2B2F7B7ADD379FD86F3A5933022507AF16331` |
 | Disk E | `905C9B0DBC402BB6134B63A67F3615AB0ADF79A191FF87CDF365903138CEFEDE` | `A872EB595CD8CD69377749EDC89786D5076939997DC7AC4A8927EC6E17962219` |
@@ -120,13 +150,7 @@ Windows판 Go 소스는 다음 위치에 있습니다.
 src/valis2-go/
 ```
 
-빌드 예:
-
-```bash
-go test ./...
-GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o Patchy88-Valis2-x64.exe
-GOOS=windows GOARCH=386   go build -ldflags="-H windowsgui" -o Patchy88-Valis2-x86.exe
-```
+현재 패치 데이터와 검증 매니페스트는 실행파일 외부 자산이므로, v1.0.1에서는 A/B IPS 및 매니페스트를 갱신했습니다.
 
 ## 원본 데이터 배포 정책
 
