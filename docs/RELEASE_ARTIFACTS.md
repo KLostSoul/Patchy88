@@ -6,7 +6,15 @@
 |---|---|---:|---|
 | 몽환전사 바리스 Windows x64/x86 | `Patchy88_Valis1_PC88_v1.0.7.zip` | 2,035,112 | `25537c9c97edebd1d958df0ffeb0067afa587ed227967d118f2f23dfcc0d5703` |
 | 몽환전사 바리스 Python | `Patchy88_Valis1_PC88_Python_v1.0.7.zip` | 220,377 | `62b553cb010e86902d7edfca532e7a5a3c51ad5d3e434a2a351dc6ec944902e7` |
-| 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.0.zip` | 2,081,558 | `240af2cca7756bad9a2c5750e47793eddef9ae14652a8c688279436d1ef67341` |
+| 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.1.zip` | 2,095,483 | `4723b98e1ae2642cbdb76a8093a37d9a31dd827fad8bb8807cd3abbc35323bc1` |
+
+## 바리스 II v1.0.1
+
+- Disk A/B IPS 교체
+- A/B 매니페스트의 패치 SHA-256, 레코드 목록, before/after 영역 SHA-256 재생성
+- Disk A 새 패치 결과 SHA-256: `4a2cd146c410d01c207670778e47ac6a670c00caf93ef7c52db412b26832040d`
+- Disk B 새 패치 결과 SHA-256: `5ab755cfe2aeaef68e4cbe4582c979fe6449482d2f09ab72d0e44918cbae1d6b`
+- C~G/KANJI1 패치 데이터 변경 없음
 
 ## 배포 원칙
 
