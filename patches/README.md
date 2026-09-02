@@ -13,18 +13,18 @@
 
 ## 몽환전사 바리스 II
 
-Patchy88 Valis2 v1.0.3부터 사용자가 제공한 **V1.01 IPS 세트**를 기준으로 사용합니다.
+Patchy88 Valis2 v1.0.3부터 사용자가 제공한 **V1.01 IPS 세트**를 기준으로 사용합니다. 패치 버전 혼동을 막기 위해 배포물에서도 사용자가 지정한 `_V1.01` 파일명을 그대로 유지합니다.
 
-| 배포 내 파일 | 원본 제공 파일 | 크기 | SHA-256 | Git blob SHA-1 |
-|---|---|---:|---|---|
-| `Valis2_KOR_Disk_A.ips` | `Valis2_KOR_Disk_A_V1.01.ips` | 13,065 | `547754b043a6c4c2e70f62af22c045f73337822a7d9e49fd3b6825e9a4e4c47f` | `ba5c1f4aa4560d5676ff8c472f76bf5401d22320` |
-| `Valis2_KOR_Disk_B.ips` | `Valis2_KOR_Disk_B_V1.01.ips` | 16,978 | `5151fe86ab6da0bc8d98671be4ea2f9eea248b98c144a79050b26cbacdd48722` | `d05c16b7afe3f1fc8ba5076ceb3ae01548a606eb` |
-| `Valis2_KOR_Disk_C.ips` | `Valis2_KOR_Disk_C_V1.01.ips` | 317 | `b315445e42650e0da42edb149cfe367fa8dd2c3d6be49a66a7407c815bf218c6` | `f9d52782be768db1ea78da43dbed34e9e38f8375` |
-| `Valis2_KOR_Disk_D.ips` | `Valis2_KOR_Disk_D_V1.01.ips` | 10,065 | `63481fb6055e03f4e5b1bfabd21c2f6db808086beb481f3f4f797c35fdfea436` | `683aa83483b77e27322a7b2595d3324b1a75d614` |
-| `Valis2_KOR_Disk_E.ips` | `Valis2_KOR_Disk_E_V1.01.ips` | 4,145 | `59132ac1c21f45aa7f64443a1234e7a38faf2dfae012e0ff831fa28e982b324d` | `18392ec082baef06f73fcfec0dd1bfca8953bef5` |
-| `Valis2_KOR_Disk_F.ips` | `Valis2_KOR_Disk_F_V1.01.ips` | 3,833 | `585506a1ffcf17d073a3e0957f53cd6f7c795565905c7d6acfa9cfbc0fc71518` | `2c52194abde6b8b281715990cdf58dddd52c166e` |
-| `Valis2_KOR_Disk_G.ips` | `Valis2_KOR_Disk_G_V1.01.ips` | 3,333 | `30cde63b1a960f733d64e465305d08d80afddc0ac2118b4ef76e1076de966eb8` | `2a5e99998451923256b16f4ec38427dc2c57b7fe` |
-| `Valis2_KOR_KANJI1.ips` | `Valis2_KOR_KANJI1_V1.01.ips` | 29,269 | `a8fe0820e0152e0164f064b1e6ea938c9117807ca103e45085ac620a0309d473` | `5b64a17c719ad767b9b6adbd638df2ca93b6b711` |
+| 파일 | 크기 | SHA-256 | Git blob SHA-1 |
+|---|---:|---|---|
+| `Valis2_KOR_Disk_A_V1.01.ips` | 13,065 | `547754b043a6c4c2e70f62af22c045f73337822a7d9e49fd3b6825e9a4e4c47f` | `ba5c1f4aa4560d5676ff8c472f76bf5401d22320` |
+| `Valis2_KOR_Disk_B_V1.01.ips` | 16,978 | `5151fe86ab6da0bc8d98671be4ea2f9eea248b98c144a79050b26cbacdd48722` | `d05c16b7afe3f1fc8ba5076ceb3ae01548a606eb` |
+| `Valis2_KOR_Disk_C_V1.01.ips` | 317 | `b315445e42650e0da42edb149cfe367fa8dd2c3d6be49a66a7407c815bf218c6` | `f9d52782be768db1ea78da43dbed34e9e38f8375` |
+| `Valis2_KOR_Disk_D_V1.01.ips` | 10,065 | `63481fb6055e03f4e5b1bfabd21c2f6db808086beb481f3f4f797c35fdfea436` | `683aa83483b77e27322a7b2595d3324b1a75d614` |
+| `Valis2_KOR_Disk_E_V1.01.ips` | 4,145 | `59132ac1c21f45aa7f64443a1234e7a38faf2dfae012e0ff831fa28e982b324d` | `18392ec082baef06f73fcfec0dd1bfca8953bef5` |
+| `Valis2_KOR_Disk_F_V1.01.ips` | 3,833 | `585506a1ffcf17d073a3e0957f53cd6f7c795565905c7d6acfa9cfbc0fc71518` | `2c52194abde6b8b281715990cdf58dddd52c166e` |
+| `Valis2_KOR_Disk_G_V1.01.ips` | 3,333 | `30cde63b1a960f733d64e465305d08d80afddc0ac2118b4ef76e1076de966eb8` | `2a5e99998451923256b16f4ec38427dc2c57b7fe` |
+| `Valis2_KOR_KANJI1_V1.01.ips` | 29,269 | `a8fe0820e0152e0164f064b1e6ea938c9117807ca103e45085ac620a0309d473` | `5b64a17c719ad767b9b6adbd638df2ca93b6b711` |
 
 ### V1.01 구조 검증
 
