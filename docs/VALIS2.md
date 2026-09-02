@@ -18,6 +18,20 @@ PC-8801 《몽환전사 바리스 II》 한글패치용 Patchy88 문서입니다
 - 8개 IPS 기준으로 패치 대상 `before` / `after` SHA-256 매니페스트 전면 재생성
 - 원본 8개 교차 자동식별 오인 없음 확인
 - 8개 원본은 각각 `ORIGINAL`, 새 IPS 적용 결과는 각각 `ALREADY_PATCHED` 판정
+- 배포물 내부에서도 패치 버전을 구분할 수 있도록 사용자가 지정한 `_V1.01` 파일명을 그대로 유지
+
+배포물의 IPS 파일명은 다음과 같습니다.
+
+```text
+Valis2_KOR_Disk_A_V1.01.ips
+Valis2_KOR_Disk_B_V1.01.ips
+Valis2_KOR_Disk_C_V1.01.ips
+Valis2_KOR_Disk_D_V1.01.ips
+Valis2_KOR_Disk_E_V1.01.ips
+Valis2_KOR_Disk_F_V1.01.ips
+Valis2_KOR_Disk_G_V1.01.ips
+Valis2_KOR_KANJI1_V1.01.ips
+```
 
 ## 사용 방법
 
