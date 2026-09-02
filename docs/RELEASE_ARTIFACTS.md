@@ -6,19 +6,19 @@
 |---|---|---:|---|
 | 몽환전사 바리스 Windows x64/x86 | `Patchy88_Valis1_PC88_v1.0.7.zip` | 2,035,112 | `25537c9c97edebd1d958df0ffeb0067afa587ed227967d118f2f23dfcc0d5703` |
 | 몽환전사 바리스 Python | `Patchy88_Valis1_PC88_Python_v1.0.7.zip` | 220,377 | `62b553cb010e86902d7edfca532e7a5a3c51ad5d3e434a2a351dc6ec944902e7` |
-| 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.1.zip` | 2,095,483 | `4723b98e1ae2642cbdb76a8093a37d9a31dd827fad8bb8807cd3abbc35323bc1` |
+| 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,599 | `762fcc283238c0e8415ccc0b74dfadae9deddeed65f0d859c853d318a8bd9f30` |
 
-## 바리스 II v1.0.1
+## 바리스 II v1.0.3
 
-- Disk A/B IPS 교체
-- A/B 매니페스트의 패치 SHA-256, 레코드 목록, before/after 영역 SHA-256 재생성
-- Disk A 새 패치 결과 SHA-256: `4a2cd146c410d01c207670778e47ac6a670c00caf93ef7c52db412b26832040d`
-- Disk B 새 패치 결과 SHA-256: `5ab755cfe2aeaef68e4cbe4582c979fe6449482d2f09ab72d0e44918cbae1d6b`
-- C~G/KANJI1 패치 데이터 변경 없음
+- Disk A~G + KANJI1을 사용자 제공 V1.01 IPS 세트로 교체
+- A~F와 KANJI1은 v1.0.2 대비 IPS 내용 변경, G는 동일
+- 8개 대상의 before/after 영역 SHA-256 매니페스트 전면 재생성
+- KANJI1 기준 원본은 CRC32 `6178BD43` 유지
+- 8개 원본 교차 자동식별 오인 없음 확인
+- 8개 새 패치 결과 모두 `ALREADY_PATCHED` 판정 확인
 
 ## 배포 원칙
 
 - Windows판 ZIP에는 x64/x86 실행파일을 함께 둡니다.
-- Python판은 외부 pip 의존성 없이 표준 `tkinter`를 사용합니다.
 - 원본 게임 D88, 원본 KANJI ROM, 패치 완료 전체 게임 이미지는 배포하지 않습니다.
 - 실제 사용자 배포 ZIP은 GitHub Releases 자산으로 두고, 소스 트리에는 중복 보관하지 않는 것을 원칙으로 합니다.
