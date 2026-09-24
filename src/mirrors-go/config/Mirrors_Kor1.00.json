@@ -1,0 +1,81 @@
+{
+  "name": "Mirrors_Kor1.00",
+  "schema": "mirrors.kor1.00.xdelta",
+  "source": {
+    "Japanese": {
+      "ccd": {
+        "md5": "80273154a2daf2d107a282b353a86246",
+        "sha256": "5512efcec20279753e1c6fef0c5aae37f2f3f05bb3ae3900b5db0f688d4a67ac",
+        "patch": "patches/Japanese_CCD.xdelta",
+        "patch_sha256": "d2b4faea33dba7108190b31da2c819c9377ce5616ecbd4e440ff16543a4d0968"
+      },
+      "img": {
+        "md5": "84e583ec62372ca9dd0d737dce38b5d8",
+        "sha256": "258533b4ac5fd8b16170ddf9509dcf2d6c4a0959bac61e999b3d14c9c0b48d65",
+        "patch": "patches/Japanese_IMG.xdelta",
+        "patch_sha256": "46c49265796a3d9f975c07a734a0c2be75e6e57557dd75df259c94fb70354856"
+      },
+      "sub": {
+        "md5": "e45923398b1d150f71e6056bd0974d15",
+        "sha256": "c20c93ff3a2cf3a1e3a18b5f8046ec6f6198a916b417a01678b0b9d10eed9046",
+        "patch": "patches/Japanese_SUB.xdelta",
+        "patch_sha256": "ab5e0cecaaf61b8088ad2ac6730bfeefa2f9a77d721a215aa628c83eeaf3c8a0"
+      }
+    },
+    "English": {
+      "ccd": {
+        "md5": "35c733769d60277fcce522e121af82ae",
+        "sha256": "2daeaaf64fd4c206cc28c2438a5fa480272db0888cc19106380d13950de1c102",
+        "patch": "patches/English_CCD.xdelta",
+        "patch_sha256": "4182e37407bb5097b3cf5eb18aebc47280ce9506885ac42f5fc29d4a96c52272"
+      },
+      "img": {
+        "md5": "f3bc8d9e2650d9d9c6ebaef5e2353144",
+        "sha256": "294ee461a2bea8745394c71ca7eec64960a865673d72f8b60557c0a29a9ca7aa",
+        "patch": "patches/English_IMG.xdelta",
+        "patch_sha256": "ce14391b9275e28198f5c54bfec292aac4a3e2eec32a5300734b9b28fb1af720"
+      },
+      "sub": {
+        "md5": "f6d739f1b66082f7f06f403d30cf35eb",
+        "sha256": "3c05efec20e9be2cda81500178ff1f8a7657908fd699d2070827e58d700122d2",
+        "patch": "patches/English_SUB.xdelta",
+        "patch_sha256": "d6a34b4c56bb18941d4eff7bda749d295a05920ca0c87e30f39e70f4a0b05132"
+      }
+    }
+  },
+  "target": {
+    "ccd": {
+      "md5": "80273154a2daf2d107a282b353a86246",
+      "sha256": "5512efcec20279753e1c6fef0c5aae37f2f3f05bb3ae3900b5db0f688d4a67ac",
+      "filename": "Mirrors_Kor1.00.ccd"
+    },
+    "img": {
+      "md5": "c637c340c048d4209a5b47ac8df0e276",
+      "sha256": "8ee893afa18d98991ed78ca9f7f7259186a91fded222058c2f4af85e647a53b2",
+      "filename": "Mirrors_Kor1.00.img"
+    },
+    "sub": {
+      "md5": "e45923398b1d150f71e6056bd0974d15",
+      "sha256": "c20c93ff3a2cf3a1e3a18b5f8046ec6f6198a916b417a01678b0b9d10eed9046",
+      "filename": "Mirrors_Kor1.00.sub"
+    }
+  },
+  "extras": [
+    {
+      "filename": "Mirrors_Kor1.00.cue",
+      "sha256": "1d39ecd17025d987dd37a38ca08de38938c4b2b0cf3c4c832f52898281f674e5",
+      "size": 600
+    },
+    {
+      "filename": "disk1main.d88",
+      "sha256": "0f46fa2ec70fd6b60cd598659769a64034a46b2c1902e76244099ae9057f8792",
+      "size": 1331888
+    },
+    {
+      "filename": "disk2game.d88",
+      "sha256": "0f46fa2ec70fd6b60cd598659769a64034a46b2c1902e76244099ae9057f8792",
+      "size": 1331888
+    }
+  ],
+  "xdelta3_sha256": "9bf8d067de9448e521afe1f8108caa0f85b4b7c7933641efd44bc43533920565"
+}
