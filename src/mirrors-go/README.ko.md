@@ -1,31 +1,46 @@
-# Mirrors_Kor1.00 — PC-8801 xdelta 패처 소스
+# Mirrors용 Patchy88 — Mirrors_Kor1.00 (PC-8801)
 
-PC-8801 《Mirrors》의 **일본판 또는 영문판** CCD/IMG/SUB 파일 3개를 MD5 + SHA-256으로 검사하고, 각 판본 전용 xdelta 3개를 적용합니다.
+이 디렉터리는 PC-8801 《Mirrors》의 일본판·영문판을 한글판으로 변환하는 **Mirrors용 Patchy88**의 Go 소스입니다. **사용자용 설명은 [docs/MIRRORS.md](../../docs/MIRRORS.md)를 참조하십시오.** 배포 ZIP에는 이 소스를 넣지 않습니다.
 
-- 한 판본만 검출되면 자동 선택
-- **일본판과 영문판이 모두 검출되면 사용자에게 원본 선택 요청** (GUI: 예=일본판 / 아니오=영문판 / 취소)
-- 선택한 판본의 xdelta만 적용하며 두 원본 세트는 수정하지 않음
-- 검증된 한글판 결과 `Mirrors_Kor1.00.ccd`, `.img`, `.sub` 생성
-- 같은 폴더에 `Mirrors_Kor1.00.cue`, `disk1main.d88`, `disk2game.d88` 추가
-- CUE 내부 IMG 경로도 `Mirrors_Kor1.00.img`
-- 기존 파일 충돌 방지, 결과 MD5 + SHA-256 검증, 실패 시 생성물 복구
+## 처리 범위
 
-## CLI (Windows 이외의 개발 환경)
+- CCD/IMG/SUB 세 파일의 원본 MD5 + SHA-256 검증. 파일명으로 판본을 추측하지 않습니다.
+- 일본판 또는 영문판 하나만 완전하게 발견되면 자동 선택. 둘 다 발견되면 **Windows GUI에서 사용자 선택** (예: 일본판, 아니오: 영문판, 취소: 중단).
+- 선택한 판본 전용 xdelta 3개만 적용. 두 판본의 원본은 덮어쓰지 않습니다.
+- 결과 MD5 + SHA-256 검증에 성공하면 같은 폴더에 `Mirrors_Kor1.00.ccd`, `Mirrors_Kor1.00.img`, `Mirrors_Kor1.00.sub`, `Mirrors_Kor1.00.cue`, `disk1main.d88`, `disk2game.d88`을 추가합니다.
+- 이미 다른 데이터가 들어 있는 결과 파일은 덮어쓰지 않으며, 오류 시 이번 실행에서 생성한 임시 파일·결과 파일을 정리합니다.
+
+## 소스 및 배포 자산 구분
+
+`core.go` — 원본 판별, 선택 유지, xdelta 실행, 원본·결과 검증 및 안전한 결과 확정.
+
+`main_windows.go` — Windows 폴더 선택 및 두 판본 동시 검출 시 선택 UI.
+
+`main_cli.go` — Windows 이외의 개발 환경에서 검사·패치 실행.
+
+`core_test.go` — 자동 판별, 충돌 검사, 자산 변조, 실패 정리, 두 판본 동시 검출 및 선택 테스트.
+
+`config/Mirrors_Kor1.00.json` — 원본·패치·결과·추가 파일의 파일명과 해시를 기록한 기준 매니페스트.
+
+`config/Mirrors_Kor1.00.cue` — CUE 소스. 내부에서 `Mirrors_Kor1.00.img`를 참조합니다.
+
+실행 시 필요한 `assets/`(매니페스트, xdelta 6개, xdelta3.exe, CUE 및 D88 2개)는 사용자 배포 ZIP에 별도로 포함됩니다. 원본 CCD/IMG/SUB는 저장소 또는 배포 ZIP에 포함하지 않습니다.
+
+## 빌드 및 테스트
 
 ```sh
-go run . scan FOLDER
-go run . apply FOLDER Japanese
-go run . apply FOLDER English
-```
-
-두 판본이 있는 경우 CLI에서도 판본 선택이 필수입니다.
-
-## 빌드
-
-```sh
+cd src/mirrors-go
 go test ./...
 GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o Mirrors_Kor1.00-x64.exe
-GOOS=windows GOARCH=386   go build -ldflags="-H windowsgui" -o Mirrors_Kor1.00-x86.exe
+GOOS=windows GOARCH=386 go build -ldflags="-H windowsgui" -o Mirrors_Kor1.00-x86.exe
 ```
 
-실제 배포 패키지의 `assets/` 디렉터리는 바이너리 자산이므로 소스 저장소에는 넣지 않습니다. 빌드한 실행파일 옆에 `assets/`가 필요합니다. 자산 이름과 해시는 `config/Mirrors_Kor1.00.json`을 참고하세요. 실제 원본 이미지에 xdelta를 적용한 최종 테스트는 일본판/영문판 원본 전체가 없어 수행하지 못했습니다.
+비Windows 개발 환경의 CLI:
+
+```sh
+go run . scan /path/to/folder
+go run . apply /path/to/folder Japanese
+go run . apply /path/to/folder English
+```
+
+둘 다 발견됐을 때 판본을 명시하지 않은 `apply`는 실행을 거부합니다. 실제 일본판·영문판 전체 원본을 사용한 최종 xdelta 패치 시험은 별도로 필요합니다.

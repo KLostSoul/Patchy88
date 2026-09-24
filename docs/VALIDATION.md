@@ -1,4 +1,6 @@
-# Patchy88 검증 모델
+# Valis용 IPS Patchy88 검증 모델
+
+이 문서는 《몽환전사 바리스》와 《몽환전사 바리스 II》의 **IPS 패처**에 적용됩니다. PC-8801 《Mirrors》의 xdelta 판은 파일 전체 MD5 + SHA-256으로 식별·검증하므로 [Mirrors용 Patchy88 문서](MIRRORS.md)를 참조하십시오.
 
 ## 1. 목적
 

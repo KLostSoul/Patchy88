@@ -1,6 +1,6 @@
 # Patchy88
 
-Patchy88은 PC-8801용 IPS 패치를 안전하게 적용하는 프로젝트이며, 별도의 Mirrors용 xdelta 패처 소스도 포함합니다.
+Patchy88은 PC-8801 게임의 한글화 패치를 적용하는 도구 모음입니다. 《몽환전사 바리스》·《몽환전사 바리스 II》용 IPS 패처와 **《Mirrors》용 Patchy88** xdelta 패처를 별도로 제공합니다.
 
 46OkuMen의 **Pachy98 / romtools**가 사용한 패치 배포 개념에서 출발했지만, PC-88의 D88/ROM을 대상으로 하기 위해 구조를 바꿨습니다. PC-88 IPS 판에서는 NDC를 이용한 파일 추출/재삽입이나 xdelta3를 사용하지 않고, **D88/ROM에 IPS를 직접 적용하면서 IPS가 실제로 건드리는 원본 영역을 검증**합니다. Mirrors 판은 별도의 xdelta3 엔진과 전체 원본/결과 파일 해시 검증을 사용합니다.
 
@@ -12,7 +12,8 @@ Patchy88은 PC-8801용 IPS 패치를 안전하게 적용하는 프로젝트이�
 
 - [몽환전사 바리스용 Patchy88](docs/VALIS1.md)
 - [몽환전사 바리스 II용 Patchy88](docs/VALIS2.md)
-- [Mirrors_Kor1.00 xdelta 패처 소스](src/mirrors-go/README.ko.md)
+- [**Mirrors용 Patchy88 — Mirrors_Kor1.00**](docs/MIRRORS.md): PC-8801, 일본판/영문판 xdelta 패치, 사용법·출력 파일명
+- [Mirrors용 Patchy88 소스 및 빌드](src/mirrors-go/README.ko.md)
 
 ## PC-88 IPS 판의 핵심 원리
 
@@ -117,6 +118,7 @@ Patchy88/
 ├─ docs/
 │  ├─ VALIS1.md
 │  ├─ VALIS2.md
+│  ├─ MIRRORS.md
 │  ├─ VALIDATION.md
 │  ├─ Valis1_PC88_Validation.md
 │  ├─ Valis2_PC88_KOR_Hash_List.md
@@ -126,15 +128,16 @@ Patchy88/
 └─ src/
    ├─ valis1-python/
    ├─ valis2-go/
-   └─ mirrors-go/  (Mirrors_Kor1.00 xdelta 패처 소스)
+   └─ mirrors-go/  (Mirrors용 Patchy88 — xdelta 패처 소스)
 ```
 
 ## 관련 문서
 
 - [몽환전사 바리스](docs/VALIS1.md)
 - [몽환전사 바리스 II](docs/VALIS2.md)
-- [Mirrors_Kor1.00 소스 및 빌드 안내](src/mirrors-go/README.ko.md)
-- [Patchy88 검증 구조](docs/VALIDATION.md)
+- [Mirrors용 Patchy88 사용법](docs/MIRRORS.md)
+- [Mirrors용 Patchy88 소스 및 빌드 안내](src/mirrors-go/README.ko.md)
+- [Valis IPS 검증 구조](docs/VALIDATION.md)
 - [IPS 파일 식별값](patches/README.md)
 - [배포 산출물 기록](docs/RELEASE_ARTIFACTS.md)
 
@@ -146,7 +149,7 @@ Patchy88은 Pachy98/romtools의 패치 배포 개념에서 출발한 PC-8801용 
 - Original repository: https://github.com/46OkuMen/romtools
 - Original license: Apache License 2.0
 
-NDC/xdelta 기반 처리 대신 PC-88 D88/ROM 직접 IPS 적용, 패치 대상 영역 검증, 내용 기반 자동 식별, 트랜잭션식 적용 등을 추가했습니다.
+Valis 판에서는 PC-8801 D88/ROM 직접 IPS 적용과 패치 영역 검증을 사용합니다. Mirrors 판에서는 별도의 xdelta3 복호화와 원본·결과 전체 MD5/SHA-256 검증을 사용합니다.
 
 자세한 변경 고지는 `NOTICE.md`를 참조하십시오.
 
