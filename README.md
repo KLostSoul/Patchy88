@@ -1,8 +1,8 @@
 # Patchy88
 
-Patchy88은 PC-8801용 IPS 패치를 안전하게 적용하기 위한 패처입니다.
+Patchy88은 PC-8801용 IPS 패치를 안전하게 적용하는 프로젝트이며, 별도의 Mirrors용 xdelta 패처 소스도 포함합니다.
 
-46OkuMen의 **Pachy98 / romtools**가 사용한 패치 배포 개념에서 출발했지만, PC-88의 D88/ROM을 대상으로 하기 위해 구조를 바꿨습니다. NDC를 이용한 파일 추출/재삽입이나 xdelta3를 사용하지 않고, **D88/ROM에 IPS를 직접 적용하면서 IPS가 실제로 건드리는 원본 영역을 검증**합니다.
+46OkuMen의 **Pachy98 / romtools**가 사용한 패치 배포 개념에서 출발했지만, PC-88의 D88/ROM을 대상으로 하기 위해 구조를 바꿨습니다. PC-88 IPS 판에서는 NDC를 이용한 파일 추출/재삽입이나 xdelta3를 사용하지 않고, **D88/ROM에 IPS를 직접 적용하면서 IPS가 실제로 건드리는 원본 영역을 검증**합니다. Mirrors 판은 별도의 xdelta3 엔진과 전체 원본/결과 파일 해시 검증을 사용합니다.
 
 > **중요:** 원본 게임 D88, 원본 KANJI ROM, 패치 완료 전체 게임 이미지는 저장소에 포함하지 않습니다.
 
@@ -12,8 +12,9 @@ Patchy88은 PC-8801용 IPS 패치를 안전하게 적용하기 위한 패처입�
 
 - [몽환전사 바리스용 Patchy88](docs/VALIS1.md)
 - [몽환전사 바리스 II용 Patchy88](docs/VALIS2.md)
+- [Mirrors_Kor1.00 xdelta 패처 소스](src/mirrors-go/README.ko.md)
 
-## 핵심 원리
+## PC-88 IPS 판의 핵심 원리
 
 Patchy88은 전체 파일 SHA-256 하나만으로 호환성을 판정하지 않습니다.
 
@@ -37,7 +38,7 @@ D88 / ROM
 
 자세한 내용은 [검증 구조 문서](docs/VALIDATION.md)를 참조하십시오.
 
-## 안전 적용 절차
+## PC-88 IPS 판의 안전 적용 절차
 
 기본 처리 순서는 다음과 같습니다.
 
@@ -62,7 +63,7 @@ D88 / ROM
 
 `PARTIAL`, `INCOMPATIBLE` 상태에서는 원본 파일을 변경하지 않습니다.
 
-## 파일명은 검사 조건이 아님
+## PC-88 IPS 판의 파일명 검사
 
 Patchy88은 원본 파일명을 호환성 검사 조건으로 사용하지 않습니다.
 
@@ -74,7 +75,7 @@ two.d88
 font.rom
 ```
 
-## 출력과 백업
+## PC-88 IPS 판의 출력과 백업
 
 패치 결과는 기본적으로 확장자 앞에 `(K)`를 붙여 생성합니다.
 
@@ -96,7 +97,7 @@ game.d88.2.bak
 
 ## D88 처리 범위
 
-현재 Patchy88은 IPS의 **D88 파일 오프셋을 직접 사용**합니다.
+현재 PC-88 IPS 판은 IPS의 **D88 파일 오프셋을 직접 사용**합니다.
 
 - NDC 미사용
 - 파일시스템 추출 미사용
@@ -124,13 +125,15 @@ Patchy88/
 │  └─ README.md
 └─ src/
    ├─ valis1-python/
-   └─ valis2-go/
+   ├─ valis2-go/
+   └─ mirrors-go/  (Mirrors_Kor1.00 xdelta 패처 소스)
 ```
 
 ## 관련 문서
 
 - [몽환전사 바리스](docs/VALIS1.md)
 - [몽환전사 바리스 II](docs/VALIS2.md)
+- [Mirrors_Kor1.00 소스 및 빌드 안내](src/mirrors-go/README.ko.md)
 - [Patchy88 검증 구조](docs/VALIDATION.md)
 - [IPS 파일 식별값](patches/README.md)
 - [배포 산출물 기록](docs/RELEASE_ARTIFACTS.md)
