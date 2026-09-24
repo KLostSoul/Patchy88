@@ -45,13 +45,14 @@ go run . apply /path/to/folder English
 
 둘 다 발견됐을 때 판본을 명시하지 않은 `apply`는 실행을 거부합니다. 실제 일본판·영문판 전체 원본을 사용한 최종 xdelta 패치 시험은 별도로 필요합니다.
 
-## xdelta 공식 소스 및 라이선스
+## 공식 xdelta3 v3.2.0
 
-공식 소스: https://github.com/jmacd/xdelta
+구 Pachy98 동봉 xdelta3 3.0.11 실행파일은 제거하고 **공식 [jmacd/xdelta v3.2.0](https://github.com/jmacd/xdelta/releases/tag/v3.2.0)**으로 변경했습니다. Apache License 2.0을 사용합니다.
 
-3.0.11 기반 Apache 2.0 재라이선스 브랜치: https://github.com/jmacd/xdelta/tree/release3_0_apl
+- Windows x64: 공식 릴리스 ZIP SHA-256 `af8ef036cb077a48df080c9a8ac1be4a6e7511c32d11f8bec89b6803a9e52576` 검증 후 `xdelta3.exe` 추출. `assets/xdelta3-x64.exe` SHA-256 `53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0`.
+- Windows x86: 공식 `v3.2.0` 소스에서 [GitHub Actions Win32 빌드](https://github.com/KLostSoul/Patchy88/actions/runs/36051984391). `assets/xdelta3.exe` SHA-256 `232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481`.
+- 프로그램은 실행 중인 아키텍처를 확인하여 해당 디코더를 자동 선택하고, 실행 전 SHA-256을 검사합니다.
+- [공식 소스 빌드 워크플로](../../.github/workflows/mirrors-upstream-xdelta.yml), [공식 upstream 라이선스](https://github.com/jmacd/xdelta/blob/v3.2.0/xdelta3/LICENSE).
+- 소스 저장소에는 실행파일 및 게임 데이터가 아닌 Go 코드, 매니페스트, 빌드 설명만 둡니다. ZIP에는 Go 소스가 없고 `LICENSE`, `THIRD_PARTY_LICENSE.txt`, `NOTICE_MODIFICATIONS.txt`, `UPSTREAM_XDELTA.txt`가 있습니다.
 
-라이선스 원문: https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE
-
-배포 ZIP의 `LICENSE`와 `THIRD_PARTY_LICENSE.txt`는 위 원문과 바이트 동일합니다. 동봉 `xdelta3.exe`는 Pachy98 v0.20.1의 파일과 일치하지만 실제 빌드에 사용된 소스 브랜치는 확인되지 않았습니다.
-
+수정 배포 ZIP SHA-256: `e06a1eb99e13104a8ca550a72307934369c8e8d398565c7d29c398f1cf600b30`. 자동식별·판본선택·검증·안전 확정과 공식 디코더 아키텍처 선택에 관한 Go 테스트 **12개 통과**. 실제 일본판·영문판 전체 원본을 통한 최종 패치 시험은 별도 수행해야 합니다.

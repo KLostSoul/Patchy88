@@ -49,12 +49,12 @@
 
 소스 코드와 매니페스트는 [src/mirrors-go](../src/mirrors-go/README.ko.md)에 보관합니다. 사용자 배포 ZIP에는 Go 소스를 넣지 않습니다. 현재 검증 기록에는 판본 식별·선택·충돌 방지·자산 변조 검사 테스트가 포함되며, **실제 일본판·영문판 전체 CD 원본으로 수행하는 최종 xdelta 적용 시험은 아직 완료되지 않았습니다.**
 
-## 배포판 라이선스 및 xdelta 출처
+## 공식 xdelta3 v3.2.0 및 라이선스
 
-`Mirrors_Kor1.00.zip`에는 `LICENSE`, `NOTICE_MODIFICATIONS.txt`, `THIRD_PARTY_LICENSE.txt`가 들어 있습니다. 두 라이선스 전문은 [xdelta 공식 저장소의 Apache 2.0 원문](https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE)과 바이트 단위로 동일합니다 (Git blob SHA-1: `7a774156a6820befeca5067631b3a50b86481495`).
+이 배포판은 **기존 Pachy98 동봉 xdelta3.exe를 사용하지 않습니다.** 공식 [jmacd/xdelta v3.2.0](https://github.com/jmacd/xdelta/releases/tag/v3.2.0)의 Apache License 2.0 소스를 사용합니다.
 
-공식 xdelta 저장소는 3.0.11 기반의 [`release3_0_apl` 브랜치](https://github.com/jmacd/xdelta/tree/release3_0_apl)를 Apache License 2.0으로 재라이선스한 소스로 명시합니다. 별도로 원래 GPL 라이선스를 적용한 [xdelta-gpl](https://github.com/jmacd/xdelta-gpl) 저장소도 존재합니다.
+- Windows x64: 공식 [v3.2.0 Windows x64 릴리스 ZIP](https://github.com/jmacd/xdelta/releases/download/v3.2.0/xdelta3-3.2.0-windows-x86_64.zip)을 다운로드하여 SHA-256 `af8ef036cb077a48df080c9a8ac1be4a6e7511c32d11f8bec89b6803a9e52576` 검증 후 실행파일을 추출했습니다. `assets/xdelta3-x64.exe` SHA-256: `53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0`.
+- Windows x86: 동일한 공식 `v3.2.0` 태그를 사용해 [GitHub Actions Windows Win32 빌드](https://github.com/KLostSoul/Patchy88/actions/runs/36051984391)를 수행했습니다. `assets/xdelta3.exe` SHA-256: `232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481`.
+- x64/x86 실행파일은 매니페스트에 별도의 SHA-256이 기록되며 패처가 실행 환경에 맞춰 자동 선택합니다. 별도로 xdelta를 설치할 필요는 없습니다.
 
-동봉 `xdelta3.exe`는 제공된 Pachy98 v0.20.1 배포본과 동일한 바이너리 (SHA-256: `9bf8d067de9448e521afe1f8108caa0f85b4b7c7933641efd44bc43533920565`)입니다. **그 실행파일의 실제 빌드 출처는 확인되지 않았으므로 공식 Apache 2.0 브랜치에서 빌드됐다고 단정하지 않습니다.** 이 제한을 배포 ZIP의 수정 고지문에도 명시했습니다.
-
-소스 코드는 [Mirrors용 Patchy88 저장소](../src/mirrors-go/README.ko.md)에서 관리하며 배포 ZIP에는 포함하지 않습니다.
+ZIP에는 `LICENSE`, `THIRD_PARTY_LICENSE.txt`, `NOTICE_MODIFICATIONS.txt`, `UPSTREAM_XDELTA.txt`를 포함하며, 소스는 [저장소](../src/mirrors-go/README.ko.md)에 별도 관리합니다. 두 판본 동시 검출·선택 및 디코더 사전검증을 포함하여 Go 테스트 12개를 통과했습니다. 실제 일본판과 영문판 전체 원본에 대한 최종 xdelta 적용 시험은 아직 미실시입니다.

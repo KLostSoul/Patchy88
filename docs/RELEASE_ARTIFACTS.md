@@ -37,13 +37,13 @@
 
 자세한 내용은 [Mirrors용 Patchy88 사용법](MIRRORS.md)을 참조하십시오.
 
-## Mirrors_Kor1.00 — 공식 xdelta 출처 고지판
+## Mirrors_Kor1.00 — 공식 xdelta3 v3.2.0 적용판
 
-- ZIP: `Mirrors_Kor1.00.zip`
-- 크기: 20,751,594 bytes
-- SHA-256: `dcb1d32d38a498ef0328c182d4b63ebf2c4de4500d047c248f523fd49c047a7f`
-- 배포물: `LICENSE`, `NOTICE_MODIFICATIONS.txt`, `THIRD_PARTY_LICENSE.txt` 동봉.
-- 공식 [xdelta 3.0.11 기반 Apache 2.0 브랜치](https://github.com/jmacd/xdelta/tree/release3_0_apl)와 [라이선스 원문](https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE)을 고지문에 명시했습니다. 두 라이선스 파일은 해당 원문과 바이트 단위로 일치합니다.
-- 실행파일·xdelta 6개·D88·CUE·검증 매니페스트는 이전 배포판과 바이트 단위로 동일합니다. 배포 ZIP 내 README와 수정 고지문만 갱신했습니다.
-- 동봉 xdelta3.exe의 정확한 빌드 브랜치는 확인되지 않았습니다. 공식 Apache 재라이선스 소스의 존재와 실제 동봉 바이너리의 라이선스 출처를 구분합니다.
-- ZIP 압축 CRC 및 변경 대상 외 파일의 바이트 동일성 확인.
+- 배포 ZIP: `Mirrors_Kor1.00.zip` (18,909,886 bytes).
+- SHA-256: `e06a1eb99e13104a8ca550a72307934369c8e8d398565c7d29c398f1cf600b30`.
+- 공식 x64 릴리스 ZIP 검증값: `af8ef036cb077a48df080c9a8ac1be4a6e7511c32d11f8bec89b6803a9e52576`.
+- 공식 x64 디코더: `53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0`.
+- 공식 v3.2.0 소스 기반 x86 디코더: `232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481`.
+- [공식 x64 배포본](https://github.com/jmacd/xdelta/releases/tag/v3.2.0)과 [x86 빌드 기록](https://github.com/KLostSoul/Patchy88/actions/runs/36051984391)을 보관. 구 Pachy98 동봉 xdelta 3.0.11 제거.
+- 기존 xdelta 패치 6개, CUE, D88 2개의 내용은 유지하고 실행파일·매니페스트·관련 문서만 갱신.
+- ZIP CRC 및 Go 테스트 12개 통과. 실제 일본판/영문판 전체 원본에 대한 최종 패치 적용은 미검증.
