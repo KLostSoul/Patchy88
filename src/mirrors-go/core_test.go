@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -365,4 +366,30 @@ func TestSingleEditionIgnoresIncorrectPreference(t *testing.T) {
 	if err != nil || s.Edition != "Japanese" {
 		t.Fatalf("single edition detection: %+v / %v", s, err)
 	}
+}
+
+func TestOfficialArchitectureDecoderSelection(t *testing.T) {
+    e, _, _, _ := fixture(t)
+    helper := filepath.Join(e.Root, "xdelta3-x64.exe")
+    data := []byte("test fixture for upstream 64bit exe")
+    writeTestFile(t, helper, data)
+    manifestPath := filepath.Join(e.Root, manifestFile)
+    content, err := os.ReadFile(manifestPath)
+    if err != nil { t.Fatal(err) }
+    var m Manifest
+    if err = json.Unmarshal(content, &m); err != nil { t.Fatal(err) }
+    m.XdeltaX64SHA256 = testSHA(data)
+    content, err = json.Marshal(m)
+    if err != nil { t.Fatal(err) }
+    writeTestFile(t, manifestPath, content)
+    selected, err := NewEngine(e.Root)
+    if err != nil { t.Fatal(err) }
+    if runtime.GOARCH == "amd64" && filepath.Base(selected.Decoder) != "xdelta3-x64.exe" {
+        t.Fatal("amd64 did not select official x64 executable")
+    }
+    if runtime.GOARCH == "386" && filepath.Base(selected.Decoder) != "xdelta3.exe" {
+        t.Fatal("386 did not select official x86 executable")
+    }
+    writeTestFile(t, selected.Decoder, []byte("tampered binary"))
+    if _, err := NewEngine(e.Root); err == nil { t.Fatal("accepted tampered upstream decoder") }
 }

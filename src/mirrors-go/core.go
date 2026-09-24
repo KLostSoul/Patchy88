@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 )
@@ -49,6 +50,7 @@ type Manifest struct {
 	Target       map[string]TargetDef            `json:"target"`
 	Extras       []ExtraDef                      `json:"extras"`
 	XdeltaSHA256 string                          `json:"xdelta3_sha256"`
+	XdeltaX64SHA256 string                       `json:"xdelta3_x64_sha256,omitempty"`
 }
 type Engine struct {
 	Root     string
@@ -182,13 +184,22 @@ func NewEngine(root string) (*Engine, error) {
 			return nil, fmt.Errorf("추가 파일 손상: %s", x.Filename)
 		}
 	}
-	helper := filepath.Join(root, "xdelta3.exe")
+	// Official upstream v3.2.0 release on amd64, official-source Win32 build on 386.
+	// A source-only test fixture may omit xdelta3_x64_sha256.
+	helperName, expectedHash := "xdelta3.exe", m.XdeltaSHA256
+	if runtime.GOARCH == "amd64" && m.XdeltaX64SHA256 != "" {
+		helperName, expectedHash = "xdelta3-x64.exe", m.XdeltaX64SHA256
+	}
+	if len(expectedHash) != 64 {
+		return nil, fmt.Errorf("%s SHA-256 값이 올바르지 않습니다", helperName)
+	}
+	helper := filepath.Join(root, helperName)
 	h, err := shaFile(helper)
 	if err != nil {
-		return nil, fmt.Errorf("xdelta3.exe 읽기 실패: %w", err)
+		return nil, fmt.Errorf("%s 읽기 실패: %w", helperName, err)
 	}
-	if !strings.EqualFold(h, m.XdeltaSHA256) {
-		return nil, errors.New("xdelta3.exe SHA-256이 다릅니다")
+	if !strings.EqualFold(h, expectedHash) {
+		return nil, fmt.Errorf("%s SHA-256이 다릅니다", helperName)
 	}
 	// Do not require whole-source SHA of any other file: source checks below use both published MD5 and SHA-256.
 	return &Engine{Root: root, Manifest: m, Decoder: helper}, nil
