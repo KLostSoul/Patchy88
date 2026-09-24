@@ -1,0 +1,29 @@
+name: Mirrors Patchy88 Go tests and Windows builds
+
+on:
+  push:
+    paths:
+      - 'src/mirrors-go/**'
+      - '.github/workflows/mirrors-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  go_test_windows_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+      - name: Go tests (release assets are not stored in Git)
+        run: cd src/mirrors-go && go test ./... -count=1 -v
+      - name: Cross-compile Windows x64 and x86
+        run: |
+          set -euo pipefail
+          cd src/mirrors-go
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-H windowsgui -s -w' -o /tmp/Mirrors_Kor1.00-x64.exe .
+          GOOS=windows GOARCH=386 CGO_ENABLED=0 go build -trimpath -ldflags='-H windowsgui -s -w' -o /tmp/Mirrors_Kor1.00-x86.exe .
+          file /tmp/Mirrors_Kor1.00-*.exe
