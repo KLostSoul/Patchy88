@@ -37,11 +37,13 @@
 
 자세한 내용은 [Mirrors용 Patchy88 사용법](MIRRORS.md)을 참조하십시오.
 
-## Mirrors_Kor1.00 — 라이선스 파일 추가판
+## Mirrors_Kor1.00 — 공식 xdelta 출처 고지판
 
 - ZIP: `Mirrors_Kor1.00.zip`
-- 크기: 20,751,289 bytes
-- SHA-256: `2aaf9f05dfbb8c3f1704f66dc65e4e612dc1378078198ea5be42a9ff559501bd`
-- 추가 파일: 최상위 `LICENSE`, `NOTICE_MODIFICATIONS.txt` (`THIRD_PARTY_LICENSE.txt`는 기존부터 포함)
-- 실행파일·xdelta 패치·D88·CUE 등 기존 바이너리 내용은 변경하지 않음. README에는 라이선스 파일 안내만 추가.
-- 새 ZIP의 압축 CRC 검사 및 기존 바이너리 바이트 비교 통과.
+- 크기: 20,751,594 bytes
+- SHA-256: `dcb1d32d38a498ef0328c182d4b63ebf2c4de4500d047c248f523fd49c047a7f`
+- 배포물: `LICENSE`, `NOTICE_MODIFICATIONS.txt`, `THIRD_PARTY_LICENSE.txt` 동봉.
+- 공식 [xdelta 3.0.11 기반 Apache 2.0 브랜치](https://github.com/jmacd/xdelta/tree/release3_0_apl)와 [라이선스 원문](https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE)을 고지문에 명시했습니다. 두 라이선스 파일은 해당 원문과 바이트 단위로 일치합니다.
+- 실행파일·xdelta 6개·D88·CUE·검증 매니페스트는 이전 배포판과 바이트 단위로 동일합니다. 배포 ZIP 내 README와 수정 고지문만 갱신했습니다.
+- 동봉 xdelta3.exe의 정확한 빌드 브랜치는 확인되지 않았습니다. 공식 Apache 재라이선스 소스의 존재와 실제 동봉 바이너리의 라이선스 출처를 구분합니다.
+- ZIP 압축 CRC 및 변경 대상 외 파일의 바이트 동일성 확인.

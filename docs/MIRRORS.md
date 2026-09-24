@@ -49,8 +49,12 @@
 
 소스 코드와 매니페스트는 [src/mirrors-go](../src/mirrors-go/README.ko.md)에 보관합니다. 사용자 배포 ZIP에는 Go 소스를 넣지 않습니다. 현재 검증 기록에는 판본 식별·선택·충돌 방지·자산 변조 검사 테스트가 포함되며, **실제 일본판·영문판 전체 CD 원본으로 수행하는 최종 xdelta 적용 시험은 아직 완료되지 않았습니다.**
 
-## 배포판 라이선스 파일
+## 배포판 라이선스 및 xdelta 출처
 
-`Mirrors_Kor1.00.zip` 최상위 프로그램 폴더에는 `LICENSE`(Apache License 2.0), `NOTICE_MODIFICATIONS.txt`(Mirrors용 변경·출처 고지), `THIRD_PARTY_LICENSE.txt`(원본 Pachy98 배포물에 포함된 타사 라이선스 전문)를 포함합니다. 소스 코드는 배포 ZIP에서 제외하며 [저장소](../src/mirrors-go/README.ko.md)에서 관리합니다.
+`Mirrors_Kor1.00.zip`에는 `LICENSE`, `NOTICE_MODIFICATIONS.txt`, `THIRD_PARTY_LICENSE.txt`가 들어 있습니다. 두 라이선스 전문은 [xdelta 공식 저장소의 Apache 2.0 원문](https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE)과 바이트 단위로 동일합니다 (Git blob SHA-1: `7a774156a6820befeca5067631b3a50b86481495`).
 
-동봉 `xdelta3.exe`는 Pachy98 v0.20.1 배포본과 바이트가 동일한 3.0.11 실행파일입니다. xdelta3 upstream에는 GPL 원본과 Apache 2.0 재라이선스 판본이 모두 있으므로, 이 바이너리의 정확한 빌드 출처는 별도 확인이 필요합니다.
+공식 xdelta 저장소는 3.0.11 기반의 [`release3_0_apl` 브랜치](https://github.com/jmacd/xdelta/tree/release3_0_apl)를 Apache License 2.0으로 재라이선스한 소스로 명시합니다. 별도로 원래 GPL 라이선스를 적용한 [xdelta-gpl](https://github.com/jmacd/xdelta-gpl) 저장소도 존재합니다.
+
+동봉 `xdelta3.exe`는 제공된 Pachy98 v0.20.1 배포본과 동일한 바이너리 (SHA-256: `9bf8d067de9448e521afe1f8108caa0f85b4b7c7933641efd44bc43533920565`)입니다. **그 실행파일의 실제 빌드 출처는 확인되지 않았으므로 공식 Apache 2.0 브랜치에서 빌드됐다고 단정하지 않습니다.** 이 제한을 배포 ZIP의 수정 고지문에도 명시했습니다.
+
+소스 코드는 [Mirrors용 Patchy88 저장소](../src/mirrors-go/README.ko.md)에서 관리하며 배포 ZIP에는 포함하지 않습니다.

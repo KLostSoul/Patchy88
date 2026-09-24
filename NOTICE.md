@@ -31,6 +31,12 @@ Mirrors_Kor1.00은 일본판과 영문판의 CCD/IMG/SUB에 각각 전용 xdelta
 - xdelta3.exe를 함께 사용하며 기존 IPS 자체 적용 엔진과는 다릅니다.
 - 결과 검증 성공 후 D88 2개 및 CUE를 입력 폴더에 추가하며 원본은 덮어쓰지 않습니다.
 
+공식 xdelta: https://github.com/jmacd/xdelta
+Apache 2.0으로 재라이선스된 3.0.11 소스: https://github.com/jmacd/xdelta/tree/release3_0_apl
+라이선스 원문: https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE
+
+동봉된 xdelta3.exe는 Pachy98 v0.20.1 제공본과 일치하지만, 공식 Apache 브랜치에서 빌드된 실행파일인지까지는 확인되지 않았습니다. 배포 ZIP에는 라이선스 원문과 수정·출처 고지문을 포함합니다.
+
 [Mirrors용 Patchy88 문서](docs/MIRRORS.md)를 참조하십시오.
 
 ## 배포 데이터

@@ -44,3 +44,14 @@ go run . apply /path/to/folder English
 ```
 
 둘 다 발견됐을 때 판본을 명시하지 않은 `apply`는 실행을 거부합니다. 실제 일본판·영문판 전체 원본을 사용한 최종 xdelta 패치 시험은 별도로 필요합니다.
+
+## xdelta 공식 소스 및 라이선스
+
+공식 소스: https://github.com/jmacd/xdelta
+
+3.0.11 기반 Apache 2.0 재라이선스 브랜치: https://github.com/jmacd/xdelta/tree/release3_0_apl
+
+라이선스 원문: https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE
+
+배포 ZIP의 `LICENSE`와 `THIRD_PARTY_LICENSE.txt`는 위 원문과 바이트 동일합니다. 동봉 `xdelta3.exe`는 Pachy98 v0.20.1의 파일과 일치하지만 실제 빌드에 사용된 소스 브랜치는 확인되지 않았습니다.
+
