@@ -2,12 +2,17 @@
 
 PC Engine CD 《Mirrors》 일본판 또는 영문판의 CCD/IMG/SUB 3개 파일을 MD5 + SHA-256으로 식별하고, 각 판본 전용 xdelta 패치를 적용하는 Patchy88 계열 패처 소스입니다.
 
+## 결과 파일명
+
+`Mirrors_Kor1.00.ccd`, `Mirrors_Kor1.00.img`, `Mirrors_Kor1.00.sub`, `Mirrors_Kor1.00.cue`.
+CUE의 FILE 항목은 `Mirrors_Kor1.00.img`를 참조합니다. D88 두 개의 파일명은 그대로 유지합니다.
+
 ## 동작
 
 - 일본판 / 영문판 CCD·IMG·SUB 자동 식별
 - 판본별 xdelta 3개 적용
 - 결과 CCD·IMG·SUB의 MD5 + SHA-256 검증
-- 성공 후 같은 폴더에 `Kor.cue`, `disk1main.d88`, `disk2game.d88` 추가
+- 성공 후 같은 폴더에 `Mirrors_Kor1.00.cue`, `disk1main.d88`, `disk2game.d88` 추가
 - 원본 파일은 수정하지 않음
 - 기존 동일 이름 파일은 덮어쓰지 않음
 - 실패 시 이번 실행에서 생성한 임시/결과 파일 정리
@@ -21,7 +26,7 @@ PC Engine CD 《Mirrors》 일본판 또는 영문판의 CCD/IMG/SUB 3개 파일
 - `Mirrors_Kor1.00.json`
 - 일본판/영문판 xdelta 패치 6개
 - `xdelta3.exe`
-- `Kor.cue`
+- `Mirrors_Kor1.00.cue`
 - `disk1main.d88`
 - `disk2game.d88`
 

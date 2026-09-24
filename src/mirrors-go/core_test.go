@@ -38,7 +38,7 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 	target := map[string][]byte{"ccd": []byte("Japanese original CCD; Korean result identical"), "img": []byte("Korean img test output with all expected content"), "sub": []byte("Japanese original SUB; Korean result identical")}
 	m := Manifest{Name: programName, Schema: manifestSchema, Source: map[string]map[string]SourceDef{}, Target: map[string]TargetDef{}}
 	for _, ext := range exts {
-		m.Target[ext] = TargetDef{Hashes: testHashes(target[ext]), Filename: "Mirrors_Korean_Mirrors_Tools_Full_Build." + ext}
+		m.Target[ext] = TargetDef{Hashes: testHashes(target[ext]), Filename: "Mirrors_Kor1.00." + ext}
 	}
 	for _, edition := range editions {
 		sources[edition] = map[string][]byte{}
@@ -57,10 +57,10 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 			m.Source[edition][ext] = SourceDef{Hashes: testHashes(data), Patch: "patches/" + patch, PatchSHA256: testSHA(fakeVCDIFF)}
 		}
 	}
-	for _, name := range []string{"Kor.cue", "disk1main.d88", "disk2game.d88"} {
+	for _, name := range []string{"Mirrors_Kor1.00.cue", "disk1main.d88", "disk2game.d88"} {
 		var data []byte
-		if name == "Kor.cue" {
-			data = []byte("FILE \"Mirrors_Korean_Mirrors_Tools_Full_Build.img\" BINARY\n")
+		if name == "Mirrors_Kor1.00.cue" {
+			data = []byte("FILE \"Mirrors_Kor1.00.img\" BINARY\n")
 		} else {
 			data = []byte("same fake D88 payload")
 		}
@@ -179,7 +179,7 @@ func TestMixedEditionsRejectedNoWrites(t *testing.T) {
 func TestCollisionRejectedBeforePatching(t *testing.T) {
 	e, folder, sources, _ := fixture(t)
 	putInputs(t, folder, "English", sources)
-	writeTestFile(t, filepath.Join(folder, "Kor.cue"), []byte("unrelated file"))
+	writeTestFile(t, filepath.Join(folder, "Mirrors_Kor1.00.cue"), []byte("unrelated file"))
 	if _, err := e.Scan(folder); err == nil {
 		t.Fatal("extra collision accepted")
 	}
@@ -258,11 +258,35 @@ func TestProvidedBundleIntegrity(t *testing.T) {
 	if h1 != h2 {
 		t.Fatal("D88 pair unexpectedly differs; review both sources")
 	}
-	cue, err := os.ReadFile(filepath.Join("assets", "extras", "Kor.cue"))
+	cue, err := os.ReadFile(filepath.Join("assets", "extras", "Mirrors_Kor1.00.cue"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(string(cue), e.Manifest.Target["img"].Filename) {
 		t.Fatal("CUE target IMG name mismatch")
 	}
+}
+
+func TestCanonicalNamesAndCue(t *testing.T) {
+    e, _, _, _ := fixture(t)
+    for _, ext := range exts {
+        want := "Mirrors_Kor1.00." + ext
+        if got := e.Manifest.Target[ext].Filename; got != want {
+            t.Fatalf("target %s: got %s want %s", ext, got, want)
+        }
+    }
+    found := false
+    for _, x := range e.Manifest.Extras {
+        if x.Filename == "Mirrors_Kor1.00.cue" { found = true }
+        if x.Filename == "Kor.cue" { t.Fatal("legacy CUE remains") }
+    }
+    if !found { t.Fatal("canonical CUE missing") }
+    cue, err := os.ReadFile(filepath.Join(e.Root, "extras", "Mirrors_Kor1.00.cue"))
+    if err != nil { t.Fatal(err) }
+    if !strings.Contains(string(cue), `FILE "Mirrors_Kor1.00.img" BINARY`) {
+        t.Fatal("CUE reference mismatch")
+    }
+    if strings.Contains(string(cue), "Mirrors_Korean_Mirrors_Tools_Full_Build") {
+        t.Fatal("legacy IMG filename in CUE")
+    }
 }
