@@ -57,7 +57,8 @@ type Engine struct {
 }
 type ScanResult struct {
 	Folder        string
-	Edition       string // Japanese, English, or AlreadyPatched
+	Edition       string   // Japanese, English, AlreadyPatched, or empty when both source editions are available
+	Options       []string // Complete matching source editions; GUI must prompt when both exist
 	Inputs        map[string]string
 	Already       map[string]bool
 	ExtrasPresent map[string]bool
@@ -192,7 +193,17 @@ func NewEngine(root string) (*Engine, error) {
 	// Do not require whole-source SHA of any other file: source checks below use both published MD5 and SHA-256.
 	return &Engine{Root: root, Manifest: m, Decoder: helper}, nil
 }
+// Scan identifies available source editions without guessing when both are present.
 func (e *Engine) Scan(folder string) (*ScanResult, error) {
+	return e.ScanWithEdition(folder, "")
+}
+
+// ScanWithEdition allows an explicit choice only among completely verified source sets.
+// An empty preference selects automatically only when exactly one edition matches.
+func (e *Engine) ScanWithEdition(folder, preferred string) (*ScanResult, error) {
+	if preferred != "" && preferred != "Japanese" && preferred != "English" && preferred != "AlreadyPatched" {
+		return nil, fmt.Errorf("지원하지 않는 원본 판본: %q", preferred)
+	}
 	folder, err := filepath.Abs(folder)
 	if err != nil {
 		return nil, err
@@ -285,6 +296,9 @@ func (e *Engine) Scan(folder string) (*ScanResult, error) {
 			}
 		}
 	}
+	if preferred == "AlreadyPatched" {
+		return nil, errors.New("검사 후 한글판 결과 파일이 변경됐습니다")
+	}
 	valid := []string{}
 	for _, edition := range editions {
 		complete := true
@@ -297,7 +311,7 @@ func (e *Engine) Scan(folder string) (*ScanResult, error) {
 			valid = append(valid, edition)
 		}
 	}
-	if len(valid) != 1 {
+	if len(valid) == 0 {
 		desc := []string{}
 		for _, edition := range editions {
 			counts := []string{}
@@ -306,9 +320,27 @@ func (e *Engine) Scan(folder string) (*ScanResult, error) {
 			}
 			desc = append(desc, edition+" ["+strings.Join(counts, ", ")+"]")
 		}
-		return nil, fmt.Errorf("일본판 또는 영문판 원본 3개를 유일하게 식별할 수 없습니다. 파일 누락/중복/판본 혼합 여부를 확인하세요. %s", strings.Join(desc, "; "))
+		return nil, fmt.Errorf("완전한 일본판/영문판 원본 3개를 식별하지 못했습니다. 누락/중복/혼합을 확인하세요. %s", strings.Join(desc, "; "))
 	}
 	edition := valid[0]
+	if preferred != "" {
+		found := false
+		for _, ed := range valid {
+			if ed == preferred {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return nil, fmt.Errorf("선택한 %s 판본의 CCD/IMG/SUB가 완전하지 않습니다 (사용 가능: %s)", preferred, strings.Join(valid, ", "))
+		}
+		edition = preferred
+	} else if len(valid) > 1 {
+		// Never silently select the first matching edition.
+		return &ScanResult{Folder: folder, Edition: "", Options: valid,
+			Inputs: map[string]string{}, Already: already, ExtrasPresent: extrasPresent,
+			Notes: []string{"일본판과 영문판이 모두 검증됐습니다. 적용할 원본을 직접 선택하세요."}}, nil
+	}
 	inputs := map[string]string{}
 	for _, ext := range exts {
 		inputs[ext] = candidates[edition][ext][0]
@@ -319,7 +351,7 @@ func (e *Engine) Scan(folder string) (*ScanResult, error) {
 			notes = append(notes, strings.ToUpper(ext)+" 결과 파일은 이미 검증됨")
 		}
 	}
-	return &ScanResult{Folder: folder, Edition: edition, Inputs: inputs, Already: already, ExtrasPresent: extrasPresent, Notes: notes}, nil
+	return &ScanResult{Folder: folder, Edition: edition, Options: valid, Inputs: inputs, Already: already, ExtrasPresent: extrasPresent, Notes: notes}, nil
 }
 
 type stagedFile struct{ Temp, Dest string }
@@ -371,8 +403,11 @@ func (e *Engine) Apply(s *ScanResult, log func(string)) error {
 	if s == nil {
 		return errors.New("먼저 폴더를 검사해야 합니다")
 	}
-	// Independently rescan immediately before applying; no earlier GUI scan result is trusted.
-	fresh, err := e.Scan(s.Folder)
+	if s.Edition == "" {
+		return errors.New("일본판과 영문판이 모두 있습니다. 패치할 판본을 먼저 선택하세요")
+	}
+	// Independently rescan the explicitly selected edition just before applying.
+	fresh, err := e.ScanWithEdition(s.Folder, s.Edition)
 	if err != nil {
 		return err
 	}

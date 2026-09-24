@@ -1,52 +1,31 @@
-# Mirrors_Kor1.00 — xdelta 패처 소스
+# Mirrors_Kor1.00 — PC-8801 xdelta 패처 소스
 
-PC Engine CD 《Mirrors》 일본판 또는 영문판의 CCD/IMG/SUB 3개 파일을 MD5 + SHA-256으로 식별하고, 각 판본 전용 xdelta 패치를 적용하는 Patchy88 계열 패처 소스입니다.
+PC-8801 《Mirrors》의 **일본판 또는 영문판** CCD/IMG/SUB 파일 3개를 MD5 + SHA-256으로 검사하고, 각 판본 전용 xdelta 3개를 적용합니다.
 
-## 결과 파일명
+- 한 판본만 검출되면 자동 선택
+- **일본판과 영문판이 모두 검출되면 사용자에게 원본 선택 요청** (GUI: 예=일본판 / 아니오=영문판 / 취소)
+- 선택한 판본의 xdelta만 적용하며 두 원본 세트는 수정하지 않음
+- 검증된 한글판 결과 `Mirrors_Kor1.00.ccd`, `.img`, `.sub` 생성
+- 같은 폴더에 `Mirrors_Kor1.00.cue`, `disk1main.d88`, `disk2game.d88` 추가
+- CUE 내부 IMG 경로도 `Mirrors_Kor1.00.img`
+- 기존 파일 충돌 방지, 결과 MD5 + SHA-256 검증, 실패 시 생성물 복구
 
-`Mirrors_Kor1.00.ccd`, `Mirrors_Kor1.00.img`, `Mirrors_Kor1.00.sub`, `Mirrors_Kor1.00.cue`.
-CUE의 FILE 항목은 `Mirrors_Kor1.00.img`를 참조합니다. D88 두 개의 파일명은 그대로 유지합니다.
+## CLI (Windows 이외의 개발 환경)
 
-## 동작
+```sh
+go run . scan FOLDER
+go run . apply FOLDER Japanese
+go run . apply FOLDER English
+```
 
-- 일본판 / 영문판 CCD·IMG·SUB 자동 식별
-- 판본별 xdelta 3개 적용
-- 결과 CCD·IMG·SUB의 MD5 + SHA-256 검증
-- 성공 후 같은 폴더에 `Mirrors_Kor1.00.cue`, `disk1main.d88`, `disk2game.d88` 추가
-- 원본 파일은 수정하지 않음
-- 기존 동일 이름 파일은 덮어쓰지 않음
-- 실패 시 이번 실행에서 생성한 임시/결과 파일 정리
-
-## 배포물과 소스 분리
-
-사용자 배포 ZIP에는 Go 소스를 넣지 않습니다. 이 디렉터리가 패처 소스의 기준 위치입니다.
-
-실제 배포에는 별도로 다음 자산이 필요합니다.
-
-- `Mirrors_Kor1.00.json`
-- 일본판/영문판 xdelta 패치 6개
-- `xdelta3.exe`
-- `Mirrors_Kor1.00.cue`
-- `disk1main.d88`
-- `disk2game.d88`
-
-게임 원본 CCD/IMG/SUB는 배포하지 않습니다.
+두 판본이 있는 경우 CLI에서도 판본 선택이 필수입니다.
 
 ## 빌드
 
-```bash
+```sh
 go test ./...
 GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o Mirrors_Kor1.00-x64.exe
 GOOS=windows GOARCH=386   go build -ldflags="-H windowsgui" -o Mirrors_Kor1.00-x86.exe
 ```
 
-Windows 이외에서는 CLI 빌드가 사용됩니다.
-
-```bash
-go run . scan /path/to/source-folder
-go run . apply /path/to/source-folder
-```
-
-## 검증 한계
-
-현재 소스의 자동 식별, 자산 변조 검출, 충돌 방지, 실패 롤백 동작은 테스트되어 있습니다. 일본판/영문판 실제 원본 CD 이미지 전체는 저장소에 포함하지 않으므로 실제 원본에 대한 xdelta 최종 적용 검증은 별도로 수행해야 합니다.
+실제 배포 패키지의 `assets/` 디렉터리는 바이너리 자산이므로 소스 저장소에는 넣지 않습니다. 빌드한 실행파일 옆에 `assets/`가 필요합니다. 자산 이름과 해시는 `config/Mirrors_Kor1.00.json`을 참고하세요. 실제 원본 이미지에 xdelta를 적용한 최종 테스트는 일본판/영문판 원본 전체가 없어 수행하지 못했습니다.

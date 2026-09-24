@@ -73,7 +73,9 @@ const (
 	mbError      = 0x10
 	mbQuestion   = 0x20
 	mbYesNo      = 4
+	mbYesNoCancel = 3
 	idYes        = 6
+	idNo         = 7
 	folderFlags  = 0x41
 	idBrowse     = 1001
 	idScan       = 1002
@@ -240,6 +242,31 @@ func finishedScan() {
 		setBusy(false)
 		return
 	}
+	if r.Edition == "" && len(r.Options) == 2 {
+		logLine("일본판과 영문판 모두 발견됨 — 사용할 원본 선택 필요")
+		choice := dialog("일본판과 영문판이 모두 발견됐습니다.\n\n예(Y): 일본판 패치\n아니오(N): 영문판 패치\n취소: 아무것도 적용하지 않음", mbYesNoCancel|mbQuestion)
+		selected := ""
+		switch choice {
+		case idYes:
+			selected = "Japanese"
+		case idNo:
+			selected = "English"
+		default:
+			logLine("선택 취소 — 다시 검사하면 다시 선택할 수 있습니다")
+			latestScan = nil
+			setBusy(false)
+			return
+		}
+		var err error
+		r, err = uiEngine.ScanWithEdition(r.Folder, selected)
+		if err != nil {
+			logLine("[원본 선택 실패] " + err.Error())
+			latestScan = nil
+			setBusy(false)
+			return
+		}
+		logLine("사용자 선택: " + selected)
+	}
 	latestScan = r
 	logLine("판별: " + r.Edition)
 	for _, ext := range exts {
@@ -266,7 +293,8 @@ func startPatch() {
 	if busy || latestScan == nil {
 		return
 	}
-	if dialog("선택한 폴더에서 한글판 CCD/IMG/SUB를 생성하고 Mirrors_Kor1.00.cue와 D88 2개를 추가합니다.\n\n원본 파일은 수정하지 않으며, 기존 파일도 덮어쓰지 않습니다.\n계속하시겠습니까?", mbYesNo|mbQuestion) != idYes {
+	chosen := map[string]string{"Japanese": "일본판", "English": "영문판", "AlreadyPatched": "이미 패치됨"}[latestScan.Edition]
+	if dialog("선택한 원본: "+chosen+"\n\n한글판 CCD/IMG/SUB를 생성하고 Mirrors_Kor1.00.cue와 D88 2개를 추가합니다.\n원본은 수정하지 않고 기존 파일도 덮어쓰지 않습니다.\n계속하시겠습니까?", mbYesNo|mbQuestion) != idYes {
 		return
 	}
 	s := latestScan
@@ -415,7 +443,7 @@ func runGUI() int {
 	fontTitle, _, _ = createFont.Call(uintptr(h2), 0, 0, 0, 600, 0, 0, 0, 1, 0, 0, 0, 0, uintptr(unsafe.Pointer(u16("맑은 고딕"))))
 	title := createControl(0, "STATIC", "Mirrors_Kor1.00", wsChild|wsVisible, 22, 18, 880, 41, 0)
 	setFont(title, fontTitle)
-	createControl(0, "STATIC", "일본판 또는 영문판 CCD / IMG / SUB를 내용으로 식별하여 전용 xdelta를 적용합니다.", wsChild|wsVisible, 22, 69, 870, 27, 0)
+	createControl(0, "STATIC", "PC-8801 《Mirrors》 — 일본판과 영문판 모두 있으면 적용할 원본을 선택합니다.", wsChild|wsVisible, 22, 69, 870, 27, 0)
 	createControl(0, "STATIC", "원본 파일 폴더", wsChild|wsVisible, 22, 102, 160, 20, 0)
 	uiPath = createControl(wsClientEdge, "EDIT", "", wsChild|wsVisible|esReadonly, 22, 124, 730, 31, 0)
 	uiBrowse = createControl(0, "BUTTON", "폴더 선택...", wsChild|wsVisible|wsTabstop, 765, 124, 120, 31, idBrowse)

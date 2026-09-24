@@ -290,3 +290,79 @@ func TestCanonicalNamesAndCue(t *testing.T) {
         t.Fatal("legacy IMG filename in CUE")
     }
 }
+
+// Both complete editions in one directory must demand a user-selected edition.
+func TestBothEditionsRequireSelection(t *testing.T) {
+	for _, chosen := range editions {
+		t.Run(chosen, func(t *testing.T) {
+			e, folder, sources, _ := fixture(t)
+			originalPaths := map[string][]byte{}
+			for _, edition := range editions {
+				for _, ext := range exts {
+					name := edition + "_source." + ext
+					data := sources[edition][ext]
+					writeTestFile(t, filepath.Join(folder, name), data)
+					originalPaths[name] = data
+				}
+			}
+			s, err := e.Scan(folder)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if s.Edition != "" || len(s.Options) != 2 {
+				t.Fatalf("not offered both editions: %+v", s)
+			}
+			if err = e.Apply(s, nil); err == nil {
+				t.Fatal("accepted unselected edition")
+			}
+			if _, err = os.Stat(filepath.Join(folder, e.Manifest.Target["img"].Filename)); !os.IsNotExist(err) {
+				t.Fatal("unselected apply wrote a result")
+			}
+			s, err = e.ScanWithEdition(folder, chosen)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if s.Edition != chosen {
+				t.Fatalf("chose %q but got %q", chosen, s.Edition)
+			}
+			patchLogs := []string{}
+			if err = e.Apply(s, func(line string) { patchLogs = append(patchLogs, line) }); err != nil {
+				t.Fatal(err)
+			}
+			uses := 0
+			for _, line := range patchLogs {
+				if strings.Contains(line, "전용 xdelta 적용") {
+					if !strings.Contains(line, chosen) {
+						t.Fatalf("wrong edition patch: %s", line)
+					}
+					uses++
+				}
+			}
+			if uses != 3 {
+				t.Fatalf("expected three %s patches, got %d", chosen, uses)
+			}
+			assertOutput(t, e, folder)
+			for name, orig := range originalPaths {
+				got, err := os.ReadFile(filepath.Join(folder, name))
+				if err != nil {
+					t.Fatal(err)
+				}
+				if string(got) != string(orig) {
+					t.Fatalf("changed original: %s", name)
+				}
+			}
+		})
+	}
+}
+
+func TestSingleEditionIgnoresIncorrectPreference(t *testing.T) {
+	e, folder, sources, _ := fixture(t)
+	putInputs(t, folder, "Japanese", sources)
+	if _, err := e.ScanWithEdition(folder, "English"); err == nil {
+		t.Fatal("accepted unavailable edition")
+	}
+	s, err := e.Scan(folder)
+	if err != nil || s.Edition != "Japanese" {
+		t.Fatalf("single edition detection: %+v / %v", s, err)
+	}
+}
