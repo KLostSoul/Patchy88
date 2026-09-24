@@ -1,0 +1,57 @@
+name: Mirrors - build official upstream xdelta3
+
+on:
+  push:
+    paths:
+      - '.github/workflows/mirrors-upstream-xdelta.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  official_windows_x64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download official xdelta 3.2.0 Windows x64 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 4 -o xdelta3-release.zip https://github.com/jmacd/xdelta/releases/download/v3.2.0/xdelta3-3.2.0-windows-x86_64.zip
+          echo "af8ef036cb077a48df080c9a8ac1be4a6e7511c32d11f8bec89b6803a9e52576  xdelta3-release.zip" | sha256sum -c -
+          mkdir -p upstream-x64
+          unzip -q xdelta3-release.zip -d upstream-x64
+          find upstream-x64 -iname 'xdelta3.exe' -print
+          cp "$(find upstream-x64 -iname xdelta3.exe -type f | head -1)" xdelta3-x64.exe
+          sha256sum xdelta3-x64.exe > xdelta3-x64.exe.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-xdelta3-3.2.0-windows-x64
+          path: |
+            xdelta3-x64.exe
+            xdelta3-x64.exe.sha256
+  official_windows_x86:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: jmacd/xdelta
+          ref: v3.2.0
+          path: official-xdelta
+      - name: Build official xdelta v3.2.0 Win32 from upstream source
+        shell: pwsh
+        run: |
+          cmake -S official-xdelta/xdelta3 -B build-x86 -A Win32 -DXD3_LZMA_FETCH=ON -DXD3_BUILD_TESTS=OFF
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build build-x86 --config Release --parallel 2
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $exe = Get-ChildItem -Path build-x86 -Filter xdelta3.exe -Recurse | Select-Object -First 1
+          if (!$exe) { throw "Upstream Win32 build did not produce xdelta3.exe" }
+          Copy-Item $exe.FullName xdelta3-x86.exe
+          (Get-FileHash xdelta3-x86.exe -Algorithm SHA256).Hash.ToLower() + "  xdelta3-x86.exe" | Set-Content -Encoding ascii xdelta3-x86.exe.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: official-xdelta3-3.2.0-windows-x86
+          path: |
+            xdelta3-x86.exe
+            xdelta3-x86.exe.sha256
