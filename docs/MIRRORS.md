@@ -48,3 +48,9 @@
 원본은 변경하지 않으며, 다른 내용의 결과 파일이 이미 있다면 덮어쓰지 않습니다. 임시 결과를 만든 뒤 전체 MD5 + SHA-256 검증에 성공한 경우에만 파일명을 확정합니다. 이미 같은 내용의 한글판 CCD/IMG/SUB가 있으면 추가 파일만 확인·복사할 수 있습니다.
 
 소스 코드와 매니페스트는 [src/mirrors-go](../src/mirrors-go/README.ko.md)에 보관합니다. 사용자 배포 ZIP에는 Go 소스를 넣지 않습니다. 현재 검증 기록에는 판본 식별·선택·충돌 방지·자산 변조 검사 테스트가 포함되며, **실제 일본판·영문판 전체 CD 원본으로 수행하는 최종 xdelta 적용 시험은 아직 완료되지 않았습니다.**
+
+## 배포판 라이선스 파일
+
+`Mirrors_Kor1.00.zip` 최상위 프로그램 폴더에는 `LICENSE`(Apache License 2.0), `NOTICE_MODIFICATIONS.txt`(Mirrors용 변경·출처 고지), `THIRD_PARTY_LICENSE.txt`(원본 Pachy98 배포물에 포함된 타사 라이선스 전문)를 포함합니다. 소스 코드는 배포 ZIP에서 제외하며 [저장소](../src/mirrors-go/README.ko.md)에서 관리합니다.
+
+동봉 `xdelta3.exe`는 Pachy98 v0.20.1 배포본과 바이트가 동일한 3.0.11 실행파일입니다. xdelta3 upstream에는 GPL 원본과 Apache 2.0 재라이선스 판본이 모두 있으므로, 이 바이너리의 정확한 빌드 출처는 별도 확인이 필요합니다.

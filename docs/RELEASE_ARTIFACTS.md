@@ -36,3 +36,12 @@
 - 일본판 및 영문판 실제 원본 CD 이미지 전체로 수행하는 최종 xdelta 적용 시험은 아직 완료되지 않음.
 
 자세한 내용은 [Mirrors용 Patchy88 사용법](MIRRORS.md)을 참조하십시오.
+
+## Mirrors_Kor1.00 — 라이선스 파일 추가판
+
+- ZIP: `Mirrors_Kor1.00.zip`
+- 크기: 20,751,289 bytes
+- SHA-256: `2aaf9f05dfbb8c3f1704f66dc65e4e612dc1378078198ea5be42a9ff559501bd`
+- 추가 파일: 최상위 `LICENSE`, `NOTICE_MODIFICATIONS.txt` (`THIRD_PARTY_LICENSE.txt`는 기존부터 포함)
+- 실행파일·xdelta 패치·D88·CUE 등 기존 바이너리 내용은 변경하지 않음. README에는 라이선스 파일 안내만 추가.
+- 새 ZIP의 압축 CRC 검사 및 기존 바이너리 바이트 비교 통과.
