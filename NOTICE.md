@@ -32,10 +32,15 @@ Mirrors_Kor1.00은 일본판과 영문판의 CCD/IMG/SUB에 각각 전용 xdelta
 - 결과 검증 성공 후 D88 2개 및 CUE를 입력 폴더에 추가하며 원본은 덮어쓰지 않습니다.
 
 공식 xdelta: https://github.com/jmacd/xdelta
-Apache 2.0으로 재라이선스된 3.0.11 소스: https://github.com/jmacd/xdelta/tree/release3_0_apl
-라이선스 원문: https://github.com/jmacd/xdelta/blob/release3_0_apl/xdelta3/LICENSE
+버전: v3.2.0 / Apache License 2.0
+공식 x64 릴리스: https://github.com/jmacd/xdelta/releases/tag/v3.2.0
+공식 Windows x64 릴리스 ZIP 검증값(SHA-256): af8ef036cb077a48df080c9a8ac1be4a6e7511c32d11f8bec89b6803a9e52576
 
-동봉된 xdelta3.exe는 Pachy98 v0.20.1 제공본과 일치하지만, 공식 Apache 브랜치에서 빌드된 실행파일인지까지는 확인되지 않았습니다. 배포 ZIP에는 라이선스 원문과 수정·출처 고지문을 포함합니다.
+Windows x64 배포 실행파일은 공식 v3.2.0 릴리스에서 추출했습니다.
+Windows x86 배포 실행파일은 동일한 v3.2.0 공식 소스를 이용해 빌드했습니다.
+빌드 기록: https://github.com/KLostSoul/Patchy88/actions/runs/36051984391
+이전 Pachy98 동봉 xdelta3 3.0.11은 새 Mirrors 배포판에서 제거했습니다.
+패처는 해당 아키텍처의 실행파일을 자동 선택하며 매니페스트로 SHA-256을 검증합니다.
 
 [Mirrors용 Patchy88 문서](docs/MIRRORS.md)를 참조하십시오.
 
