@@ -55,13 +55,21 @@ go run . apply /path/to/folder English
 - [공식 소스 빌드 워크플로](../../.github/workflows/mirrors-upstream-xdelta.yml), [공식 upstream 라이선스](https://github.com/jmacd/xdelta/blob/v3.2.0/xdelta3/LICENSE).
 - 소스 저장소에는 실행파일 및 게임 데이터가 아닌 Go 코드, 매니페스트, 빌드 설명만 둡니다. ZIP에는 Go 소스가 없고 `LICENSE`, `THIRD_PARTY_LICENSE.txt`, `NOTICE_MODIFICATIONS.txt`, `UPSTREAM_XDELTA.txt`가 있습니다.
 
-수정 배포 ZIP SHA-256: `2dd1e49168a251a0e1555918b5bccf4ce3d03e65ea786946f0bc11149d93b9db` (18,914,284 bytes). 원본 판본 선택, 부정확한 IMG 해시 거부 및 배포 자산 검증 등 로컬 Go 테스트 15개 통과. 실제 일본판·영문판 원본 전체를 이용한 패치 시험은 별도 수행해야 합니다.
+수정 배포 ZIP SHA-256: `116e26c57d2a194c9a6c034d2d4f6578295c7932b7b75d95eae96b32aa31b5d6` (18,913,821 bytes). 원본 판본 선택, 부정확한 IMG 해시 거부 및 배포 자산 검증 등 로컬 Go 테스트 16개 통과. 실제 일본판·영문판 원본 전체를 이용한 패치 시험은 별도 수행해야 합니다.
 
 ## 사용자 제공 1.01 패치 및 검증 범위
 
-- 원본 자산: 사용자 제공 `v1.01.zip`의 일본판/영문판 xdelta 6개 및 CUE. xdelta 파일명은 `*_v1.01.xdelta`로 보존합니다.
+- 원본 자산: 사용자 제공 `1.01.zip`의 일본판/영문판 xdelta 6개 및 CUE. xdelta 파일명은 `*_v1.01.xdelta`로 보존합니다.
 - CUE의 내부 IMG 참조는 `Mirrors_Kor1.01.img`로 정리했습니다.
 - CCD/SUB는 기존 출력과 바이트 단위로 같은 VCDIFF 본문을 사용하므로 기존 MD5·SHA-256으로 검증합니다.
-- IMG는 1.00 대비 3개 VCDIFF 윈도우 출력 체크섬이 변경되었습니다. 일본판/영문판의 66개 체크섬과 출력 크기 551,779,200바이트를 매니페스트에 보존하고, 제공받은 전체 MD5·SHA-256 기준값을 우선 검증합니다.
-- 새 IMG 기대 MD5 `32D1646E31EEF1EE55E587DBDD6FF864` 및 SHA-256 `7D5067467E5C4715A840C088F84656EED27908A63BCF77F27069B80D5FBA4016`을 사용자에게 제공받았습니다. 패처는 출력 전체를 해싱해 두 기준값과 비교하며 불일치하면 결과를 확정하지 않습니다. 실제 원본 CD 이미지로 패치한 결과와의 대조는 아직 수행하지 못했습니다.
+- IMG는 이전 배포판보다 세 개 구간의 VCDIFF 체크섬이 변경되었습니다. 새 두 IMG 패치의 출력 66개 구간 길이와 Adler-32 선언값은 서로 동일합니다. 이번 배포판은 Adler-32 대체 검증을 제거하고 전체 MD5·SHA-256 및 크기를 반드시 검증합니다.
+- 새 IMG 기대 MD5 `56E768F7CE3315A8172338CB10CE153E` 및 SHA-256 `FDCF60364815ADF0E85C2B796533276E2C72210F1024425C02757BDF88333B10`을 사용자에게 제공받았습니다. 패처는 출력 전체를 해싱해 두 기준값과 비교하며 불일치하면 결과를 확정하지 않습니다. 실제 원본 CD 이미지로 패치한 결과와의 대조는 아직 수행하지 못했습니다.
 - xdelta 디코더는 공식 v3.2.0 x64 릴리스 및 동일 소스의 Win32 빌드를 유지합니다. 바이너리 파일은 Git 소스 트리에서 제외됩니다.
+
+## 사용자 제공 1.01.zip 교체 이력
+
+- 새 일본판 IMG xdelta SHA-256: `dbc804ecc343d7bf19e493208fb88449c957c82c7767eb85ac3c16412eea2064`.
+- 새 영문판 IMG xdelta SHA-256: `f0912110ff2a932ebe4379f45a95ff003ae9bea7114a7a55dc66b77d9feebbae`. 업로드 이름 `English_IMGv_1.01.xdelta`는 배포용으로 `English_IMG_v1.01.xdelta`로 통일했으며 파일 내용은 변경하지 않았습니다.
+- CCD/SUB 패치 4개는 기존 1.01과 바이트 동일. 정규화한 CUE의 IMG 참조는 `Mirrors_Kor1.01.img`.
+- 출력 크기: CCD 3,500 B, IMG 551,779,200 B, SUB 22,521,600 B. 세 파일 모두 전체 MD5·SHA-256과 크기로만 확정합니다.
+- 배포 ZIP: `Mirrors_Kor1.01.zip` 18,913,821 B, SHA-256 `116e26c57d2a194c9a6c034d2d4f6578295c7932b7b75d95eae96b32aa31b5d6`. 로컬 Go 테스트 16개와 Windows x64·x86 컴파일, 자산·ZIP 검증 통과. 원본 전체 디스크를 통한 최종 출력 검증은 미실시.

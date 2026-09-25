@@ -25,44 +25,15 @@
 - 원본 게임 D88, 원본 KANJI ROM, 패치 완료 전체 게임 이미지는 배포하지 않습니다.
 - 실제 사용자 배포 ZIP은 GitHub Releases 자산으로 두고, 소스 트리에는 중복 보관하지 않는 것을 원칙으로 합니다.
 
-## Mirrors용 Patchy88 (PC-8801)
+## Mirrors용 Patchy88 v1.01 (PC-8801, 최신 교체판)
 
-- 제품명: **Mirrors용 Patchy88** / 패키지 버전: `Mirrors_Kor1.00`.
-- 현재 배포 ZIP 이름: `Mirrors_Kor1.00.zip` (공식 xdelta v3.2.0 포함; ZIP은 소스 저장소에 커밋하지 않음).
-- Windows x64/x86 실행파일, xdelta3.exe, 일본판·영문판 전용 xdelta 6개, D88 2개, `Mirrors_Kor1.00.cue` 포함. 배포 ZIP에는 Go 소스를 넣지 않음.
-- 두 판본 동시 검출 시 사용자가 적용할 판본 선택. 원본 및 결과 전체 MD5 + SHA-256 검증.
-- 한글판 파일명은 `Mirrors_Kor1.00.ccd`, `Mirrors_Kor1.00.img`, `Mirrors_Kor1.00.sub`, `Mirrors_Kor1.00.cue`로 통일.
-- 최신 ZIP의 크기·SHA-256 및 검증 정보는 아래의 '공식 xdelta3 v3.2.0 적용판' 절에 기록함. GitHub Releases 자산에 이미 올라갔다고 가정하지 않음.
-- 일본판 및 영문판 실제 원본 CD 이미지 전체로 수행하는 최종 xdelta 적용 시험은 아직 완료되지 않음.
+- 사용자 제공 `1.01.zip`의 일본판·영문판 xdelta 6개 및 CUE로 교체. 기존 1.01 대비 두 IMG 패치 변경, CCD/SUB 패치 4개는 바이트 동일.
+- 일본판 IMG 패치 SHA-256: `dbc804ecc343d7bf19e493208fb88449c957c82c7767eb85ac3c16412eea2064`.
+- 영문판 IMG 패치 SHA-256: `f0912110ff2a932ebe4379f45a95ff003ae9bea7114a7a55dc66b77d9feebbae`. 원본의 오기 파일명 `English_IMGv_1.01.xdelta`는 배포용으로 정규화.
+- 결과 IMG 기대 MD5: `56E768F7CE3315A8172338CB10CE153E`; SHA-256: `FDCF60364815ADF0E85C2B796533276E2C72210F1024425C02757BDF88333B10`.
+- 결과 파일 크기: CCD 3,500 B, IMG 551,779,200 B, SUB 22,521,600 B. 세 결과 모두 전체 MD5·SHA-256 및 크기로 필수 검증; Adler-32 대체 검증 제거.
+- ZIP: `Mirrors_Kor1.01.zip` (18,913,821바이트, SHA-256 `116e26c57d2a194c9a6c034d2d4f6578295c7932b7b75d95eae96b32aa31b5d6`). Windows x64/x86 프로그램 및 공식 xdelta3 v3.2.0 디코더 동봉, Go 소스 제외.
+- 로컬 테스트 16개, Windows x64/x86 빌드, 패치 6개·CUE·D88·디코더 해시 검증 및 ZIP CRC 검사 통과.
+- GitHub 저장소는 소스/설정/문서만 보관합니다. 실제 일본판·영문판 전체 원본 이미지에 대한 종단 간 적용 시험은 미실시입니다.
 
 자세한 내용은 [Mirrors용 Patchy88 사용법](MIRRORS.md)을 참조하십시오.
-
-## Mirrors_Kor1.00 — 공식 xdelta3 v3.2.0 적용판
-
-- 배포 ZIP: `Mirrors_Kor1.00.zip` (18,909,886 bytes).
-- SHA-256: `2dd1e49168a251a0e1555918b5bccf4ce3d03e65ea786946f0bc11149d93b9db`.
-- 공식 x64 릴리스 ZIP 검증값: `af8ef036cb077a48df080c9a8ac1be4a6e7511c32d11f8bec89b6803a9e52576`.
-- 공식 x64 디코더: `53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0`.
-- 공식 v3.2.0 소스 기반 x86 디코더: `232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481`.
-- [공식 x64 배포본](https://github.com/jmacd/xdelta/releases/tag/v3.2.0)과 [x86 빌드 기록](https://github.com/KLostSoul/Patchy88/actions/runs/36051984391)을 보관. 구 Pachy98 동봉 xdelta 3.0.11 제거.
-- 기존 xdelta 패치 6개, CUE, D88 2개의 내용은 유지하고 실행파일·매니페스트·관련 문서만 갱신.
-- ZIP CRC 및 Go 테스트 12개 통과. 실제 일본판/영문판 전체 원본에 대한 최종 패치 적용은 미검증.
-
-## Mirrors용 Patchy88 v1.01 (PC-8801)
-
-- 새 배포 ZIP: `Mirrors_Kor1.01.zip` — 18,914,284바이트, SHA-256 `2dd1e49168a251a0e1555918b5bccf4ce3d03e65ea786946f0bc11149d93b9db`.
-- 업로드 `v1.01.zip`의 일본판·영문판 xdelta 6개와 CUE 반영. 구버전 패치 및 기존 IMG 기준 해시 재사용 없음.
-- 결과 파일명 `Mirrors_Kor1.01.ccd`, `.img`, `.sub`, `.cue` 통일 및 CUE 내부 IMG 링크 수정.
-- Windows x64/x86 실행파일 새로 컴파일, 공식 xdelta3 v3.2.0 각 아키텍처별 동봉.
-- 일본판과 영문판이 동시에 있을 때 사용자가 적용할 판본을 선택하는 기능 유지.
-- 새 1.01 IMG의 MD5·SHA-256 기준값을 제공받아 CCD·IMG·SUB 모두 전체 해시와 비교. IMG의 66개 VCDIFF 윈도우·크기는 보조 정보로 보존. 실제 CD 원본을 사용한 종단 간 적용 시험 미실시.
-- 배포 ZIP에 Go 소스를 넣지 않고 GitHub `src/mirrors-go`에서 관리. LICENSE, THIRD_PARTY_LICENSE, NOTICE_MODIFICATIONS 포함.
-
-### IMG 전체 해시 기준값 추가판
-
-- IMG 기대 MD5: `32D1646E31EEF1EE55E587DBDD6FF864`.
-- IMG 기대 SHA-256: `7D5067467E5C4715A840C088F84656EED27908A63BCF77F27069B80D5FBA4016`.
-- 새 ZIP: `Mirrors_Kor1.01.zip` — 18,914,284바이트, SHA-256 `2dd1e49168a251a0e1555918b5bccf4ce3d03e65ea786946f0bc11149d93b9db`.
-- CCD/SUB 해시 유지, 일본판·영문판 패치 6개 및 디코더 바이너리 변경 없음. 새 매니페스트와 Windows x64·x86 프로그램 및 설명서 갱신.
-- 로컬 Go 테스트 15개 통과, Windows x64·x86 크로스 빌드 및 ZIP CRC 검사 통과.
-- 일본판·영문판 실제 전체 원본 이미지가 없어 종단 간 실원본 패치 시험은 별도 필요.
