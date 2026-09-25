@@ -24,6 +24,16 @@ jobs:
         run: |
           set -euo pipefail
           cd src/mirrors-go
-          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-H windowsgui -s -w' -o /tmp/Mirrors_Kor1.00-x64.exe .
-          GOOS=windows GOARCH=386 CGO_ENABLED=0 go build -trimpath -ldflags='-H windowsgui -s -w' -o /tmp/Mirrors_Kor1.00-x86.exe .
-          file /tmp/Mirrors_Kor1.00-*.exe
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags='-H windowsgui -s -w' -o /tmp/Mirrors_Kor1.01-x64.exe .
+          GOOS=windows GOARCH=386 CGO_ENABLED=0 go build -trimpath -ldflags='-H windowsgui -s -w' -o /tmp/Mirrors_Kor1.01-x86.exe .
+          file /tmp/Mirrors_Kor1.01-*.exe
+
+      - name: Archive Windows builds and source for reproducible packaging
+        uses: actions/upload-artifact@v4
+        with:
+          name: mirrors-patchy88-windows-and-source
+          path: |
+            /tmp/Mirrors_Kor1.01-x64.exe
+            /tmp/Mirrors_Kor1.01-x86.exe
+            src/mirrors-go/
+          if-no-files-found: error
