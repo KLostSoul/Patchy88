@@ -1,4 +1,4 @@
-# Mirrors용 Patchy88 — Mirrors_Kor1.00 (PC-8801)
+# Mirrors용 Patchy88 — Mirrors_Kor1.01 (PC-8801)
 
 이 디렉터리는 PC-8801 《Mirrors》의 일본판·영문판을 한글판으로 변환하는 **Mirrors용 Patchy88**의 Go 소스입니다. **사용자용 설명은 [docs/MIRRORS.md](../../docs/MIRRORS.md)를 참조하십시오.** 배포 ZIP에는 이 소스를 넣지 않습니다.
 
@@ -7,7 +7,7 @@
 - CCD/IMG/SUB 세 파일의 원본 MD5 + SHA-256 검증. 파일명으로 판본을 추측하지 않습니다.
 - 일본판 또는 영문판 하나만 완전하게 발견되면 자동 선택. 둘 다 발견되면 **Windows GUI에서 사용자 선택** (예: 일본판, 아니오: 영문판, 취소: 중단).
 - 선택한 판본 전용 xdelta 3개만 적용. 두 판본의 원본은 덮어쓰지 않습니다.
-- 결과 MD5 + SHA-256 검증에 성공하면 같은 폴더에 `Mirrors_Kor1.00.ccd`, `Mirrors_Kor1.00.img`, `Mirrors_Kor1.00.sub`, `Mirrors_Kor1.00.cue`, `disk1main.d88`, `disk2game.d88`을 추가합니다.
+- 검증에 성공하면 같은 폴더에 `Mirrors_Kor1.01.ccd`, `Mirrors_Kor1.01.img`, `Mirrors_Kor1.01.sub`, `Mirrors_Kor1.01.cue`, `disk1main.d88`, `disk2game.d88`을 추가합니다.
 - 이미 다른 데이터가 들어 있는 결과 파일은 덮어쓰지 않으며, 오류 시 이번 실행에서 생성한 임시 파일·결과 파일을 정리합니다.
 
 ## 소스 및 배포 자산 구분
@@ -20,9 +20,9 @@
 
 `core_test.go` — 자동 판별, 충돌 검사, 자산 변조, 실패 정리, 두 판본 동시 검출 및 선택 테스트.
 
-`config/Mirrors_Kor1.00.json` — 원본·패치·결과·추가 파일의 파일명과 해시를 기록한 기준 매니페스트.
+`config/Mirrors_Kor1.01.json` — 원본·패치·결과·추가 파일의 파일명과 해시를 기록한 기준 매니페스트.
 
-`config/Mirrors_Kor1.00.cue` — CUE 소스. 내부에서 `Mirrors_Kor1.00.img`를 참조합니다.
+`config/Mirrors_Kor1.01.cue` — CUE 소스. 내부에서 `Mirrors_Kor1.01.img`를 참조합니다.
 
 실행 시 필요한 `assets/`(매니페스트, xdelta 6개, xdelta3.exe, CUE 및 D88 2개)는 사용자 배포 ZIP에 별도로 포함됩니다. 원본 CCD/IMG/SUB는 저장소 또는 배포 ZIP에 포함하지 않습니다.
 
@@ -31,8 +31,8 @@
 ```sh
 cd src/mirrors-go
 go test ./...
-GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o Mirrors_Kor1.00-x64.exe
-GOOS=windows GOARCH=386 go build -ldflags="-H windowsgui" -o Mirrors_Kor1.00-x86.exe
+GOOS=windows GOARCH=amd64 go build -ldflags="-H windowsgui" -o Mirrors_Kor1.01-x64.exe
+GOOS=windows GOARCH=386 go build -ldflags="-H windowsgui" -o Mirrors_Kor1.01-x86.exe
 ```
 
 비Windows 개발 환경의 CLI:
@@ -43,7 +43,7 @@ go run . apply /path/to/folder Japanese
 go run . apply /path/to/folder English
 ```
 
-둘 다 발견됐을 때 판본을 명시하지 않은 `apply`는 실행을 거부합니다. 실제 일본판·영문판 전체 원본을 사용한 최종 xdelta 패치 시험은 별도로 필요합니다.
+둘 다 발견됐을 때 판본을 명시하지 않은 `apply`는 실행을 거부합니다. 실제 일본판·영문판 전체 원본을 사용한 최종 xdelta 패치 시험은 별도로 필요합니다. 1.01의 새 IMG 전체 MD5·SHA-256 기준값은 아직 제공되지 않았습니다.
 
 ## 공식 xdelta3 v3.2.0
 
@@ -56,3 +56,12 @@ go run . apply /path/to/folder English
 - 소스 저장소에는 실행파일 및 게임 데이터가 아닌 Go 코드, 매니페스트, 빌드 설명만 둡니다. ZIP에는 Go 소스가 없고 `LICENSE`, `THIRD_PARTY_LICENSE.txt`, `NOTICE_MODIFICATIONS.txt`, `UPSTREAM_XDELTA.txt`가 있습니다.
 
 수정 배포 ZIP SHA-256: `e06a1eb99e13104a8ca550a72307934369c8e8d398565c7d29c398f1cf600b30`. 자동식별·판본선택·검증·안전 확정과 공식 디코더 아키텍처 선택에 관한 Go 테스트 **12개 통과**. 실제 일본판·영문판 전체 원본을 통한 최종 패치 시험은 별도 수행해야 합니다.
+
+## 사용자 제공 1.01 패치 및 검증 범위
+
+- 원본 자산: 사용자 제공 `v1.01.zip`의 일본판/영문판 xdelta 6개 및 CUE. xdelta 파일명은 `*_v1.01.xdelta`로 보존합니다.
+- CUE의 내부 IMG 참조는 `Mirrors_Kor1.01.img`로 정리했습니다.
+- CCD/SUB는 기존 출력과 바이트 단위로 같은 VCDIFF 본문을 사용하므로 기존 MD5·SHA-256으로 검증합니다.
+- IMG는 1.00 대비 3개 VCDIFF 윈도우 출력 체크섬이 변경되었습니다. 일본판/영문판의 **새 IMG 66개 체크섬이 모두 같음**을 확인했으며 출력 크기 551,779,200바이트와 모든 윈도우 Adler-32를 검증합니다.
+- 실제 새 IMG의 전체 MD5/SHA-256 기준값은 사용자 제공 파일에 없으므로, 이를 확인했다고 주장하지 않습니다. 패처는 실제 출력 MD5/SHA-256을 로그에 계산·표시하지만 기준값과 비교하지 않습니다.
+- xdelta 디코더는 공식 v3.2.0 x64 릴리스 및 동일 소스의 Win32 빌드를 유지합니다. 바이너리 파일은 Git 소스 트리에서 제외됩니다.

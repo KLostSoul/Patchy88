@@ -47,3 +47,13 @@
 - [공식 x64 배포본](https://github.com/jmacd/xdelta/releases/tag/v3.2.0)과 [x86 빌드 기록](https://github.com/KLostSoul/Patchy88/actions/runs/36051984391)을 보관. 구 Pachy98 동봉 xdelta 3.0.11 제거.
 - 기존 xdelta 패치 6개, CUE, D88 2개의 내용은 유지하고 실행파일·매니페스트·관련 문서만 갱신.
 - ZIP CRC 및 Go 테스트 12개 통과. 실제 일본판/영문판 전체 원본에 대한 최종 패치 적용은 미검증.
+
+## Mirrors용 Patchy88 v1.01 (PC-8801)
+
+- 새 배포 ZIP: `Mirrors_Kor1.01.zip` — 18,919,890바이트, SHA-256 `0e119783a495a33e3d3b21ecee84711850cb5eac5623b925032dc08f3312e13f`.
+- 업로드 `v1.01.zip`의 일본판·영문판 xdelta 6개와 CUE 반영. 구버전 패치 및 기존 IMG 기준 해시 재사용 없음.
+- 결과 파일명 `Mirrors_Kor1.01.ccd`, `.img`, `.sub`, `.cue` 통일 및 CUE 내부 IMG 링크 수정.
+- Windows x64/x86 실행파일 새로 컴파일, 공식 xdelta3 v3.2.0 각 아키텍처별 동봉.
+- 일본판과 영문판이 동시에 있을 때 사용자가 적용할 판본을 선택하는 기능 유지.
+- 새 1.01 IMG의 MD5·SHA-256 기준값 미제공: 두 판본이 공유하는 66개 VCDIFF 윈도우 Adler-32와 출력 크기로 검사. 실제 CD 원본을 사용한 전체 적용 시험 미실시.
+- 배포 ZIP에 Go 소스를 넣지 않고 GitHub `src/mirrors-go`에서 관리. LICENSE, THIRD_PARTY_LICENSE, NOTICE_MODIFICATIONS 포함.

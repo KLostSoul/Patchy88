@@ -2,7 +2,7 @@
 
 Patchy88은 PC-8801 게임의 한글화 패치를 적용하는 도구 모음입니다. 《몽환전사 바리스》·《몽환전사 바리스 II》용 IPS 패처와 **《Mirrors》용 Patchy88** xdelta 패처를 별도로 제공합니다.
 
-46OkuMen의 **Pachy98 / romtools**가 사용한 패치 배포 개념에서 출발했지만, PC-88의 D88/ROM을 대상으로 하기 위해 구조를 바꿨습니다. PC-88 IPS 판에서는 NDC를 이용한 파일 추출/재삽입이나 xdelta3를 사용하지 않고, **D88/ROM에 IPS를 직접 적용하면서 IPS가 실제로 건드리는 원본 영역을 검증**합니다. Mirrors 판은 별도의 xdelta3 엔진과 전체 원본/결과 파일 해시 검증을 사용합니다.
+46OkuMen의 **Pachy98 / romtools**가 사용한 패치 배포 개념에서 출발했지만, PC-88의 D88/ROM을 대상으로 하기 위해 구조를 바꿨습니다. PC-88 IPS 판에서는 NDC를 이용한 파일 추출/재삽입이나 xdelta3를 사용하지 않고, **D88/ROM에 IPS를 직접 적용하면서 IPS가 실제로 건드리는 원본 영역을 검증**합니다. Mirrors 판은 공식 xdelta3 v3.2.0을 사용하며 원본 전체 MD5·SHA-256, CCD/SUB 결과 해시, v1.01 IMG의 66개 VCDIFF 윈도우 체크섬을 검증합니다.
 
 > **중요:** 원본 게임 D88, 원본 KANJI ROM, 패치 완료 전체 게임 이미지는 저장소에 포함하지 않습니다.
 
@@ -12,7 +12,7 @@ Patchy88은 PC-8801 게임의 한글화 패치를 적용하는 도구 모음입�
 
 - [몽환전사 바리스용 Patchy88](docs/VALIS1.md)
 - [몽환전사 바리스 II용 Patchy88](docs/VALIS2.md)
-- [**Mirrors용 Patchy88 — Mirrors_Kor1.00**](docs/MIRRORS.md): PC-8801, 일본판/영문판 xdelta 패치, 사용법·출력 파일명
+- [**Mirrors용 Patchy88 — Mirrors_Kor1.01**](docs/MIRRORS.md): PC-8801, 일본판/영문판 xdelta 패치, 사용법·출력 파일명
 - [Mirrors용 Patchy88 소스 및 빌드](src/mirrors-go/README.ko.md)
 
 ## PC-88 IPS 판의 핵심 원리

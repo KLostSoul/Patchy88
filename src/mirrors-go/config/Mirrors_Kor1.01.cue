@@ -1,4 +1,4 @@
-FILE "Mirrors_Kor1.00.img" BINARY
+FILE "Mirrors_Kor1.01.img" BINARY
    TRACK 1 AUDIO
    INDEX 1 00:00:00
    TRACK 2 MODE1/2352

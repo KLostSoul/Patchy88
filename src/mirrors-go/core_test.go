@@ -5,6 +5,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+    "fmt"
+    "hash/adler32"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -39,7 +41,7 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 	target := map[string][]byte{"ccd": []byte("Japanese original CCD; Korean result identical"), "img": []byte("Korean img test output with all expected content"), "sub": []byte("Japanese original SUB; Korean result identical")}
 	m := Manifest{Name: programName, Schema: manifestSchema, Source: map[string]map[string]SourceDef{}, Target: map[string]TargetDef{}}
 	for _, ext := range exts {
-		m.Target[ext] = TargetDef{Hashes: testHashes(target[ext]), Filename: "Mirrors_Kor1.00." + ext}
+		m.Target[ext] = TargetDef{Hashes: testHashes(target[ext]), Filename: "Mirrors_Kor1.01." + ext}
 	}
 	for _, edition := range editions {
 		sources[edition] = map[string][]byte{}
@@ -52,16 +54,16 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 				data = []byte(edition + " original " + ext + " test file")
 			}
 			sources[edition][ext] = data
-			patch := edition + "_" + strings.ToUpper(ext) + ".xdelta"
+			patch := edition + "_" + strings.ToUpper(ext) + "_v1.01.xdelta"
 			fakeVCDIFF := append([]byte{0xd6, 0xc3, 0xc4, 0x00}, []byte(edition+ext)...)
 			writeTestFile(t, filepath.Join(assets, "patches", patch), fakeVCDIFF)
 			m.Source[edition][ext] = SourceDef{Hashes: testHashes(data), Patch: "patches/" + patch, PatchSHA256: testSHA(fakeVCDIFF)}
 		}
 	}
-	for _, name := range []string{"Mirrors_Kor1.00.cue", "disk1main.d88", "disk2game.d88"} {
+	for _, name := range []string{"Mirrors_Kor1.01.cue", "disk1main.d88", "disk2game.d88"} {
 		var data []byte
-		if name == "Mirrors_Kor1.00.cue" {
-			data = []byte("FILE \"Mirrors_Kor1.00.img\" BINARY\n")
+		if name == "Mirrors_Kor1.01.cue" {
+			data = []byte("FILE \"Mirrors_Kor1.01.img\" BINARY\n")
 		} else {
 			data = []byte("same fake D88 payload")
 		}
@@ -76,9 +78,9 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 [ "$3" = "-s" ] || exit 2
 src="$4"; patch="$5"; out="$6"
 case "$patch" in
-    *_CCD.xdelta) printf '%s' 'Japanese original CCD; Korean result identical' > "$out" ;;
-    *_IMG.xdelta) printf '%s' 'Korean img test output with all expected content' > "$out" ;;
-    *_SUB.xdelta) printf '%s' 'Japanese original SUB; Korean result identical' > "$out" ;;
+    *_CCD*.xdelta) printf '%s' 'Japanese original CCD; Korean result identical' > "$out" ;;
+    *_IMG*.xdelta) printf '%s' 'Korean img test output with all expected content' > "$out" ;;
+    *_SUB*.xdelta) printf '%s' 'Japanese original SUB; Korean result identical' > "$out" ;;
     *) exit 1 ;;
 esac
 `)
@@ -180,7 +182,7 @@ func TestMixedEditionsRejectedNoWrites(t *testing.T) {
 func TestCollisionRejectedBeforePatching(t *testing.T) {
 	e, folder, sources, _ := fixture(t)
 	putInputs(t, folder, "English", sources)
-	writeTestFile(t, filepath.Join(folder, "Mirrors_Kor1.00.cue"), []byte("unrelated file"))
+	writeTestFile(t, filepath.Join(folder, "Mirrors_Kor1.01.cue"), []byte("unrelated file"))
 	if _, err := e.Scan(folder); err == nil {
 		t.Fatal("extra collision accepted")
 	}
@@ -190,7 +192,7 @@ func TestCollisionRejectedBeforePatching(t *testing.T) {
 }
 func TestTamperedAssetsRejected(t *testing.T) {
 	e, _, _, _ := fixture(t)
-	p := filepath.Join(e.Root, "patches", "English_IMG.xdelta")
+	p := filepath.Join(e.Root, "patches", "English_IMG_v1.01.xdelta")
 	f, err := os.OpenFile(p, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		t.Fatal(err)
@@ -259,7 +261,7 @@ func TestProvidedBundleIntegrity(t *testing.T) {
 	if h1 != h2 {
 		t.Fatal("D88 pair unexpectedly differs; review both sources")
 	}
-	cue, err := os.ReadFile(filepath.Join("assets", "extras", "Mirrors_Kor1.00.cue"))
+	cue, err := os.ReadFile(filepath.Join("assets", "extras", "Mirrors_Kor1.01.cue"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -271,20 +273,20 @@ func TestProvidedBundleIntegrity(t *testing.T) {
 func TestCanonicalNamesAndCue(t *testing.T) {
     e, _, _, _ := fixture(t)
     for _, ext := range exts {
-        want := "Mirrors_Kor1.00." + ext
+        want := "Mirrors_Kor1.01." + ext
         if got := e.Manifest.Target[ext].Filename; got != want {
             t.Fatalf("target %s: got %s want %s", ext, got, want)
         }
     }
     found := false
     for _, x := range e.Manifest.Extras {
-        if x.Filename == "Mirrors_Kor1.00.cue" { found = true }
+        if x.Filename == "Mirrors_Kor1.01.cue" { found = true }
         if x.Filename == "Kor.cue" { t.Fatal("legacy CUE remains") }
     }
     if !found { t.Fatal("canonical CUE missing") }
-    cue, err := os.ReadFile(filepath.Join(e.Root, "extras", "Mirrors_Kor1.00.cue"))
+    cue, err := os.ReadFile(filepath.Join(e.Root, "extras", "Mirrors_Kor1.01.cue"))
     if err != nil { t.Fatal(err) }
-    if !strings.Contains(string(cue), `FILE "Mirrors_Kor1.00.img" BINARY`) {
+    if !strings.Contains(string(cue), `FILE "Mirrors_Kor1.01.img" BINARY`) {
         t.Fatal("CUE reference mismatch")
     }
     if strings.Contains(string(cue), "Mirrors_Korean_Mirrors_Tools_Full_Build") {
@@ -392,4 +394,37 @@ func TestOfficialArchitectureDecoderSelection(t *testing.T) {
     }
     writeTestFile(t, selected.Decoder, []byte("tampered binary"))
     if _, err := NewEngine(e.Root); err == nil { t.Fatal("accepted tampered upstream decoder") }
+}
+
+func TestVersion101IMGWindowChecksums(t *testing.T) {
+    e,folder,sources,target:=fixture(t)
+    var m Manifest
+    b,err:=os.ReadFile(filepath.Join(e.Root,manifestFile))
+    if err!=nil {t.Fatal(err)}
+    if err=json.Unmarshal(b,&m);err!=nil{t.Fatal(err)}
+    img:=target["img"]
+    half:=len(img)/2
+    m.Target["img"]=TargetDef{Filename:programName+".img",Size:int64(len(img)),
+        WindowSizes:[]int64{int64(half),int64(len(img)-half)},
+        WindowAdler32:[]string{fmt.Sprintf("%08x",adler32.Checksum(img[:half])),fmt.Sprintf("%08x",adler32.Checksum(img[half:]))}}
+    b,_=json.Marshal(m)
+    if err=os.WriteFile(filepath.Join(e.Root,manifestFile),b,0600);err!=nil{t.Fatal(err)}
+    e,err=NewEngine(e.Root)
+    if err!=nil{t.Fatal(err)}
+    putInputs(t,folder,"English",sources)
+    scan,err:=e.Scan(folder)
+    if err!=nil{t.Fatal(err)}
+    if err=e.Apply(scan,nil);err!=nil{t.Fatal(err)}
+    p:=filepath.Join(folder,programName+".img")
+    got,err:=hashFile(p)
+    if err!=nil{t.Fatal(err)}
+    if method,err:=verifyTarget(p,got,e.Manifest.Target["img"]);err!=nil || !strings.Contains(method,"Adler32"){t.Fatalf("IMG validation: %v %s",err,method)}
+    if err=os.WriteFile(p,img[:len(img)-1],0600);err!=nil{t.Fatal(err)}
+    got,_=hashFile(p)
+    if _,err=verifyTarget(p,got,e.Manifest.Target["img"]);err==nil{t.Fatal("accepted truncated IMG")}
+    invalid:=append([]byte(nil),img...)
+    invalid[0]^=0xff
+    if err=os.WriteFile(p,invalid,0600);err!=nil{t.Fatal(err)}
+    got,_=hashFile(p)
+    if _,err=verifyTarget(p,got,e.Manifest.Target["img"]);err==nil{t.Fatal("accepted corrupted IMG")}
 }

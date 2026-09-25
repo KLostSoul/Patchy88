@@ -294,7 +294,7 @@ func startPatch() {
 		return
 	}
 	chosen := map[string]string{"Japanese": "일본판", "English": "영문판", "AlreadyPatched": "이미 패치됨"}[latestScan.Edition]
-	if dialog("선택한 원본: "+chosen+"\n\n한글판 CCD/IMG/SUB를 생성하고 Mirrors_Kor1.00.cue와 D88 2개를 추가합니다.\n원본은 수정하지 않고 기존 파일도 덮어쓰지 않습니다.\n계속하시겠습니까?", mbYesNo|mbQuestion) != idYes {
+	if dialog("선택한 원본: "+chosen+"\n\n한글판 CCD/IMG/SUB를 생성하고 Mirrors_Kor1.01.cue와 D88 2개를 추가합니다.\n원본은 수정하지 않고 기존 파일도 덮어쓰지 않습니다.\n계속하시겠습니까?", mbYesNo|mbQuestion) != idYes {
 		return
 	}
 	s := latestScan
@@ -318,8 +318,8 @@ func finishedPatch() {
 		logLine("[패치 실패] " + err.Error())
 		dialog("패치 실패:\n"+err.Error()+"\n\n원본 파일은 변경되지 않았습니다.", mbOk|mbError)
 	} else {
-		logLine("[완료] Mirrors_Kor1.00 CCD/IMG/SUB + CUE + D88 2개")
-		dialog("한글판과 추가 파일이 같은 폴더에 생성됐습니다.\n결과 MD5 및 SHA-256 검증을 통과했습니다.", mbOk|mbInfo)
+		logLine("[완료] Mirrors_Kor1.01 CCD/IMG/SUB + CUE + D88 2개")
+		dialog("한글판과 추가 파일이 같은 폴더에 생성됐습니다.\nCCD/SUB는 MD5·SHA-256, IMG는 66개 VCDIFF 윈도우 체크섬으로 검증했습니다.", mbOk|mbInfo)
 	}
 	setBusy(false)
 	// Refresh asynchronously to support re-runs and skip valid preexisting output files.
@@ -441,7 +441,7 @@ func runGUI() int {
 	fontNormal, _, _ = createFont.Call(uintptr(h1), 0, 0, 0, 400, 0, 0, 0, 1, 0, 0, 0, 0, uintptr(unsafe.Pointer(u16("맑은 고딕"))))
 	h2 := int32(-29)
 	fontTitle, _, _ = createFont.Call(uintptr(h2), 0, 0, 0, 600, 0, 0, 0, 1, 0, 0, 0, 0, uintptr(unsafe.Pointer(u16("맑은 고딕"))))
-	title := createControl(0, "STATIC", "Mirrors_Kor1.00", wsChild|wsVisible, 22, 18, 880, 41, 0)
+	title := createControl(0, "STATIC", "Mirrors_Kor1.01", wsChild|wsVisible, 22, 18, 880, 41, 0)
 	setFont(title, fontTitle)
 	createControl(0, "STATIC", "PC-8801 《Mirrors》 — 일본판과 영문판 모두 있으면 적용할 원본을 선택합니다.", wsChild|wsVisible, 22, 69, 870, 27, 0)
 	createControl(0, "STATIC", "원본 파일 폴더", wsChild|wsVisible, 22, 102, 160, 20, 0)
@@ -451,7 +451,7 @@ func runGUI() int {
 	uiPatch = createControl(0, "BUTTON", "한글패치 적용", wsChild|wsVisible|wsTabstop|btnDefault, 154, 170, 186, 34, idPatch)
 	uiExit = createControl(0, "BUTTON", "종료", wsChild|wsVisible|wsTabstop, 790, 170, 90, 34, idExit)
 	uiLog = createControl(wsClientEdge, "EDIT", "", wsChild|wsVisible|esReadonly|esMultiline|esAutoScroll|wsVScroll, 22, 220, 860, 405, 0)
-	uiFooter = createControl(0, "STATIC", "원본은 수정하지 않습니다. 결과 CCD/IMG/SUB, Mirrors_Kor1.00.cue, D88 2개를 같은 폴더에 생성합니다.\r\nMD5 + SHA-256 검증 실패 시 결과를 확정하지 않습니다.", wsChild|wsVisible, 22, 630, 870, 58, 0)
+	uiFooter = createControl(0, "STATIC", "원본은 수정하지 않습니다. 결과 CCD/IMG/SUB, Mirrors_Kor1.01.cue, D88 2개를 같은 폴더에 생성합니다.\r\nCCD/SUB 해시 및 IMG 윈도우 검증 실패 시 결과를 확정하지 않습니다.", wsChild|wsVisible, 22, 630, 870, 58, 0)
 	enable(uiPatch, false)
 	logLine(programName + " — 일본판/영문판 별도 xdelta 경로")
 	logLine("필수 패치 6개, xdelta3.exe, CUE, D88 2개 무결성 검증 완료")

@@ -23,12 +23,12 @@ Patchy88은 46OkuMen의 `romtools` 저장소에 포함된 Pachy98의 PC 게임 �
 
 ## Mirrors용 Patchy88 (PC-8801)
 
-Mirrors_Kor1.00은 일본판과 영문판의 CCD/IMG/SUB에 각각 전용 xdelta 패치를 적용하는 별도 패처입니다.
+Mirrors_Kor1.01은 일본판과 영문판의 CCD/IMG/SUB에 각각 전용 xdelta 패치를 적용하는 별도 패처입니다.
 
 - 일본판과 영문판을 파일 전체 MD5 및 SHA-256으로 식별합니다.
 - 두 판본이 같은 폴더에 있으면 사용자가 패치할 판본을 선택합니다.
-- 결과 파일명: `Mirrors_Kor1.00.ccd`, `Mirrors_Kor1.00.img`, `Mirrors_Kor1.00.sub`, `Mirrors_Kor1.00.cue`.
-- xdelta3.exe를 함께 사용하며 기존 IPS 자체 적용 엔진과는 다릅니다.
+- 결과 파일명: `Mirrors_Kor1.01.ccd`, `Mirrors_Kor1.01.img`, `Mirrors_Kor1.01.sub`, `Mirrors_Kor1.01.cue`.
+- 공식 xdelta3 v3.2.0(x64·x86)을 함께 사용하며 기존 IPS 자체 적용 엔진과는 다릅니다.
 - 결과 검증 성공 후 D88 2개 및 CUE를 입력 폴더에 추가하며 원본은 덮어쓰지 않습니다.
 
 공식 xdelta: https://github.com/jmacd/xdelta
@@ -53,3 +53,7 @@ Patchy88 저장소 및 배포물에는 다음을 포함하지 않습니다.
 - 패치 완료 전체 게임 이미지
 
 IPS/xdelta 패치, 검증 매니페스트, Patchy88 소스 및 배포 실행파일을 별도로 관리합니다. 게임 원본과 패치 완료 전체 이미지는 배포하지 않습니다.
+
+## Mirrors용 Patchy88 v1.01 검증 고지
+
+사용자 제공 v1.01 패치와 CUE로 교체했습니다. IMG는 1.00과 데이터가 달라 기존 MD5/SHA-256을 새 결과에 적용하지 않습니다. 새 IMG의 전체 기준 해시는 업로드에 없으므로 66개 VCDIFF 윈도우 Adler-32와 전체 크기를 검증하며, 출력의 계산된 MD5/SHA-256은 로그에 표시합니다. 실원본 CD에 대한 종단 간 테스트는 수행하지 못했습니다.

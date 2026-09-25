@@ -17,9 +17,9 @@ import (
 )
 
 const (
-	programName    = "Mirrors_Kor1.00"
-	manifestFile   = "Mirrors_Kor1.00.json"
-	manifestSchema = "mirrors.kor1.00.xdelta"
+	programName    = "Mirrors_Kor1.01"
+	manifestFile   = "Mirrors_Kor1.01.json"
+	manifestSchema = "mirrors.kor1.01.xdelta"
 )
 
 var exts = []string{"ccd", "img", "sub"}
@@ -36,7 +36,10 @@ type SourceDef struct {
 }
 type TargetDef struct {
 	Hashes
-	Filename string `json:"filename"`
+	Filename      string   `json:"filename"`
+	Size          int64    `json:"size,omitempty"`
+	WindowSizes   []int64  `json:"window_sizes,omitempty"`
+	WindowAdler32 []string `json:"window_adler32,omitempty"`
 }
 type ExtraDef struct {
 	Filename string `json:"filename"`
@@ -164,8 +167,18 @@ func NewEngine(root string) (*Engine, error) {
 	}
 	for _, ext := range exts {
 		t, ok := m.Target[ext]
-		if !ok || !cleanFilename(t.Filename) || len(t.MD5) != 32 || len(t.SHA256) != 64 {
-			return nil, fmt.Errorf("%s 결과 정보가 잘못됐습니다", ext)
+		if !ok || !cleanFilename(t.Filename) { return nil, fmt.Errorf("%s 결과 파일명 오류",ext) }
+		if len(t.MD5)==0 && len(t.SHA256)==0 && ext=="img" {
+			if t.Size<=0 || len(t.WindowAdler32)==0 || len(t.WindowAdler32)!=len(t.WindowSizes) { return nil, errors.New("IMG 윈도우 체크섬이 불완전합니다") }
+			var total int64
+			for i, size := range t.WindowSizes {
+				if size<=0 || size>8*1024*1024 || len(t.WindowAdler32[i])!=8 { return nil, errors.New("IMG 윈도우 크기/체크섬 오류") }
+				if _, err := hex.DecodeString(t.WindowAdler32[i]); err != nil { return nil, errors.New("IMG 체크섬 형식 오류") }
+				total += size
+			}
+			if total != t.Size { return nil, errors.New("IMG 윈도우 총 길이 오류") }
+		} else if len(t.MD5)!=32 || len(t.SHA256)!=64 {
+			return nil, fmt.Errorf("%s 결과 MD5/SHA-256 누락",ext)
 		}
 	}
 	for _, x := range m.Extras {
@@ -252,8 +265,8 @@ func (e *Engine) ScanWithEdition(folder, preferred string) (*ScanResult, error) 
 			return nil, fmt.Errorf("%s 검사 오류: %w", item.Name(), err)
 		}
 		if strings.EqualFold(item.Name(), canonical[ext]) {
-			if !hashEqual(h, e.Manifest.Target[ext].Hashes) {
-				return nil, fmt.Errorf("결과 파일명 %s에 예상과 다른 데이터가 이미 있습니다. 덮어쓰지 않습니다", item.Name())
+			if _, err := verifyTarget(path,h,e.Manifest.Target[ext]);err!=nil {
+				return nil, fmt.Errorf("결과 파일명 %s에 예상과 다른 데이터가 이미 있습니다: %w", item.Name(),err)
 			}
 			already[ext] = true
 			targetCandidates[ext] = append(targetCandidates[ext], path)
@@ -297,7 +310,7 @@ func (e *Engine) ScanWithEdition(folder, preferred string) (*ScanResult, error) 
 		}
 	}
 	if allAlready {
-		return &ScanResult{Folder: folder, Edition: "AlreadyPatched", Inputs: map[string]string{}, Already: already, ExtrasPresent: extrasPresent, Notes: []string{"한글판 CCD/IMG/SUB가 이미 모두 있고 해시가 일치합니다."}}, nil
+		return &ScanResult{Folder: folder, Edition: "AlreadyPatched", Inputs: map[string]string{}, Already: already, ExtrasPresent: extrasPresent, Notes: []string{"한글판 CCD/SUB 해시와 IMG 윈도우 체크섬이 일치합니다."}}, nil
 	}
 	// The Japanese CCD/SUB hashes equal the Korean ones, so a single canonical file can act as both.
 	for _, ext := range exts {
@@ -368,7 +381,7 @@ func (e *Engine) ScanWithEdition(folder, preferred string) (*ScanResult, error) 
 type stagedFile struct{ Temp, Dest string }
 
 func tempName(folder string) (string, error) {
-	f, err := os.CreateTemp(folder, ".Mirrors_Kor1.00-*.tmp")
+	f, err := os.CreateTemp(folder, ".Mirrors_Kor1.01-*.tmp")
 	if err != nil {
 		return "", err
 	}
@@ -499,10 +512,9 @@ func (e *Engine) Apply(s *ScanResult, log func(string)) error {
 			if err != nil {
 				return err
 			}
-			if !hashEqual(got, target.Hashes) {
-				return fmt.Errorf("%s 패치 결과 MD5/SHA-256 검증 실패: MD5=%s, SHA-256=%s", strings.ToUpper(ext), got.MD5, got.SHA256)
-			}
-			log(strings.ToUpper(ext) + ": 결과 MD5/SHA-256 검증 통과")
+			method, err := verifyTarget(tmp,got,target)
+			if err!=nil { return fmt.Errorf("%s 패치 결과 검증 실패: %w",strings.ToUpper(ext),err) }
+			log(fmt.Sprintf("%s: %s 검증 통과 (계산된 MD5=%s, SHA-256=%s)",strings.ToUpper(ext),method,got.MD5,got.SHA256))
 		}
 	} else {
 		log("이미 한글판 파일 3개가 검증됐습니다. 누락된 추가 파일만 복사합니다.")
