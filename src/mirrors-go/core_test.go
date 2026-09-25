@@ -428,3 +428,31 @@ func TestVersion101IMGWindowChecksums(t *testing.T) {
     got,_=hashFile(p)
     if _,err=verifyTarget(p,got,e.Manifest.Target["img"]);err==nil{t.Fatal("accepted corrupted IMG")}
 }
+
+func TestReleaseIMGFullHashVerification(t *testing.T) {
+    e,folder,_,target:=fixture(t)
+    path:=filepath.Join(folder,programName+".img")
+    writeTestFile(t,path,target["img"])
+    good,err:=hashFile(path)
+    if err!=nil{t.Fatal(err)}
+    method,err:=verifyTarget(path,good,e.Manifest.Target["img"])
+    if err!=nil||method!="MD5/SHA-256"{t.Fatalf("unexpected hash mode %s %v",method,err)}
+    changed:=append([]byte(nil),target["img"]...)
+    changed[0]^=1
+    writeTestFile(t,path,changed)
+    bad,err:=hashFile(path)
+    if err!=nil{t.Fatal(err)}
+    if _,err=verifyTarget(path,bad,e.Manifest.Target["img"]);err==nil{t.Fatal("changed IMG accepted")}
+}
+func TestProvidedV101IMGReferenceHashes(t *testing.T) {
+    b,err:=os.ReadFile(filepath.Join("config",manifestFile))
+    if err!=nil{t.Fatal(err)}
+    var m Manifest
+    if err=json.Unmarshal(b,&m);err!=nil{t.Fatal(err)}
+    img:=m.Target["img"]
+    if !strings.EqualFold(img.MD5,"32D1646E31EEF1EE55E587DBDD6FF864")||
+       !strings.EqualFold(img.SHA256,"7D5067467E5C4715A840C088F84656EED27908A63BCF77F27069B80D5FBA4016") {
+       t.Fatalf("wrong 1.01 hashes: %s %s",img.MD5,img.SHA256)
+    }
+    if img.Size!=551779200||len(img.WindowAdler32)!=66{t.Fatal("missing IMG metadata")}
+}

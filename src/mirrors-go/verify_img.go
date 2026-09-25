@@ -8,11 +8,13 @@ import (
     "strings"
 )
 
-// The v1.01 IMG differs from v1.00 and no full-image target MD5/SHA256
-// reference was supplied. Validate every VCDIFF output window independently.
-// This is weaker than cryptographic target verification and must be reported as such.
+// The official v1.01 release checks full MD5 and SHA-256 of all outputs.
+// Adler-32 fallback is retained only for deliberately incomplete test fixtures.
 func verifyTarget(path string, got fileHashes, target TargetDef) (string,error) {
     if len(target.MD5)==32 && len(target.SHA256)==64 {
+        if target.Size>0 && got.Size!=target.Size {
+            return "",fmt.Errorf("검증 대상 크기 불일치: got=%d expected=%d",got.Size,target.Size)
+        }
         if !hashEqual(got,target.Hashes) {
             return "",fmt.Errorf("MD5/SHA-256 불일치: MD5=%s SHA-256=%s",got.MD5,got.SHA256)
         }
