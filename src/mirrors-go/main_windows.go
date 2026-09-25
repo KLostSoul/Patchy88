@@ -319,7 +319,7 @@ func finishedPatch() {
 		dialog("패치 실패:\n"+err.Error()+"\n\n원본 파일은 변경되지 않았습니다.", mbOk|mbError)
 	} else {
 		logLine("[완료] Mirrors_Kor1.01 CCD/IMG/SUB + CUE + D88 2개")
-		dialog("한글판과 추가 파일이 같은 폴더에 생성됐습니다.\nCCD/IMG/SUB 세 파일 모두 MD5·SHA-256 기준값으로 검증했습니다.", mbOk|mbInfo)
+		dialog("한글판과 추가 파일이 같은 폴더에 생성됐습니다.\nCCD/IMG/SUB의 전체 MD5·SHA-256과 크기를 검증했습니다.", mbOk|mbInfo)
 	}
 	setBusy(false)
 	// Refresh asynchronously to support re-runs and skip valid preexisting output files.
@@ -451,7 +451,7 @@ func runGUI() int {
 	uiPatch = createControl(0, "BUTTON", "한글패치 적용", wsChild|wsVisible|wsTabstop|btnDefault, 154, 170, 186, 34, idPatch)
 	uiExit = createControl(0, "BUTTON", "종료", wsChild|wsVisible|wsTabstop, 790, 170, 90, 34, idExit)
 	uiLog = createControl(wsClientEdge, "EDIT", "", wsChild|wsVisible|esReadonly|esMultiline|esAutoScroll|wsVScroll, 22, 220, 860, 405, 0)
-	uiFooter = createControl(0, "STATIC", "원본은 수정하지 않습니다. 결과 CCD/IMG/SUB, Mirrors_Kor1.01.cue, D88 2개를 같은 폴더에 생성합니다.\r\nCCD/IMG/SUB의 MD5 및 SHA-256 검증 실패 시 결과를 확정하지 않습니다.", wsChild|wsVisible, 22, 630, 870, 58, 0)
+	uiFooter = createControl(0, "STATIC", "원본은 수정하지 않습니다. 결과 CCD/IMG/SUB, Mirrors_Kor1.01.cue, D88 2개를 같은 폴더에 생성합니다.\r\nCCD/IMG/SUB의 전체 MD5·SHA-256 또는 크기 검증 실패 시 결과를 확정하지 않습니다.", wsChild|wsVisible, 22, 630, 870, 58, 0)
 	enable(uiPatch, false)
 	logLine(programName + " — 일본판/영문판 별도 xdelta 경로")
 	logLine("필수 패치 6개, xdelta3.exe, CUE, D88 2개 무결성 검증 완료")

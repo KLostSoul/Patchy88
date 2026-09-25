@@ -36,10 +36,8 @@ type SourceDef struct {
 }
 type TargetDef struct {
 	Hashes
-	Filename      string   `json:"filename"`
-	Size          int64    `json:"size,omitempty"`
-	WindowSizes   []int64  `json:"window_sizes,omitempty"`
-	WindowAdler32 []string `json:"window_adler32,omitempty"`
+	Filename string `json:"filename"`
+	Size     int64  `json:"size"`
 }
 type ExtraDef struct {
 	Filename string `json:"filename"`
@@ -167,18 +165,14 @@ func NewEngine(root string) (*Engine, error) {
 	}
 	for _, ext := range exts {
 		t, ok := m.Target[ext]
-		if !ok || !cleanFilename(t.Filename) { return nil, fmt.Errorf("%s 결과 파일명 오류",ext) }
-		if len(t.MD5)==0 && len(t.SHA256)==0 && ext=="img" {
-			if t.Size<=0 || len(t.WindowAdler32)==0 || len(t.WindowAdler32)!=len(t.WindowSizes) { return nil, errors.New("IMG 윈도우 체크섬이 불완전합니다") }
-			var total int64
-			for i, size := range t.WindowSizes {
-				if size<=0 || size>8*1024*1024 || len(t.WindowAdler32[i])!=8 { return nil, errors.New("IMG 윈도우 크기/체크섬 오류") }
-				if _, err := hex.DecodeString(t.WindowAdler32[i]); err != nil { return nil, errors.New("IMG 체크섬 형식 오류") }
-				total += size
-			}
-			if total != t.Size { return nil, errors.New("IMG 윈도우 총 길이 오류") }
-		} else if len(t.MD5)!=32 || len(t.SHA256)!=64 {
-			return nil, fmt.Errorf("%s 결과 MD5/SHA-256 누락",ext)
+		if !ok || !cleanFilename(t.Filename) || len(t.MD5) != 32 || len(t.SHA256) != 64 || t.Size <= 0 {
+			return nil, fmt.Errorf("%s 결과 파일의 이름/크기/MD5/SHA-256 기준값이 불완전합니다", ext)
+		}
+		if _, err := hex.DecodeString(t.MD5); err != nil {
+			return nil, fmt.Errorf("%s 결과 MD5 형식 오류", ext)
+		}
+		if _, err := hex.DecodeString(t.SHA256); err != nil {
+			return nil, fmt.Errorf("%s 결과 SHA-256 형식 오류", ext)
 		}
 	}
 	for _, x := range m.Extras {
@@ -310,7 +304,7 @@ func (e *Engine) ScanWithEdition(folder, preferred string) (*ScanResult, error) 
 		}
 	}
 	if allAlready {
-		return &ScanResult{Folder: folder, Edition: "AlreadyPatched", Inputs: map[string]string{}, Already: already, ExtrasPresent: extrasPresent, Notes: []string{"한글판 CCD/SUB 해시와 IMG 윈도우 체크섬이 일치합니다."}}, nil
+		return &ScanResult{Folder: folder, Edition: "AlreadyPatched", Inputs: map[string]string{}, Already: already, ExtrasPresent: extrasPresent, Notes: []string{"한글판 CCD/IMG/SUB 전체 MD5·SHA-256 및 크기 검증 통과."}}, nil
 	}
 	// The Japanese CCD/SUB hashes equal the Korean ones, so a single canonical file can act as both.
 	for _, ext := range exts {

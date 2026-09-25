@@ -5,8 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-    "fmt"
-    "hash/adler32"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -41,7 +39,7 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 	target := map[string][]byte{"ccd": []byte("Japanese original CCD; Korean result identical"), "img": []byte("Korean img test output with all expected content"), "sub": []byte("Japanese original SUB; Korean result identical")}
 	m := Manifest{Name: programName, Schema: manifestSchema, Source: map[string]map[string]SourceDef{}, Target: map[string]TargetDef{}}
 	for _, ext := range exts {
-		m.Target[ext] = TargetDef{Hashes: testHashes(target[ext]), Filename: "Mirrors_Kor1.01." + ext}
+		m.Target[ext] = TargetDef{Hashes: testHashes(target[ext]), Filename: "Mirrors_Kor1.01." + ext, Size: int64(len(target[ext]))}
 	}
 	for _, edition := range editions {
 		sources[edition] = map[string][]byte{}
@@ -396,37 +394,19 @@ func TestOfficialArchitectureDecoderSelection(t *testing.T) {
     if _, err := NewEngine(e.Root); err == nil { t.Fatal("accepted tampered upstream decoder") }
 }
 
-func TestVersion101IMGWindowChecksums(t *testing.T) {
-    e,folder,sources,target:=fixture(t)
-    var m Manifest
-    b,err:=os.ReadFile(filepath.Join(e.Root,manifestFile))
-    if err!=nil {t.Fatal(err)}
-    if err=json.Unmarshal(b,&m);err!=nil{t.Fatal(err)}
-    img:=target["img"]
-    half:=len(img)/2
-    m.Target["img"]=TargetDef{Filename:programName+".img",Size:int64(len(img)),
-        WindowSizes:[]int64{int64(half),int64(len(img)-half)},
-        WindowAdler32:[]string{fmt.Sprintf("%08x",adler32.Checksum(img[:half])),fmt.Sprintf("%08x",adler32.Checksum(img[half:]))}}
-    b,_=json.Marshal(m)
-    if err=os.WriteFile(filepath.Join(e.Root,manifestFile),b,0600);err!=nil{t.Fatal(err)}
-    e,err=NewEngine(e.Root)
-    if err!=nil{t.Fatal(err)}
-    putInputs(t,folder,"English",sources)
-    scan,err:=e.Scan(folder)
-    if err!=nil{t.Fatal(err)}
-    if err=e.Apply(scan,nil);err!=nil{t.Fatal(err)}
-    p:=filepath.Join(folder,programName+".img")
-    got,err:=hashFile(p)
-    if err!=nil{t.Fatal(err)}
-    if method,err:=verifyTarget(p,got,e.Manifest.Target["img"]);err!=nil || !strings.Contains(method,"Adler32"){t.Fatalf("IMG validation: %v %s",err,method)}
-    if err=os.WriteFile(p,img[:len(img)-1],0600);err!=nil{t.Fatal(err)}
-    got,_=hashFile(p)
-    if _,err=verifyTarget(p,got,e.Manifest.Target["img"]);err==nil{t.Fatal("accepted truncated IMG")}
-    invalid:=append([]byte(nil),img...)
-    invalid[0]^=0xff
-    if err=os.WriteFile(p,invalid,0600);err!=nil{t.Fatal(err)}
-    got,_=hashFile(p)
-    if _,err=verifyTarget(p,got,e.Manifest.Target["img"]);err==nil{t.Fatal("accepted corrupted IMG")}
+func TestV101RejectsMissingFullHashOrWrongSize(t *testing.T) {
+    e, _, _, target := fixture(t)
+    path := filepath.Join(e.Root, "fixture-img")
+    writeTestFile(t, path, target["img"])
+    actual, err := hashFile(path)
+    if err != nil { t.Fatal(err) }
+    def := e.Manifest.Target["img"]
+    def.MD5 = ""
+    def.SHA256 = ""
+    if _, err = verifyTarget(path, actual, def); err == nil { t.Fatal("accepted missing full IMG hashes") }
+    def = e.Manifest.Target["img"]
+    def.Size++
+    if _, err = verifyTarget(path, actual, def); err == nil { t.Fatal("accepted incorrect IMG size") }
 }
 
 func TestReleaseIMGFullHashVerification(t *testing.T) {
@@ -436,7 +416,7 @@ func TestReleaseIMGFullHashVerification(t *testing.T) {
     good,err:=hashFile(path)
     if err!=nil{t.Fatal(err)}
     method,err:=verifyTarget(path,good,e.Manifest.Target["img"])
-    if err!=nil||method!="MD5/SHA-256"{t.Fatalf("unexpected hash mode %s %v",method,err)}
+    if err!=nil||!strings.HasPrefix(method,"MD5/SHA-256"){t.Fatalf("unexpected hash mode %s %v",method,err)}
     changed:=append([]byte(nil),target["img"]...)
     changed[0]^=1
     writeTestFile(t,path,changed)
@@ -450,9 +430,27 @@ func TestProvidedV101IMGReferenceHashes(t *testing.T) {
     var m Manifest
     if err=json.Unmarshal(b,&m);err!=nil{t.Fatal(err)}
     img:=m.Target["img"]
-    if !strings.EqualFold(img.MD5,"32D1646E31EEF1EE55E587DBDD6FF864")||
-       !strings.EqualFold(img.SHA256,"7D5067467E5C4715A840C088F84656EED27908A63BCF77F27069B80D5FBA4016") {
+    if !strings.EqualFold(img.MD5,"56E768F7CE3315A8172338CB10CE153E")||
+       !strings.EqualFold(img.SHA256,"FDCF60364815ADF0E85C2B796533276E2C72210F1024425C02757BDF88333B10") {
        t.Fatalf("wrong 1.01 hashes: %s %s",img.MD5,img.SHA256)
     }
-    if img.Size!=551779200||len(img.WindowAdler32)!=66{t.Fatal("missing IMG metadata")}
+    if img.Size!=551779200{t.Fatal("wrong IMG length")}
+}
+
+func TestVersion101PatchMetadataAndHashes(t *testing.T) {
+    b, err := os.ReadFile(filepath.Join("config", manifestFile))
+    if err != nil { t.Fatal(err) }
+    var m Manifest
+    if err = json.Unmarshal(b, &m); err != nil { t.Fatal(err) }
+    expected := map[string]string{
+       "Japanese": "dbc804ecc343d7bf19e493208fb88449c957c82c7767eb85ac3c16412eea2064",
+       "English": "f0912110ff2a932ebe4379f45a95ff003ae9bea7114a7a55dc66b77d9feebbae",
+    }
+    for edition, sha := range expected {
+      if m.Source[edition]["img"].PatchSHA256 != sha { t.Fatalf("%s IMG patch is obsolete", edition) }
+    }
+    for ext, size := range map[string]int64{"ccd":3500,"img":551779200,"sub":22521600} {
+      if m.Target[ext].Size != size {t.Fatalf("incorrect %s size",ext)}
+      if len(m.Target[ext].MD5)!=32 || len(m.Target[ext].SHA256)!=64 { t.Fatalf("%s full hashes missing",ext) }
+    }
 }
