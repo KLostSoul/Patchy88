@@ -40,7 +40,7 @@
 ## Mirrors_Kor1.00 — 공식 xdelta3 v3.2.0 적용판
 
 - 배포 ZIP: `Mirrors_Kor1.00.zip` (18,909,886 bytes).
-- SHA-256: `e06a1eb99e13104a8ca550a72307934369c8e8d398565c7d29c398f1cf600b30`.
+- SHA-256: `2dd1e49168a251a0e1555918b5bccf4ce3d03e65ea786946f0bc11149d93b9db`.
 - 공식 x64 릴리스 ZIP 검증값: `af8ef036cb077a48df080c9a8ac1be4a6e7511c32d11f8bec89b6803a9e52576`.
 - 공식 x64 디코더: `53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0`.
 - 공식 v3.2.0 소스 기반 x86 디코더: `232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481`.
@@ -50,10 +50,19 @@
 
 ## Mirrors용 Patchy88 v1.01 (PC-8801)
 
-- 새 배포 ZIP: `Mirrors_Kor1.01.zip` — 18,919,890바이트, SHA-256 `0e119783a495a33e3d3b21ecee84711850cb5eac5623b925032dc08f3312e13f`.
+- 새 배포 ZIP: `Mirrors_Kor1.01.zip` — 18,914,284바이트, SHA-256 `2dd1e49168a251a0e1555918b5bccf4ce3d03e65ea786946f0bc11149d93b9db`.
 - 업로드 `v1.01.zip`의 일본판·영문판 xdelta 6개와 CUE 반영. 구버전 패치 및 기존 IMG 기준 해시 재사용 없음.
 - 결과 파일명 `Mirrors_Kor1.01.ccd`, `.img`, `.sub`, `.cue` 통일 및 CUE 내부 IMG 링크 수정.
 - Windows x64/x86 실행파일 새로 컴파일, 공식 xdelta3 v3.2.0 각 아키텍처별 동봉.
 - 일본판과 영문판이 동시에 있을 때 사용자가 적용할 판본을 선택하는 기능 유지.
-- 새 1.01 IMG의 MD5·SHA-256 기준값 미제공: 두 판본이 공유하는 66개 VCDIFF 윈도우 Adler-32와 출력 크기로 검사. 실제 CD 원본을 사용한 전체 적용 시험 미실시.
+- 새 1.01 IMG의 MD5·SHA-256 기준값을 제공받아 CCD·IMG·SUB 모두 전체 해시와 비교. IMG의 66개 VCDIFF 윈도우·크기는 보조 정보로 보존. 실제 CD 원본을 사용한 종단 간 적용 시험 미실시.
 - 배포 ZIP에 Go 소스를 넣지 않고 GitHub `src/mirrors-go`에서 관리. LICENSE, THIRD_PARTY_LICENSE, NOTICE_MODIFICATIONS 포함.
+
+### IMG 전체 해시 기준값 추가판
+
+- IMG 기대 MD5: `32D1646E31EEF1EE55E587DBDD6FF864`.
+- IMG 기대 SHA-256: `7D5067467E5C4715A840C088F84656EED27908A63BCF77F27069B80D5FBA4016`.
+- 새 ZIP: `Mirrors_Kor1.01.zip` — 18,914,284바이트, SHA-256 `2dd1e49168a251a0e1555918b5bccf4ce3d03e65ea786946f0bc11149d93b9db`.
+- CCD/SUB 해시 유지, 일본판·영문판 패치 6개 및 디코더 바이너리 변경 없음. 새 매니페스트와 Windows x64·x86 프로그램 및 설명서 갱신.
+- 로컬 Go 테스트 15개 통과, Windows x64·x86 크로스 빌드 및 ZIP CRC 검사 통과.
+- 일본판·영문판 실제 전체 원본 이미지가 없어 종단 간 실원본 패치 시험은 별도 필요.
