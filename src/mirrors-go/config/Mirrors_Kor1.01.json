@@ -43,26 +43,6 @@
       }
     }
   },
-  "target": {
-    "ccd": {
-      "md5": "80273154a2daf2d107a282b353a86246",
-      "sha256": "5512efcec20279753e1c6fef0c5aae37f2f3f05bb3ae3900b5db0f688d4a67ac",
-      "filename": "Mirrors_Kor1.01.ccd",
-      "size": 3500
-    },
-    "img": {
-      "md5": "56e768f7ce3315a8172338cb10ce153e",
-      "sha256": "fdcf60364815adf0e85c2b796533276e2c72210f1024425c02757bdf88333b10",
-      "filename": "Mirrors_Kor1.01.img",
-      "size": 551779200
-    },
-    "sub": {
-      "md5": "e45923398b1d150f71e6056bd0974d15",
-      "sha256": "c20c93ff3a2cf3a1e3a18b5f8046ec6f6198a916b417a01678b0b9d10eed9046",
-      "filename": "Mirrors_Kor1.01.sub",
-      "size": 22521600
-    }
-  },
   "extras": [
     {
       "filename": "Mirrors_Kor1.01.cue",
@@ -81,5 +61,47 @@
     }
   ],
   "xdelta3_sha256": "232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481",
-  "xdelta3_x64_sha256": "53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0"
+  "xdelta3_x64_sha256": "53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0",
+  "target": {
+    "Japanese": {
+      "ccd": {
+        "md5": "80273154a2daf2d107a282b353a86246",
+        "sha256": "5512efcec20279753e1c6fef0c5aae37f2f3f05bb3ae3900b5db0f688d4a67ac",
+        "filename": "Mirrors_Kor1.01.ccd",
+        "size": 3500
+      },
+      "img": {
+        "md5": "56e768f7ce3315a8172338cb10ce153e",
+        "sha256": "fdcf60364815adf0e85c2b796533276e2c72210f1024425c02757bdf88333b10",
+        "filename": "Mirrors_Kor1.01.img",
+        "size": 551779200
+      },
+      "sub": {
+        "md5": "e45923398b1d150f71e6056bd0974d15",
+        "sha256": "c20c93ff3a2cf3a1e3a18b5f8046ec6f6198a916b417a01678b0b9d10eed9046",
+        "filename": "Mirrors_Kor1.01.sub",
+        "size": 22521600
+      }
+    },
+    "English": {
+      "ccd": {
+        "md5": "35c733769d60277fcce522e121af82ae",
+        "sha256": "2daeaaf64fd4c206cc28c2438a5fa480272db0888cc19106380d13950de1c102",
+        "filename": "Mirrors_Kor1.01.ccd",
+        "size": 3500
+      },
+      "img": {
+        "md5": "b737fadf8eab6c4712f763e142e08dab",
+        "sha256": "6ab276b6b3a79b64dd8f513f528750ec19ed7999737feeb5855cc0cfeff27aae",
+        "filename": "Mirrors_Kor1.01.img",
+        "size": 551779200
+      },
+      "sub": {
+        "md5": "f6d739f1b66082f7f06f403d30cf35eb",
+        "sha256": "3c05efec20e9be2cda81500178ff1f8a7657908fd699d2070827e58d700122d2",
+        "filename": "Mirrors_Kor1.01.sub",
+        "size": 22521600
+      }
+    }
+  }
 }

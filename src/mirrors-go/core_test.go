@@ -37,20 +37,28 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 	}
 	sources := map[string]map[string][]byte{}
 	target := map[string][]byte{"ccd": []byte("Japanese original CCD; Korean result identical"), "img": []byte("Korean img test output with all expected content"), "sub": []byte("Japanese original SUB; Korean result identical")}
-	m := Manifest{Name: programName, Schema: manifestSchema, Source: map[string]map[string]SourceDef{}, Target: map[string]TargetDef{}}
-	for _, ext := range exts {
-		m.Target[ext] = TargetDef{Hashes: testHashes(target[ext]), Filename: "Mirrors_Kor1.01." + ext, Size: int64(len(target[ext]))}
+	englishTarget := map[string][]byte{
+		"ccd": []byte("English original ccd test file"),
+		"img": []byte("English Korean img result differs from Japanese"),
+		"sub": []byte("English original sub test file"),
+	}
+	m := Manifest{Name: programName, Schema: manifestSchema, Source: map[string]map[string]SourceDef{}, Target: map[string]map[string]TargetDef{}}
+	for _, edition := range editions {
+		m.Target[edition] = map[string]TargetDef{}
+		for _, ext := range exts {
+			data := target[ext]
+			if edition=="English" { data=englishTarget[ext] }
+			m.Target[edition][ext] = TargetDef{Hashes:testHashes(data), Filename:programName+"."+ext, Size:int64(len(data))}
+		}
 	}
 	for _, edition := range editions {
 		sources[edition] = map[string][]byte{}
 		m.Source[edition] = map[string]SourceDef{}
 		for _, ext := range exts {
 			var data []byte
-			if edition == "Japanese" && (ext == "ccd" || ext == "sub") {
-				data = target[ext]
-			} else {
-				data = []byte(edition + " original " + ext + " test file")
-			}
+			if ext!="img" {
+				if edition=="Japanese" {data=target[ext]} else {data=englishTarget[ext]}
+			} else {data=[]byte(edition+" original "+ext+" test file")}
 			sources[edition][ext] = data
 			patch := edition + "_" + strings.ToUpper(ext) + "_v1.01.xdelta"
 			fakeVCDIFF := append([]byte{0xd6, 0xc3, 0xc4, 0x00}, []byte(edition+ext)...)
@@ -76,9 +84,12 @@ func fixture(t *testing.T) (*Engine, string, map[string]map[string][]byte, map[s
 [ "$3" = "-s" ] || exit 2
 src="$4"; patch="$5"; out="$6"
 case "$patch" in
-    *_CCD*.xdelta) printf '%s' 'Japanese original CCD; Korean result identical' > "$out" ;;
-    *_IMG*.xdelta) printf '%s' 'Korean img test output with all expected content' > "$out" ;;
-    *_SUB*.xdelta) printf '%s' 'Japanese original SUB; Korean result identical' > "$out" ;;
+    */Japanese_CCD*.xdelta) printf '%s' 'Japanese original CCD; Korean result identical' > "$out" ;;
+    */Japanese_IMG*.xdelta) printf '%s' 'Korean img test output with all expected content' > "$out" ;;
+    */Japanese_SUB*.xdelta) printf '%s' 'Japanese original SUB; Korean result identical' > "$out" ;;
+    */English_CCD*.xdelta) printf '%s' 'English original ccd test file' > "$out" ;;
+    */English_IMG*.xdelta) printf '%s' 'English Korean img result differs from Japanese' > "$out" ;;
+    */English_SUB*.xdelta) printf '%s' 'English original sub test file' > "$out" ;;
     *) exit 1 ;;
 esac
 `)
@@ -101,15 +112,15 @@ func putInputs(t *testing.T, folder, edition string, sources map[string]map[stri
 		writeTestFile(t, filepath.Join(folder, "original_"+ext+"."+ext), sources[edition][ext])
 	}
 }
-func assertOutput(t *testing.T, e *Engine, folder string) {
+func assertOutput(t *testing.T, e *Engine, folder, edition string) {
 	t.Helper()
 	for _, ext := range exts {
-		p := filepath.Join(folder, e.Manifest.Target[ext].Filename)
+		p := filepath.Join(folder, e.Manifest.Target[edition][ext].Filename)
 		got, err := hashFile(p)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if !hashEqual(got, e.Manifest.Target[ext].Hashes) {
+		if !hashEqual(got, e.Manifest.Target[edition][ext].Hashes) {
 			t.Errorf("wrong output: %s", p)
 		}
 	}
@@ -137,7 +148,7 @@ func TestJapanesePatchAndExtras(t *testing.T) {
 	if err = e.Apply(s, nil); err != nil {
 		t.Fatal(err)
 	}
-	assertOutput(t, e, folder)
+	assertOutput(t, e, folder, "Japanese")
 	s, err = e.Scan(folder)
 	if err != nil {
 		t.Fatal(err)
@@ -162,7 +173,7 @@ func TestEnglishPatchAndExtras(t *testing.T) {
 	if err = e.Apply(s, nil); err != nil {
 		t.Fatal(err)
 	}
-	assertOutput(t, e, folder)
+	assertOutput(t, e, folder, "English")
 }
 func TestMixedEditionsRejectedNoWrites(t *testing.T) {
 	e, folder, sources, _ := fixture(t)
@@ -184,7 +195,7 @@ func TestCollisionRejectedBeforePatching(t *testing.T) {
 	if _, err := e.Scan(folder); err == nil {
 		t.Fatal("extra collision accepted")
 	}
-	if _, err := os.Stat(filepath.Join(folder, e.Manifest.Target["img"].Filename)); !os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(folder, e.Manifest.Target["Japanese"]["img"].Filename)); !os.IsNotExist(err) {
 		t.Fatal("output incorrectly created")
 	}
 }
@@ -228,7 +239,7 @@ func TestFailureRollsBackGeneratedFiles(t *testing.T) {
 func TestExistingKoreanAddsExtrasOnly(t *testing.T) {
 	e, folder, _, target := fixture(t)
 	for _, ext := range exts {
-		writeTestFile(t, filepath.Join(folder, e.Manifest.Target[ext].Filename), target[ext])
+		writeTestFile(t, filepath.Join(folder, e.Manifest.Target["Japanese"][ext].Filename), target[ext])
 	}
 	s, err := e.Scan(folder)
 	if err != nil {
@@ -240,7 +251,7 @@ func TestExistingKoreanAddsExtrasOnly(t *testing.T) {
 	if err = e.Apply(s, nil); err != nil {
 		t.Fatal(err)
 	}
-	assertOutput(t, e, folder)
+	assertOutput(t, e, folder, "Japanese")
 }
 func TestProvidedBundleIntegrity(t *testing.T) {
 	if _, err := os.Stat(filepath.Join("assets", manifestFile)); os.IsNotExist(err) {
@@ -263,7 +274,7 @@ func TestProvidedBundleIntegrity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(cue), e.Manifest.Target["img"].Filename) {
+	if !strings.Contains(string(cue), e.Manifest.Target["Japanese"]["img"].Filename) {
 		t.Fatal("CUE target IMG name mismatch")
 	}
 }
@@ -272,7 +283,7 @@ func TestCanonicalNamesAndCue(t *testing.T) {
     e, _, _, _ := fixture(t)
     for _, ext := range exts {
         want := "Mirrors_Kor1.01." + ext
-        if got := e.Manifest.Target[ext].Filename; got != want {
+        if got := e.Manifest.Target["Japanese"][ext].Filename; got != want {
             t.Fatalf("target %s: got %s want %s", ext, got, want)
         }
     }
@@ -316,7 +327,7 @@ func TestBothEditionsRequireSelection(t *testing.T) {
 			if err = e.Apply(s, nil); err == nil {
 				t.Fatal("accepted unselected edition")
 			}
-			if _, err = os.Stat(filepath.Join(folder, e.Manifest.Target["img"].Filename)); !os.IsNotExist(err) {
+			if _, err = os.Stat(filepath.Join(folder, e.Manifest.Target["Japanese"]["img"].Filename)); !os.IsNotExist(err) {
 				t.Fatal("unselected apply wrote a result")
 			}
 			s, err = e.ScanWithEdition(folder, chosen)
@@ -342,7 +353,7 @@ func TestBothEditionsRequireSelection(t *testing.T) {
 			if uses != 3 {
 				t.Fatalf("expected three %s patches, got %d", chosen, uses)
 			}
-			assertOutput(t, e, folder)
+			assertOutput(t, e, folder, chosen)
 			for name, orig := range originalPaths {
 				got, err := os.ReadFile(filepath.Join(folder, name))
 				if err != nil {
@@ -400,11 +411,11 @@ func TestV101RejectsMissingFullHashOrWrongSize(t *testing.T) {
     writeTestFile(t, path, target["img"])
     actual, err := hashFile(path)
     if err != nil { t.Fatal(err) }
-    def := e.Manifest.Target["img"]
+    def := e.Manifest.Target["Japanese"]["img"]
     def.MD5 = ""
     def.SHA256 = ""
     if _, err = verifyTarget(path, actual, def); err == nil { t.Fatal("accepted missing full IMG hashes") }
-    def = e.Manifest.Target["img"]
+    def = e.Manifest.Target["Japanese"]["img"]
     def.Size++
     if _, err = verifyTarget(path, actual, def); err == nil { t.Fatal("accepted incorrect IMG size") }
 }
@@ -415,21 +426,21 @@ func TestReleaseIMGFullHashVerification(t *testing.T) {
     writeTestFile(t,path,target["img"])
     good,err:=hashFile(path)
     if err!=nil{t.Fatal(err)}
-    method,err:=verifyTarget(path,good,e.Manifest.Target["img"])
+    method,err:=verifyTarget(path,good,e.Manifest.Target["Japanese"]["img"])
     if err!=nil||!strings.HasPrefix(method,"MD5/SHA-256"){t.Fatalf("unexpected hash mode %s %v",method,err)}
     changed:=append([]byte(nil),target["img"]...)
     changed[0]^=1
     writeTestFile(t,path,changed)
     bad,err:=hashFile(path)
     if err!=nil{t.Fatal(err)}
-    if _,err=verifyTarget(path,bad,e.Manifest.Target["img"]);err==nil{t.Fatal("changed IMG accepted")}
+    if _,err=verifyTarget(path,bad,e.Manifest.Target["Japanese"]["img"]);err==nil{t.Fatal("changed IMG accepted")}
 }
 func TestProvidedV101IMGReferenceHashes(t *testing.T) {
     b,err:=os.ReadFile(filepath.Join("config",manifestFile))
     if err!=nil{t.Fatal(err)}
     var m Manifest
     if err=json.Unmarshal(b,&m);err!=nil{t.Fatal(err)}
-    img:=m.Target["img"]
+    img:=m.Target["Japanese"]["img"]
     if !strings.EqualFold(img.MD5,"56E768F7CE3315A8172338CB10CE153E")||
        !strings.EqualFold(img.SHA256,"FDCF60364815ADF0E85C2B796533276E2C72210F1024425C02757BDF88333B10") {
        t.Fatalf("wrong 1.01 hashes: %s %s",img.MD5,img.SHA256)
@@ -450,7 +461,74 @@ func TestVersion101PatchMetadataAndHashes(t *testing.T) {
       if m.Source[edition]["img"].PatchSHA256 != sha { t.Fatalf("%s IMG patch is obsolete", edition) }
     }
     for ext, size := range map[string]int64{"ccd":3500,"img":551779200,"sub":22521600} {
-      if m.Target[ext].Size != size {t.Fatalf("incorrect %s size",ext)}
-      if len(m.Target[ext].MD5)!=32 || len(m.Target[ext].SHA256)!=64 { t.Fatalf("%s full hashes missing",ext) }
+      if m.Target["Japanese"][ext].Size != size {t.Fatalf("incorrect %s size",ext)}
+      if len(m.Target["Japanese"][ext].MD5)!=32 || len(m.Target["Japanese"][ext].SHA256)!=64 { t.Fatalf("%s full hashes missing",ext) }
     }
+}
+
+func TestEditionSpecificOutputHashes(t *testing.T) {
+	e,folder,sources,_:=fixture(t)
+	for _,ext:=range exts {
+		if e.Manifest.Target["Japanese"][ext].MD5==e.Manifest.Target["English"][ext].MD5 {
+			t.Fatalf("%s incorrectly shares output hashes",ext)
+		}
+	}
+	putInputs(t,folder,"English",sources)
+	s,err:=e.Scan(folder)
+	if err!=nil{t.Fatal(err)}
+	if err=e.Apply(s,nil);err!=nil{t.Fatal(err)}
+	assertOutput(t,e,folder,"English")
+	result,err:=e.Scan(folder)
+	if err!=nil||result.Edition!="AlreadyPatched"||result.OutputEdition!="English"{
+		t.Fatalf("English results not retained: %+v %v",result,err)
+	}
+	if err=e.Apply(result,nil);err!=nil{t.Fatal(err)}
+}
+func TestOppositeEditionCannotReuseExistingResults(t *testing.T) {
+	e,folder,sources,_:=fixture(t)
+	for _,ed:=range editions {
+		for _,ext:=range exts {
+			writeTestFile(t,filepath.Join(folder,ed+"_source."+ext),sources[ed][ext])
+		}
+	}
+	selected,err:=e.ScanWithEdition(folder,"Japanese")
+	if err!=nil{t.Fatal(err)}
+	if err=e.Apply(selected,nil);err!=nil{t.Fatal(err)}
+	assertOutput(t,e,folder,"Japanese")
+	if _,err=e.ScanWithEdition(folder,"English");err==nil{t.Fatal("accepted other edition's canonical results")}
+}
+func TestMixedEditionCanonicalOutputsRejected(t *testing.T) {
+	e,folder,_,target:=fixture(t)
+	writeTestFile(t,filepath.Join(folder,programName+".img"),target["img"])
+	writeTestFile(t,filepath.Join(folder,programName+".ccd"),[]byte("English original ccd test file"))
+	if _,err:=e.Scan(folder);err==nil{t.Fatal("accepted mixed target editions")}
+}
+func TestEnglishOutputHashAndPartialResume(t *testing.T) {
+	e,folder,sources,_:=fixture(t)
+	putInputs(t,folder,"English",sources)
+	for _,ext:=range []string{"ccd","sub"} {
+		data:=sources["English"][ext]
+		writeTestFile(t,filepath.Join(folder,programName+"."+ext),data)
+	}
+	selected,err:=e.Scan(folder)
+	if err!=nil||selected.Edition!="English"||!selected.Already["ccd"]||!selected.Already["sub"]||selected.Already["img"]{
+		t.Fatalf("English partial state: %+v %v",selected,err)
+	}
+	if err=e.Apply(selected,nil);err!=nil{t.Fatal(err)}
+	assertOutput(t,e,folder,"English")
+}
+func TestProvidedEnglishV101IMGReferenceHashes(t *testing.T) {
+	b,err:=os.ReadFile(filepath.Join("config",manifestFile))
+	if err!=nil{t.Fatal(err)}
+	var m Manifest
+	if err=json.Unmarshal(b,&m);err!=nil{t.Fatal(err)}
+	english:=m.Target["English"]["img"]
+	if !strings.EqualFold(english.MD5,"B737FADF8EAB6C4712F763E142E08DAB")||
+		!strings.EqualFold(english.SHA256,"6AB276B6B3A79B64DD8F513F528750EC19ED7999737FEEB5855CC0CFEFF27AAE"){
+		t.Fatalf("wrong English IMG result hashes: %+v",english)
+	}
+	for _,ext:=range []string{"ccd","sub"} {
+		src,tgt:=m.Source["English"][ext],m.Target["English"][ext]
+		if src.MD5!=tgt.MD5||src.SHA256!=tgt.SHA256{t.Fatalf("unexpected English %s hash",ext)}
+	}
 }

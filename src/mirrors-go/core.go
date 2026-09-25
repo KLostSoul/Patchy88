@@ -48,7 +48,7 @@ type Manifest struct {
 	Name         string                          `json:"name"`
 	Schema       string                          `json:"schema"`
 	Source       map[string]map[string]SourceDef `json:"source"`
-	Target       map[string]TargetDef            `json:"target"`
+	Target       map[string]map[string]TargetDef `json:"target"`
 	Extras       []ExtraDef                      `json:"extras"`
 	XdeltaSHA256 string                          `json:"xdelta3_sha256"`
 	XdeltaX64SHA256 string                       `json:"xdelta3_x64_sha256,omitempty"`
@@ -61,6 +61,7 @@ type Engine struct {
 type ScanResult struct {
 	Folder        string
 	Edition       string   // Japanese, English, AlreadyPatched, or empty when both source editions are available
+	OutputEdition string   // Source edition of existing canonical outputs
 	Options       []string // Complete matching source editions; GUI must prompt when both exist
 	Inputs        map[string]string
 	Already       map[string]bool
@@ -127,7 +128,7 @@ func NewEngine(root string) (*Engine, error) {
 	if m.Name != programName || m.Schema != manifestSchema {
 		return nil, errors.New("매니페스트 이름/형식이 일치하지 않습니다")
 	}
-	if len(m.Source) != 2 || len(m.Target) != 3 || len(m.Extras) != 3 {
+	if len(m.Source) != 2 || len(m.Target) != 2 || len(m.Extras) != 3 {
 		return nil, errors.New("매니페스트 대상 개수가 올바르지 않습니다")
 	}
 	for _, edition := range editions {
@@ -163,16 +164,19 @@ func NewEngine(root string) (*Engine, error) {
 			}
 		}
 	}
-	for _, ext := range exts {
-		t, ok := m.Target[ext]
-		if !ok || !cleanFilename(t.Filename) || len(t.MD5) != 32 || len(t.SHA256) != 64 || t.Size <= 0 {
-			return nil, fmt.Errorf("%s 결과 파일의 이름/크기/MD5/SHA-256 기준값이 불완전합니다", ext)
+	for _, edition := range editions {
+		targets, ok := m.Target[edition]
+		if !ok || len(targets) != len(exts) {
+			return nil, fmt.Errorf("%s 판본 결과 목록이 불완전합니다", edition)
 		}
-		if _, err := hex.DecodeString(t.MD5); err != nil {
-			return nil, fmt.Errorf("%s 결과 MD5 형식 오류", ext)
-		}
-		if _, err := hex.DecodeString(t.SHA256); err != nil {
-			return nil, fmt.Errorf("%s 결과 SHA-256 형식 오류", ext)
+		for _, ext := range exts {
+			t, ok := targets[ext]
+			if !ok || !cleanFilename(t.Filename) || t.Filename != programName+"."+ext || t.Size <= 0 ||
+				len(t.MD5) != 32 || len(t.SHA256) != 64 {
+				return nil, fmt.Errorf("%s %s 결과 이름/크기/해시가 불완전합니다", edition, ext)
+			}
+			if _, err := hex.DecodeString(t.MD5); err != nil { return nil, fmt.Errorf("%s %s MD5 오류", edition, ext) }
+			if _, err := hex.DecodeString(t.SHA256); err != nil { return nil, fmt.Errorf("%s %s SHA-256 오류", edition, ext) }
 		}
 	}
 	for _, x := range m.Extras {
@@ -223,153 +227,122 @@ func (e *Engine) ScanWithEdition(folder, preferred string) (*ScanResult, error) 
 		return nil, fmt.Errorf("지원하지 않는 원본 판본: %q", preferred)
 	}
 	folder, err := filepath.Abs(folder)
-	if err != nil {
-		return nil, err
-	}
+	if err != nil { return nil, err }
 	info, err := os.Stat(folder)
-	if err != nil || !info.IsDir() {
-		return nil, fmt.Errorf("폴더를 열 수 없습니다: %s", folder)
-	}
+	if err != nil || !info.IsDir() { return nil, fmt.Errorf("폴더를 열 수 없습니다: %s", folder) }
 	items, err := os.ReadDir(folder)
-	if err != nil {
-		return nil, err
-	}
+	if err != nil { return nil, err }
 	sort.Slice(items, func(i, j int) bool { return strings.ToLower(items[i].Name()) < strings.ToLower(items[j].Name()) })
 	candidates := map[string]map[string][]string{}
-	for _, edition := range editions {
-		candidates[edition] = map[string][]string{}
-	}
-	already := map[string]bool{}
-	canonical := map[string]string{}
-	targetCandidates := map[string][]string{}
-	for _, ext := range exts {
-		canonical[ext] = e.Manifest.Target[ext].Filename
-	}
+	outputMatches := map[string]map[string]bool{}
+	for _, ed := range editions { candidates[ed]=map[string][]string{}; outputMatches[ed]=map[string]bool{} }
+	outputPresent := map[string]bool{}
+	canonicalPath := map[string]string{}
 	for _, item := range items {
-		if item.IsDir() {
-			continue
-		}
+		if item.IsDir() { continue }
 		ext := strings.ToLower(strings.TrimPrefix(filepath.Ext(item.Name()), "."))
-		if ext != "ccd" && ext != "img" && ext != "sub" {
-			continue
-		}
+		if ext!="ccd" && ext!="img" && ext!="sub" { continue }
 		path := filepath.Join(folder, item.Name())
 		h, err := hashFile(path)
-		if err != nil {
-			return nil, fmt.Errorf("%s 검사 오류: %w", item.Name(), err)
-		}
-		if strings.EqualFold(item.Name(), canonical[ext]) {
-			if _, err := verifyTarget(path,h,e.Manifest.Target[ext]);err!=nil {
-				return nil, fmt.Errorf("결과 파일명 %s에 예상과 다른 데이터가 이미 있습니다: %w", item.Name(),err)
+		if err!=nil { return nil, fmt.Errorf("%s 검사 오류: %w", item.Name(), err) }
+		if strings.EqualFold(item.Name(), programName+"."+ext) {
+			if outputPresent[ext] { return nil, fmt.Errorf("중복 결과 파일명: %s", item.Name()) }
+			outputPresent[ext]=true
+			canonicalPath[ext]=path
+			matched:=false
+			for _, ed:=range editions {
+				if _,err:=verifyTarget(path,h,e.Manifest.Target[ed][ext]);err==nil {outputMatches[ed][ext]=true;matched=true}
 			}
-			already[ext] = true
-			targetCandidates[ext] = append(targetCandidates[ext], path)
-			// A Japanese CCD/SUB is byte-identical to the corresponding final Korean file;
-			// allow canonical names as fallbacks only if no other Japanese source exists.
+			if !matched { return nil, fmt.Errorf("다른 내용의 결과 파일 %s가 있습니다. 덮어쓰지 않습니다", item.Name()) }
 			continue
 		}
-		for _, edition := range editions {
-			def := e.Manifest.Source[edition][ext]
-			if hashEqual(h, def.Hashes) {
-				candidates[edition][ext] = append(candidates[edition][ext], path)
+		for _, ed:=range editions {
+			if hashEqual(h,e.Manifest.Source[ed][ext].Hashes) {
+				candidates[ed][ext]=append(candidates[ed][ext],path)
 			}
 		}
 	}
-	extrasPresent := map[string]bool{}
-	for _, x := range e.Manifest.Extras {
-		dest := filepath.Join(folder, x.Filename)
-		s, err := os.Stat(dest)
-		if os.IsNotExist(err) {
-			continue
-		}
-		if err != nil {
-			return nil, err
-		}
-		if s.IsDir() {
-			return nil, fmt.Errorf("추가 파일명에 폴더가 존재합니다: %s", x.Filename)
-		}
-		h, err := shaFile(dest)
-		if err != nil {
-			return nil, err
-		}
-		if s.Size() != x.Size || !strings.EqualFold(h, x.SHA256) {
-			return nil, fmt.Errorf("다른 내용의 %s 파일이 이미 있습니다. 덮어쓰지 않습니다", x.Filename)
-		}
-		extrasPresent[x.Filename] = true
+	extrasPresent:=map[string]bool{}
+	for _, x:=range e.Manifest.Extras {
+		dest:=filepath.Join(folder,x.Filename)
+		st,err:=os.Stat(dest)
+		if os.IsNotExist(err) { continue }
+		if err!=nil {return nil,err}
+		if st.IsDir() {return nil,fmt.Errorf("추가 파일명에 폴더가 존재합니다: %s",x.Filename)}
+		h,err:=shaFile(dest)
+		if err!=nil {return nil,err}
+		if st.Size()!=x.Size || !strings.EqualFold(h,x.SHA256) {return nil,fmt.Errorf("다른 내용의 %s 파일이 있습니다",x.Filename)}
+		extrasPresent[x.Filename]=true
 	}
-	allAlready := true
-	for _, ext := range exts {
-		if !already[ext] {
-			allAlready = false
-		}
-	}
-	if allAlready {
-		return &ScanResult{Folder: folder, Edition: "AlreadyPatched", Inputs: map[string]string{}, Already: already, ExtrasPresent: extrasPresent, Notes: []string{"한글판 CCD/IMG/SUB 전체 MD5·SHA-256 및 크기 검증 통과."}}, nil
-	}
-	// The Japanese CCD/SUB hashes equal the Korean ones, so a single canonical file can act as both.
-	for _, ext := range exts {
-		if len(candidates["Japanese"][ext]) == 0 && already[ext] && len(targetCandidates[ext]) == 1 {
-			if e.Manifest.Source["Japanese"][ext].MD5 == e.Manifest.Target[ext].MD5 && e.Manifest.Source["Japanese"][ext].SHA256 == e.Manifest.Target[ext].SHA256 {
-				candidates["Japanese"][ext] = append(candidates["Japanese"][ext], targetCandidates[ext][0])
+	// A verified canonical CCD/SUB may double as its source for the SAME edition.
+	for _, ed:=range editions {
+		for _, ext:=range exts {
+			if len(candidates[ed][ext])==0 && outputMatches[ed][ext] {
+				src,tgt:=e.Manifest.Source[ed][ext],e.Manifest.Target[ed][ext]
+				if strings.EqualFold(src.MD5,tgt.MD5) && strings.EqualFold(src.SHA256,tgt.SHA256) {
+					candidates[ed][ext]=append(candidates[ed][ext],canonicalPath[ext])
+				}
 			}
 		}
 	}
-	if preferred == "AlreadyPatched" {
-		return nil, errors.New("검사 후 한글판 결과 파일이 변경됐습니다")
+	completeOutputs:=[]string{}
+	for _, ed:=range editions {
+		ok:=true
+		for _, ext:=range exts {if !outputMatches[ed][ext] {ok=false}}
+		if ok {completeOutputs=append(completeOutputs,ed)}
 	}
-	valid := []string{}
-	for _, edition := range editions {
-		complete := true
-		for _, ext := range exts {
-			if len(candidates[edition][ext]) != 1 {
-				complete = false
-			}
+	if len(completeOutputs)>1 {return nil,errors.New("기존 결과가 두 판본에 모두 해당합니다. 원본을 별도 폴더로 분리하세요")}
+	if len(completeOutputs)==1 {
+		ed:=completeOutputs[0]
+		if preferred!="" && preferred!="AlreadyPatched" && preferred!=ed {
+			return nil,fmt.Errorf("%s 결과 파일이 이미 있습니다. %s 패치는 별도 폴더에 적용하세요",ed,preferred)
 		}
-		if complete {
-			valid = append(valid, edition)
-		}
+		already:=map[string]bool{}
+		for _,ext:=range exts {already[ext]=true}
+		return &ScanResult{Folder:folder,Edition:"AlreadyPatched",OutputEdition:ed,
+			Inputs:map[string]string{},Already:already,ExtrasPresent:extrasPresent,
+			Notes:[]string{ed+" 한글판 CCD/IMG/SUB 해시·크기 검증 통과"}},nil
 	}
-	if len(valid) == 0 {
-		desc := []string{}
-		for _, edition := range editions {
-			counts := []string{}
-			for _, ext := range exts {
-				counts = append(counts, fmt.Sprintf("%s:%d", strings.ToUpper(ext), len(candidates[edition][ext])))
-			}
-			desc = append(desc, edition+" ["+strings.Join(counts, ", ")+"]")
+	if preferred=="AlreadyPatched" {return nil,errors.New("검사 후 한글판 결과가 변경됐습니다")}
+	valid:=[]string{}
+	for _,ed:=range editions {
+		ok:=true
+		for _,ext:=range exts {
+			if len(candidates[ed][ext])!=1 || (outputPresent[ext]&&!outputMatches[ed][ext]) {ok=false}
 		}
-		return nil, fmt.Errorf("완전한 일본판/영문판 원본 3개를 식별하지 못했습니다. 누락/중복/혼합을 확인하세요. %s", strings.Join(desc, "; "))
+		if ok {valid=append(valid,ed)}
 	}
-	edition := valid[0]
-	if preferred != "" {
-		found := false
-		for _, ed := range valid {
-			if ed == preferred {
-				found = true
-				break
-			}
+	if len(valid)==0 {
+		if len(outputPresent)>0 {return nil,errors.New("다른 판본의 결과가 있거나 원본·결과가 혼합되어 있습니다. 별도 폴더를 사용하세요")}
+		desc:=[]string{}
+		for _,ed:=range editions {
+			c:=[]string{}
+			for _,ext:=range exts {c=append(c,fmt.Sprintf("%s:%d",strings.ToUpper(ext),len(candidates[ed][ext])))}
+			desc=append(desc,ed+" ["+strings.Join(c,", ")+"]")
 		}
-		if !found {
-			return nil, fmt.Errorf("선택한 %s 판본의 CCD/IMG/SUB가 완전하지 않습니다 (사용 가능: %s)", preferred, strings.Join(valid, ", "))
-		}
-		edition = preferred
-	} else if len(valid) > 1 {
-		// Never silently select the first matching edition.
-		return &ScanResult{Folder: folder, Edition: "", Options: valid,
-			Inputs: map[string]string{}, Already: already, ExtrasPresent: extrasPresent,
-			Notes: []string{"일본판과 영문판이 모두 검증됐습니다. 적용할 원본을 직접 선택하세요."}}, nil
+		return nil,fmt.Errorf("완전한 원본 CCD/IMG/SUB를 찾지 못했습니다. %s",strings.Join(desc,"; "))
 	}
-	inputs := map[string]string{}
-	for _, ext := range exts {
-		inputs[ext] = candidates[edition][ext][0]
+	selected:=valid[0]
+	if preferred!="" {
+		ok:=false
+		for _,ed:=range valid {if ed==preferred {ok=true}}
+		if !ok {return nil,fmt.Errorf("선택한 %s 판본의 원본이 불완전합니다 (사용 가능: %s)",preferred,strings.Join(valid,", "))}
+		selected=preferred
+	} else if len(valid)>1 {
+		return &ScanResult{Folder:folder,Edition:"",Options:valid,Inputs:map[string]string{},
+			Already:map[string]bool{},ExtrasPresent:extrasPresent,
+			Notes:[]string{"일본판과 영문판이 모두 확인됐습니다. 원본을 직접 선택하세요."}},nil
 	}
-	notes := []string{fmt.Sprintf("%s 원본 CCD/IMG/SUB 3개 식별 완료 (MD5 + SHA-256)", edition)}
-	for _, ext := range exts {
-		if already[ext] {
-			notes = append(notes, strings.ToUpper(ext)+" 결과 파일은 이미 검증됨")
-		}
+	inputs:=map[string]string{}
+	already:=map[string]bool{}
+	notes:=[]string{fmt.Sprintf("%s 원본 CCD/IMG/SUB 3개 식별 완료",selected)}
+	for _,ext:=range exts {
+		inputs[ext]=candidates[selected][ext][0]
+		already[ext]=outputMatches[selected][ext]
+		if already[ext] {notes=append(notes,strings.ToUpper(ext)+": "+selected+" 패치 결과가 이미 검증됨")}
 	}
-	return &ScanResult{Folder: folder, Edition: edition, Options: valid, Inputs: inputs, Already: already, ExtrasPresent: extrasPresent, Notes: notes}, nil
+	return &ScanResult{Folder:folder,Edition:selected,OutputEdition:selected,Options:valid,
+		Inputs:inputs,Already:already,ExtrasPresent:extrasPresent,Notes:notes},nil
 }
 
 type stagedFile struct{ Temp, Dest string }
@@ -425,12 +398,17 @@ func (e *Engine) Apply(s *ScanResult, log func(string)) error {
 		return errors.New("일본판과 영문판이 모두 있습니다. 패치할 판본을 먼저 선택하세요")
 	}
 	// Independently rescan the explicitly selected edition just before applying.
-	fresh, err := e.ScanWithEdition(s.Folder, s.Edition)
+	rescanEdition := s.Edition
+	if rescanEdition == "AlreadyPatched" { rescanEdition = s.OutputEdition }
+	fresh, err := e.ScanWithEdition(s.Folder, rescanEdition)
 	if err != nil {
 		return err
 	}
 	if s.Edition != "AlreadyPatched" && fresh.Edition != s.Edition {
 		return errors.New("원본 판본이 검사 이후 변경됐습니다")
+	}
+	if s.Edition == "AlreadyPatched" && (fresh.Edition != "AlreadyPatched" || fresh.OutputEdition != s.OutputEdition) {
+		return errors.New("한글판 결과 판본이 검사 이후 변경됐습니다")
 	}
 	s = fresh
 	staged := []stagedFile{}
@@ -447,8 +425,10 @@ func (e *Engine) Apply(s *ScanResult, log func(string)) error {
 		}
 	}()
 	// All output names are reserved/checked before decoding anything.
+	targetEdition := s.Edition
+	if targetEdition == "AlreadyPatched" { targetEdition = s.OutputEdition }
 	for _, ext := range exts {
-		dest := filepath.Join(s.Folder, e.Manifest.Target[ext].Filename)
+		dest := filepath.Join(s.Folder, e.Manifest.Target[targetEdition][ext].Filename)
 		if s.Already[ext] {
 			continue
 		}
@@ -471,7 +451,7 @@ func (e *Engine) Apply(s *ScanResult, log func(string)) error {
 	}
 	if s.Edition != "AlreadyPatched" {
 		for _, ext := range exts {
-			target := e.Manifest.Target[ext]
+			target := e.Manifest.Target[targetEdition][ext]
 			if s.Already[ext] {
 				log(strings.ToUpper(ext) + ": 이미 올바른 결과 파일이 있습니다")
 				continue
