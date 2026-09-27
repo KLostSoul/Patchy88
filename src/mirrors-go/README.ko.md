@@ -2,23 +2,15 @@
 
 사용자용 설명과 원본/결과 전체 해시는 [Mirrors용 Patchy88 설명서](../../docs/MIRRORS.md)에 있습니다. **배포 ZIP에는 Go 소스를 포함하지 않습니다.**
 
-Go 패처는 원본 CCD·IMG·SUB 전체 MD5·SHA-256으로 일본판과 영문판을 식별합니다. 양쪽이 모두 있으면 선택을 요구합니다. `config/Mirrors_Kor1.01.json`의 `source.Japanese`/`source.English`, `target.Japanese`/`target.English`에 기록된 **별도의 결과 해시**를 이용합니다. 결과 CCD·IMG·SUB 모두 전체 MD5·SHA-256과 크기를 검사하며 이전의 Adler-32 대체 검증 경로는 없습니다. 결과 파일명은 양쪽이 같으므로 다른 판본 결과가 이미 있는 경우에는 덮어쓰지 않습니다.
+Go 패처는 원본 CCD·IMG·SUB 전체 MD5·SHA-256으로 일본판과 영문판을 식별합니다. 양쪽이 모두 있으면 선택을 요구합니다. 두 판본의 최종 CCD·IMG·SUB는 동일한 한글판으로 검증합니다. 결과 파일명과 해시가 같으며, 기존의 정상 결과를 재검사할 수 있습니다.
 
-## 일본판 패치 결과
+## 공통 한글판 결과
 
 | 파일 | 크기 | MD5 | SHA-256 |
 |---|---:|---|---|
 | CCD | 3,500 B | `80273154A2DAF2D107A282B353A86246` | `5512EFCEC20279753E1C6FEF0C5AAE37F2F3F05BB3AE3900B5DB0F688D4A67AC` |
 | IMG | 551,779,200 B | `56E768F7CE3315A8172338CB10CE153E` | `FDCF60364815ADF0E85C2B796533276E2C72210F1024425C02757BDF88333B10` |
 | SUB | 22,521,600 B | `E45923398B1D150F71E6056BD0974D15` | `C20C93FF3A2CF3A1E3A18B5F8046EC6F6198A916B417A01678B0B9D10EED9046` |
-
-## 영문판 패치 결과 (제공받은 CloneCD 측정값)
-
-| 파일 | 크기 | MD5 | SHA-256 |
-|---|---:|---|---|
-| CCD | 3,532 B | `35C733769D60277FCCE522E121AF82AE` | `2DAEAAF64FD4C206CC28C2438A5FA480272DB0888CC19106380D13950DE1C102` |
-| IMG | 551,779,200 B | `B737FADF8EAB6C4712F763E142E08DAB` | `6AB276B6B3A79B64DD8F513F528750EC19ED7999737FEEB5855CC0CFEFF27AAE` |
-| SUB | 22,521,600 B | `F6D739F1B66082F7F06F403D30CF35EB` | `3C05EFEC20E9BE2CDA81500178FF1F8A7657908FD699D2070827E58D700122D2` |
 
 `core.go`: 판본 선택, 결과 판본 구분, 안전한 적용·정리. `verify_img.go`: CCD·IMG·SUB 해시 및 크기 검사. `core_test.go`: 판본별 출력·기존 결과·충돌·부분 재실행 테스트. `main_windows.go`: 사용자 폴더 및 판본 선택 GUI. 디코더 출처는 [UPSTREAM_XDELTA.md](UPSTREAM_XDELTA.md)를 참조하십시오.
 
@@ -31,8 +23,8 @@ GOOS=windows GOARCH=386 CGO_ENABLED=0 go build -trimpath -ldflags='-H windowsgui
 
 비Windows CLI: `go run . scan FOLDER`, `go run . apply FOLDER Japanese` 또는 `English`. 공식 xdelta3 바이너리와 패치·D88·CUE는 실행파일 옆의 `assets/`에서 읽으며 Git 소스에는 넣지 않습니다.
 
-로컬 테스트 25개와 Windows x64·x86 빌드 완료. 배포 ZIP SHA-256 `d7ce6d6d5b6a460d166fbd7dcce02b0bbb5bc854703dfdc4cef941ce40948283`. 실원본 종단 간 패치 시험은 원본 부재로 미실시입니다.
+실제 영문판 원본 CCD·IMG·SUB를 이용한 종단 간 적용 및 최종 해시 검증을 완료했습니다.
 
-## 사용자 제공 최종 해시와 동일한 CCD/SUB 처리
+## CCD/SUB 처리
 
-각 판본의 CCD·SUB는 사용자가 제공한 패치 완료 MD5·SHA-256이 해당 판본의 원본과 완전히 일치합니다. **두 파일은 원본 전체를 검증한 다음 변경 없이 복사하고, 복사된 결과에 동일한 전체 MD5·SHA-256과 크기를 재검증합니다.** 일본판 CCD는 3,500바이트, 영문판 CCD는 실제 업로드 원본으로 확인한 **3,532바이트**입니다. 영문판 CCD의 이전 xdelta가 선언한 출력 크기 3,500바이트는 제공받은 영문판 최종 값과 양립하지 않습니다. 따라서 해당 파일은 배포 자산으로 보존하되 적용하지 않습니다. 일본판·영문판 IMG에는 각각의 전용 xdelta를 적용하며, 결과 전체 해시가 주신 판본별 기준값과 다르면 결과를 확정하지 않습니다. Adler-32 대체 검증은 없습니다.
+일본판 CCD·SUB는 원본이 한글판 결과와 동일하므로 검증 후 복사합니다. 영문판 CCD·IMG·SUB는 각각의 xdelta를 적용합니다. 모든 출력은 동일한 한글판 해시와 크기로 검증합니다.

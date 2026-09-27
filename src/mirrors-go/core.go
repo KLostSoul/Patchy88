@@ -90,6 +90,9 @@ func hashFile(path string) (fileHashes, error) {
 func hashEqual(h fileHashes, ref Hashes) bool {
 	return strings.EqualFold(h.MD5, ref.MD5) && strings.EqualFold(h.SHA256, ref.SHA256)
 }
+func hashDefsEqual(a, b Hashes) bool {
+	return strings.EqualFold(a.MD5, b.MD5) && strings.EqualFold(a.SHA256, b.SHA256)
+}
 func shaFile(path string) (string, error) {
 	h, err := hashFile(path)
 	if err != nil {
@@ -179,6 +182,9 @@ func NewEngine(root string) (*Engine, error) {
 			if _, err := hex.DecodeString(t.SHA256); err != nil { return nil, fmt.Errorf("%s %s SHA-256 오류", edition, ext) }
 		}
 	}
+	if !sameTargets(m.Target["Japanese"], m.Target["English"]) {
+		return nil, errors.New("일본판·영문판의 한글판 결과 해시/크기가 서로 다릅니다")
+	}
 	for _, x := range m.Extras {
 		if !cleanFilename(x.Filename) || len(x.SHA256) != 64 || x.Size <= 0 {
 			return nil, fmt.Errorf("추가 파일 정보가 잘못됐습니다: %s", x.Filename)
@@ -216,6 +222,17 @@ func NewEngine(root string) (*Engine, error) {
 	return &Engine{Root: root, Manifest: m, Decoder: helper}, nil
 }
 // Scan identifies available source editions without guessing when both are present.
+func sameTargets(a, b map[string]TargetDef) bool {
+	for _, ext := range exts {
+		x, okX := a[ext]
+		y, okY := b[ext]
+		if !okX || !okY || !hashDefsEqual(x.Hashes, y.Hashes) || x.Size != y.Size || x.Filename != y.Filename {
+			return false
+		}
+	}
+	return true
+}
+
 func (e *Engine) Scan(folder string) (*ScanResult, error) {
 	return e.ScanWithEdition(folder, "")
 }
@@ -291,10 +308,23 @@ func (e *Engine) ScanWithEdition(folder, preferred string) (*ScanResult, error) 
 		for _, ext:=range exts {if !outputMatches[ed][ext] {ok=false}}
 		if ok {completeOutputs=append(completeOutputs,ed)}
 	}
-	if len(completeOutputs)>1 {return nil,errors.New("기존 결과가 두 판본에 모두 해당합니다. 원본을 별도 폴더로 분리하세요")}
+	// Both source editions intentionally produce the same Korean CloneCD set.
+	// Identical target definitions therefore count as one completed result.
+	if len(completeOutputs)>1 {
+		for _, ext := range exts {
+			first := e.Manifest.Target[completeOutputs[0]][ext]
+			for _, ed := range completeOutputs[1:] {
+				other := e.Manifest.Target[ed][ext]
+				if !hashDefsEqual(first.Hashes, other.Hashes) || first.Size != other.Size || first.Filename != other.Filename {
+					return nil, errors.New("서로 다른 판본의 결과가 혼합되어 있습니다")
+				}
+			}
+		}
+		completeOutputs = completeOutputs[:1]
+	}
 	if len(completeOutputs)==1 {
 		ed:=completeOutputs[0]
-		if preferred!="" && preferred!="AlreadyPatched" && preferred!=ed {
+		if preferred!="" && preferred!="AlreadyPatched" && preferred!=ed && !sameTargets(e.Manifest.Target[ed], e.Manifest.Target[preferred]) {
 			return nil,fmt.Errorf("%s 결과 파일이 이미 있습니다. %s 패치는 별도 폴더에 적용하세요",ed,preferred)
 		}
 		already:=map[string]bool{}
@@ -471,11 +501,7 @@ func (e *Engine) Apply(s *ScanResult, log func(string)) error {
 				return err
 			}
 			staged = append(staged, stagedFile{Temp: tmp, Dest: filepath.Join(s.Folder, target.Filename)})
-			// If the edition-specific source already equals the exact published
-			// target hashes AND size, preserve it byte-for-byte. The actual
-			// English CCD is 3,532 bytes. Its supplied xdelta declares a
-			// different, 3,500-byte output and must not be used to satisfy
-			// the published English CCD result.
+			// A source that already equals the common Korean target needs no delta.
 			unchanged := hashEqual(current, target.Hashes) && current.Size == target.Size
 			if unchanged {
 				log(fmt.Sprintf("%s: %s 원본이 최종 해시·크기와 일치 — xdelta 생략, 원본 복사", strings.ToUpper(ext), s.Edition))

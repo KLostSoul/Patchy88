@@ -161,4 +161,4 @@ Valis 판에서는 PC-8801 D88/ROM 직접 IPS 적용과 패치 영역 검증을 
 
 사용자는 적법하게 준비한 원본을 사용해야 합니다.
 
-Mirrors v1.01 수정판: 일본판/영문판 CCD·SUB의 원본과 최종 해시가 동일하면 원본을 검증해 그대로 복사합니다. 영문판 CCD는 3,532바이트이며 판본별 IMG 전용 xdelta와 결과 전체 MD5·SHA-256 검증은 유지합니다. [수정 내역](docs/RELEASE_ARTIFACTS.md)
+Mirrors v1.01 패처: 일본판과 영문판 원본에서 동일한 한글판 CCD·IMG·SUB를 생성하고 전체 MD5·SHA-256을 검증합니다. [수정 내역](docs/RELEASE_ARTIFACTS.md)
