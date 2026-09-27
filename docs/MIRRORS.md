@@ -1,6 +1,6 @@
 # Mirrors용 Patchy88 — Mirrors_Kor1.01 (PC-8801)
 
-일본판·영문판 PC-8801 《Mirrors》의 원본 CCD·IMG·SUB를 MD5·SHA-256으로 식별하고, **선택한 판본 전용 xdelta 3개**를 적용합니다. 두 판본의 패치 결과 해시는 동일하지 않습니다.
+일본판·영문판 PC-8801 《Mirrors》의 원본 CCD·IMG·SUB를 MD5·SHA-256으로 식별하고, **선택한 판본의 IMG에만 전용 xdelta를 적용**하고, 제공받은 원본과 최종 해시가 동일한 CCD·SUB는 검증 후 그대로 복사합니다. 두 판본의 패치 결과 해시는 동일하지 않습니다.
 
 ## 사용 방법
 
@@ -22,7 +22,7 @@
 
 | 파일 | 크기 | MD5 | SHA-256 |
 |---|---:|---|---|
-| CCD | 3,500 B | `35C733769D60277FCCE522E121AF82AE` | `2DAEAAF64FD4C206CC28C2438A5FA480272DB0888CC19106380D13950DE1C102` |
+| CCD | 3,532 B | `35C733769D60277FCCE522E121AF82AE` | `2DAEAAF64FD4C206CC28C2438A5FA480272DB0888CC19106380D13950DE1C102` |
 | IMG | 551,779,200 B | `F3BC8D9E2650D9D9C6EBAEF5E2353144` | `294EE461A2BEA8745394C71CA7EEC64960A865673D72F8B60557C0A29A9CA7AA` |
 | SUB | 22,521,600 B | `F6D739F1B66082F7F06F403D30CF35EB` | `3C05EFEC20E9BE2CDA81500178FF1F8A7657908FD699D2070827E58D700122D2` |
 
@@ -38,7 +38,7 @@
 
 | 파일 | 크기 | MD5 | SHA-256 |
 |---|---:|---|---|
-| CCD | 3,500 B | `35C733769D60277FCCE522E121AF82AE` | `2DAEAAF64FD4C206CC28C2438A5FA480272DB0888CC19106380D13950DE1C102` |
+| CCD | 3,532 B | `35C733769D60277FCCE522E121AF82AE` | `2DAEAAF64FD4C206CC28C2438A5FA480272DB0888CC19106380D13950DE1C102` |
 | IMG | 551,779,200 B | `B737FADF8EAB6C4712F763E142E08DAB` | `6AB276B6B3A79B64DD8F513F528750EC19ED7999737FEEB5855CC0CFEFF27AAE` |
 | SUB | 22,521,600 B | `F6D739F1B66082F7F06F403D30CF35EB` | `3C05EFEC20E9BE2CDA81500178FF1F8A7657908FD699D2070827E58D700122D2` |
 
@@ -50,4 +50,8 @@
 
 xdelta3는 [jmacd/xdelta v3.2.0](https://github.com/jmacd/xdelta/releases/tag/v3.2.0) 공식 Windows x64 배포본과 동일 소스의 Win32 빌드입니다. Apache License 2.0 라이선스와 수정 고지를 ZIP에 포함하며 Go 소스는 [src/mirrors-go](../src/mirrors-go/README.ko.md)에 관리합니다.
 
-`Mirrors_Kor1.01.zip`: 18,919,281바이트, SHA-256 `4561080e082bc9006da8da789af1b79545c8a72c6f96a4e4ee8f872e4cc60646`. 로컬 Go 테스트 20개, Windows x64·x86 빌드, 패치·디코더·추가 자산 SHA-256 및 ZIP CRC 검사 통과. **실제 일본판·영문판 전체 원본 이미지가 없어 새 패치 결과의 종단 간 시험은 수행하지 못했습니다.** 위 패치 후 해시는 사용자에게 제공받은 CloneCD 측정값입니다.
+`Mirrors_Kor1.01.zip`: 18,906,271바이트, SHA-256 `d7ce6d6d5b6a460d166fbd7dcce02b0bbb5bc854703dfdc4cef941ce40948283`. 로컬 Go 테스트 25개, Windows x64·x86 빌드, 패치·디코더·추가 자산 SHA-256 및 ZIP CRC 검사 통과. **실제 일본판·영문판 전체 원본 이미지가 없어 새 패치 결과의 종단 간 시험은 수행하지 못했습니다.** 위 패치 후 해시는 사용자에게 제공받은 CloneCD 측정값입니다.
+
+## 사용자 제공 최종 해시와 동일한 CCD/SUB 처리
+
+각 판본의 CCD·SUB는 사용자가 제공한 패치 완료 MD5·SHA-256이 해당 판본의 원본과 완전히 일치합니다. **두 파일은 원본 전체를 검증한 다음 변경 없이 복사하고, 복사된 결과에 동일한 전체 MD5·SHA-256과 크기를 재검증합니다.** 일본판 CCD는 3,500바이트, 영문판 CCD는 실제 업로드 원본으로 확인한 **3,532바이트**입니다. 영문판 CCD의 이전 xdelta가 선언한 출력 크기 3,500바이트는 제공받은 영문판 최종 값과 양립하지 않습니다. 따라서 해당 파일은 배포 자산으로 보존하되 적용하지 않습니다. 일본판·영문판 IMG에는 각각의 전용 xdelta를 적용하며, 결과 전체 해시가 주신 판본별 기준값과 다르면 결과를 확정하지 않습니다. Adler-32 대체 검증은 없습니다.

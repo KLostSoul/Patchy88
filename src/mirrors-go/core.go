@@ -471,16 +471,29 @@ func (e *Engine) Apply(s *ScanResult, log func(string)) error {
 				return err
 			}
 			staged = append(staged, stagedFile{Temp: tmp, Dest: filepath.Join(s.Folder, target.Filename)})
-			log(fmt.Sprintf("%s: %s 전용 xdelta 적용", strings.ToUpper(ext), s.Edition))
-			cmd := exec.Command(e.Decoder, "-q", "-d", "-s", src, patch, tmp)
-			configureCommand(cmd)
-			output, err := cmd.CombinedOutput()
-			if err != nil {
-				message := strings.TrimSpace(string(output))
-				if len(message) > 600 {
-					message = message[:600]
+			// If the edition-specific source already equals the exact published
+			// target hashes AND size, preserve it byte-for-byte. The actual
+			// English CCD is 3,532 bytes. Its supplied xdelta declares a
+			// different, 3,500-byte output and must not be used to satisfy
+			// the published English CCD result.
+			unchanged := hashEqual(current, target.Hashes) && current.Size == target.Size
+			if unchanged {
+				log(fmt.Sprintf("%s: %s 원본이 최종 해시·크기와 일치 — xdelta 생략, 원본 복사", strings.ToUpper(ext), s.Edition))
+				if err := copyFile(src, tmp); err != nil {
+					return fmt.Errorf("%s 원본 복사 실패: %w", strings.ToUpper(ext), err)
 				}
-				return fmt.Errorf("%s xdelta 복호화 실패: %w; %s", strings.ToUpper(ext), err, message)
+			} else {
+				log(fmt.Sprintf("%s: %s 전용 xdelta 적용", strings.ToUpper(ext), s.Edition))
+				cmd := exec.Command(e.Decoder, "-q", "-d", "-s", src, patch, tmp)
+				configureCommand(cmd)
+				output, err := cmd.CombinedOutput()
+				if err != nil {
+					message := strings.TrimSpace(string(output))
+					if len(message) > 600 {
+						message = message[:600]
+					}
+					return fmt.Errorf("%s xdelta 복호화 실패: %w; %s", strings.ToUpper(ext), err, message)
+				}
 			}
 			got, err := hashFile(tmp)
 			if err != nil {
