@@ -1,0 +1,21 @@
+{
+  "name": "Alltynex Kor v1.0",
+  "schema": "patchfm.alltynex.xdelta.v1",
+  "source": {
+    "md5": "bca57cbe9a2f23c922118f40fffae43a",
+    "sha256": "19b662f038e50e99535f60dbe6e07a77e269f574ed9250d46fc0655bb2aa6b3a",
+    "size": 574208
+  },
+  "target": {
+    "md5": "d5a438b7c7aac9e5b08baea6cb361f70",
+    "sha256": "114a9ffa82e32bcc8cacb8b0475810422056560260eae5697ccf32b17bc91a54",
+    "size": 5222400,
+    "filename": "Alltynex (Kor v1.0).iso"
+  },
+  "patch": {
+    "filename": "Alltynex_Kor_v1.0.xdelta",
+    "sha256": "d7ef05131f9f2f2809e73e7e77adf77f4ff19f89a2c59bcf6e604ec8f4cfc99b"
+  },
+  "xdelta3_sha256": "232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481",
+  "xdelta3_x64_sha256": "53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0"
+}
