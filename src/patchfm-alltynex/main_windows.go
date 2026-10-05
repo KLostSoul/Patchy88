@@ -163,7 +163,12 @@ func enable(h uintptr, on bool) {
 }
 func pickZip() string {
 	var buf [32768]uint16
-	filter := syscall.StringToUTF16("ZIP 파일 (*.zip)\x00*.zip\x00모든 파일 (*.*)\x00*.*\x00\x00")
+	// OPENFILENAMEW filters are NUL-separated and double-NUL terminated.
+	// Build each UTF-16 field separately because StringToUTF16 rejects embedded NUL.
+	filter := append(syscall.StringToUTF16("ZIP 파일 (*.zip)"), syscall.StringToUTF16("*.zip")...)
+	filter = append(filter, syscall.StringToUTF16("모든 파일 (*.*)")...)
+	filter = append(filter, syscall.StringToUTF16("*.*")...)
+	filter = append(filter, 0)
 	of := openFileName{StructSize: uint32(unsafe.Sizeof(openFileName{})), Owner: uiHWND, Filter: &filter[0], File: &buf[0], MaxFile: uint32(len(buf)), Title: u16("Alltynex 원본 ZIP 선택"), Flags: 0x00001000 | 0x00000800}
 	r, _, _ := getOpenFileName.Call(uintptr(unsafe.Pointer(&of)))
 	if r == 0 {
