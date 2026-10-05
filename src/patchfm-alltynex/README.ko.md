@@ -69,3 +69,32 @@ xdelta와 xdelta3 실행파일은 배포 자산이며 이 소스 디렉터리에
 
 - [UPSTREAM_XDELTA.md](UPSTREAM_XDELTA.md)
 - Patchy88 저장소의 Apache License 2.0 및 관련 고지를 따릅니다.
+
+
+## 실제 검증 완료
+
+PatchFM Alltynex v1.0은 사용자 환경에서 다음 과정을 실제로 완료했습니다.
+
+- 원본 ZIP 선택
+- 원본 전체 해시 검증
+- xdelta 적용
+- `Alltynex (Kor v1.0).iso` 생성
+- 결과 ISO 전체 크기/MD5/SHA-256 검증
+- 생성 ISO 실행
+- 한글 패치 적용 상태 확인
+
+따라서 현재 v1.0은 입력부터 실제 게임 실행까지 종단 간 검증이 완료된 상태입니다.
+
+## Windows ZIP 선택 종료 문제 수정
+
+초기 v1.0 Windows 빌드에서 `ZIP 선택` 버튼을 누르면 종료되는 문제가 있었습니다.
+
+`OPENFILENAMEW` 필터에 필요한 내부 NUL 구분자를 `syscall.StringToUTF16`에 직접 넘긴 것이 원인이었고, UTF-16 필터 항목을 개별 생성해 결합하도록 수정했습니다.
+
+버전은 **v1.0 그대로 유지**합니다.
+
+현재 검증된 배포 ZIP:
+
+- 파일명: `PatchFM_Alltynex_v1.0.zip`
+- 크기: `3,058,282 bytes`
+- SHA-256: `52289113615d8d5b18e47a89d50136e20bb538d17f47cb4d0b782719091cddcd`
