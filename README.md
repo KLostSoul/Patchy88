@@ -1,12 +1,14 @@
 # Patchy88
 
-Patchy88은 PC-8801 게임의 한글화 패치를 적용하는 도구 모음입니다. 《몽환전사 바리스》·《몽환전사 바리스 II》용 IPS 패처와 **《Mirrors》용 Patchy88** xdelta 패처를 별도로 제공합니다.
+Patchy88은 PC-8801 게임의 한글화 패치를 안전하게 적용하기 위한 도구 모음입니다. 《몽환전사 바리스》·《몽환전사 바리스 II》용 IPS 패처와 《Mirrors》용 xdelta 패처를 제공하며, 같은 검증 원칙을 바탕으로 만든 FM TOWNS용 변형 **PatchFM**도 이 저장소에서 관리합니다.
 
-《Mirrors》 v1.01은 **일본판과 영문판을 개별적으로 패치하고, 완료된 CCD·IMG·SUB 세 파일 모두 판본별 MD5·SHA-256과 크기로 검증**합니다. 두 판본의 결과 파일명은 같지만 해시는 다르므로 각각 별도 폴더에서 적용해야 합니다.
+현재 PatchFM 대상은 FM TOWNS판 《Alltynex》입니다. 사용자가 준비한 원본 ZIP 전체를 검증한 뒤 xdelta를 적용하여 한글판 ISO를 생성하고, 생성된 ISO 전체의 크기·MD5·SHA-256을 다시 검증합니다.
 
-46OkuMen의 **Pachy98 / romtools**가 사용한 패치 배포 개념에서 출발했지만, PC-88의 D88/ROM을 대상으로 하기 위해 구조를 바꿨습니다. PC-88 IPS 판에서는 NDC를 이용한 파일 추출/재삽입이나 xdelta3를 사용하지 않고, **D88/ROM에 IPS를 직접 적용하면서 IPS가 실제로 건드리는 원본 영역을 검증**합니다. Mirrors 판은 공식 xdelta3 v3.2.0을 사용하며 일본판·영문판 원본 및 CCD/IMG/SUB 한글판 결과 전체의 MD5·SHA-256과 크기를 검증합니다.
+《Mirrors》 v1.01은 일본판과 영문판의 원본이 서로 다르지만, 두 판본 모두 **동일한 최종 한글판 CCD·IMG·SUB**를 생성합니다. 원본과 결과는 모두 전체 MD5·SHA-256과 크기로 검증합니다.
 
-> **중요:** 원본 게임 D88, 원본 KANJI ROM, 패치 완료 전체 게임 이미지는 저장소에 포함하지 않습니다.
+46OkuMen의 **Pachy98 / romtools**가 사용한 패치 배포 개념에서 출발했지만, PC-88의 D88/ROM과 FM TOWNS의 ZIP→ISO 변환에 맞게 구조를 바꿨습니다. PC-88 IPS 판에서는 NDC나 xdelta3를 사용하지 않고 D88/ROM에 IPS를 직접 적용하면서 IPS가 실제로 건드리는 원본 영역을 검증합니다. Mirrors와 PatchFM은 공식 xdelta3 v3.2.0을 사용합니다.
+
+> **중요:** 원본 게임 D88, 원본 KANJI ROM, 원본 게임 ZIP, 패치 완료 전체 게임 이미지/ISO는 저장소와 배포물에 포함하지 않습니다.
 
 ## 게임별 문서
 
@@ -14,8 +16,10 @@ Patchy88은 PC-8801 게임의 한글화 패치를 적용하는 도구 모음입�
 
 - [몽환전사 바리스용 Patchy88](docs/VALIS1.md)
 - [몽환전사 바리스 II용 Patchy88](docs/VALIS2.md)
-- [**Mirrors용 Patchy88 — Mirrors_Kor1.01**](docs/MIRRORS.md): PC-8801, 일본판/영문판 xdelta 패치, 사용법·출력 파일명
+- [Mirrors용 Patchy88 — Mirrors_Kor1.01](docs/MIRRORS.md)
+- [PatchFM — Alltynex Kor v1.0](docs/PATCHFM_ALLTYNEX.md)
 - [Mirrors용 Patchy88 소스 및 빌드](src/mirrors-go/README.ko.md)
+- [PatchFM Alltynex 소스 및 빌드](src/patchfm-alltynex/README.ko.md)
 
 ## PC-88 IPS 판의 핵심 원리
 
@@ -42,8 +46,6 @@ D88 / ROM
 자세한 내용은 [검증 구조 문서](docs/VALIDATION.md)를 참조하십시오.
 
 ## PC-88 IPS 판의 안전 적용 절차
-
-기본 처리 순서는 다음과 같습니다.
 
 ```text
 입력 선택
@@ -88,9 +90,7 @@ game.d88
 → game(K).d88
 ```
 
-백업 폴더를 따로 만들지 않고 원본과 같은 폴더에 `.bak`을 둡니다.
-
-기존 백업이 있으면 덮어쓰지 않습니다.
+백업 폴더를 따로 만들지 않고 원본과 같은 폴더에 `.bak`을 둡니다. 기존 백업이 있으면 덮어쓰지 않습니다.
 
 ```text
 game.d88.bak
@@ -110,6 +110,31 @@ game.d88.2.bak
 
 논리적으로 같은 섹터 내용이라도 D88 내부 오프셋 배치가 달라지면 안전하게 `INCOMPATIBLE`로 거부할 수 있습니다.
 
+## xdelta 판의 검증
+
+### Mirrors
+
+- 일본판/영문판 원본 CCD·IMG·SUB를 판별
+- 필요한 xdelta를 적용
+- 두 판본 모두 동일한 최종 한글판 CCD·IMG·SUB를 생성
+- 결과 전체의 크기·MD5·SHA-256 검증
+- 검증 실패 시 결과를 확정하지 않음
+
+### PatchFM Alltynex
+
+```text
+사용자 원본 ZIP 선택
+→ 원본 ZIP 전체 크기/MD5/SHA-256 검증
+→ 동봉 xdelta 및 xdelta3 SHA-256 검증
+→ 임시 ISO 생성
+→ ISO 전체 크기/MD5/SHA-256 검증
+→ 검증 성공 시에만 Alltynex (Kor v1.0).iso 확정
+```
+
+원본 ZIP은 수정하지 않습니다. 같은 이름의 기존 ISO가 올바른 결과 해시라면 그대로 인정하고, 해시가 다르면 덮어쓰지 않습니다.
+
+PatchFM Alltynex v1.0은 실제 원본 ZIP에서 ISO 생성, 결과 검증, 게임 실행까지 확인했습니다.
+
 ## 저장소 구조
 
 ```text
@@ -121,6 +146,7 @@ Patchy88/
 │  ├─ VALIS1.md
 │  ├─ VALIS2.md
 │  ├─ MIRRORS.md
+│  ├─ PATCHFM_ALLTYNEX.md
 │  ├─ VALIDATION.md
 │  ├─ Valis1_PC88_Validation.md
 │  ├─ Valis2_PC88_KOR_Hash_List.md
@@ -130,7 +156,8 @@ Patchy88/
 └─ src/
    ├─ valis1-python/
    ├─ valis2-go/
-   └─ mirrors-go/  (Mirrors용 Patchy88 — xdelta 패처 소스)
+   ├─ mirrors-go/
+   └─ patchfm-alltynex/
 ```
 
 ## 관련 문서
@@ -138,27 +165,27 @@ Patchy88/
 - [몽환전사 바리스](docs/VALIS1.md)
 - [몽환전사 바리스 II](docs/VALIS2.md)
 - [Mirrors용 Patchy88 사용법](docs/MIRRORS.md)
-- [Mirrors용 Patchy88 소스 및 빌드 안내](src/mirrors-go/README.ko.md)
+- [PatchFM Alltynex 사용법](docs/PATCHFM_ALLTYNEX.md)
 - [Valis IPS 검증 구조](docs/VALIDATION.md)
 - [IPS 파일 식별값](patches/README.md)
 - [배포 산출물 기록](docs/RELEASE_ARTIFACTS.md)
 
 ## 라이선스 / 파생판 고지
 
-Patchy88은 Pachy98/romtools의 패치 배포 개념에서 출발한 PC-8801용 파생 프로그램입니다.
+Patchy88은 Pachy98/romtools의 패치 배포 개념에서 출발한 파생 프로그램입니다.
 
 - Original project: 46OkuMen / romtools / Pachy98
 - Original repository: https://github.com/46OkuMen/romtools
 - Original license: Apache License 2.0
 
-Valis 판에서는 PC-8801 D88/ROM 직접 IPS 적용과 패치 영역 검증을 사용합니다. Mirrors 판에서는 별도의 xdelta3 복호화와 원본·결과 전체 MD5/SHA-256 검증을 사용합니다.
+Valis 판에서는 PC-8801 D88/ROM 직접 IPS 적용과 패치 영역 검증을 사용합니다. Mirrors와 PatchFM에서는 xdelta3와 원본/결과 전체 해시 검증을 사용합니다.
 
-자세한 변경 고지는 `NOTICE.md`를 참조하십시오.
+PatchFM Alltynex가 생성하는 ISO의 부팅 환경에는 CaptainYS(Soji Yamakawa)의 **FreeTOWNSOS / TSUGARU OS**가 사용됩니다. FreeTOWNSOS의 원 라이선스는 PatchFM 배포물과 소스 문서에 함께 포함합니다.
+
+자세한 변경 고지는 [NOTICE.md](NOTICE.md)를 참조하십시오.
 
 ## 저작권 관련
 
-이 저장소와 배포물은 **원본 게임 디스크 이미지, 원본 KANJI ROM, 패치 완료 전체 게임 이미지**를 제공하지 않습니다.
+이 저장소와 배포물은 **원본 게임 디스크 이미지, 원본 KANJI ROM, 원본 게임 ZIP, 패치 완료 전체 게임 이미지/ISO**를 제공하지 않습니다.
 
 사용자는 적법하게 준비한 원본을 사용해야 합니다.
-
-Mirrors v1.01 패처: 일본판과 영문판 원본에서 동일한 한글판 CCD·IMG·SUB를 생성하고 전체 MD5·SHA-256을 검증합니다. [수정 내역](docs/RELEASE_ARTIFACTS.md)
