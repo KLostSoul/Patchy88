@@ -7,6 +7,7 @@
 | 몽환전사 바리스 Windows x64/x86 | `Patchy88_Valis1_PC88_v1.0.7.zip` | 2,035,112 | `25537c9c97edebd1d958df0ffeb0067afa587ed227967d118f2f23dfcc0d5703` |
 | 몽환전사 바리스 Python | `Patchy88_Valis1_PC88_Python_v1.0.7.zip` | 220,377 | `62b553cb010e86902d7edfca532e7a5a3c51ad5d3e434a2a351dc6ec944902e7` |
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
+| Alltynex PatchFM Windows x64/x86 | `PatchFM_Alltynex_v1.0.zip` | 3,058,282 | `52289113615d8d5b18e47a89d50136e20bb538d17f47cb4d0b782719091cddcd` |
 
 ## 바리스 II v1.0.3
 
@@ -37,3 +38,25 @@
 [Mirrors용 Patchy88 사용법과 모든 판본별 해시](MIRRORS.md)
 
 - 수정 전에는 영문판 최종 해시를 잘못 분리해 IMG 검증이 실패했습니다. 영문판 CCD·IMG·SUB xdelta 출력은 모두 공통 한글판 결과임을 실제 파일로 확인하고, 매니페스트와 기존 결과 판정을 수정했습니다.
+
+
+## PatchFM Alltynex v1.0
+
+- FM TOWNS판 《Alltynex》 원본 ZIP 하나를 입력으로 사용합니다.
+- 원본 ZIP과 완성 ISO는 저장소 및 배포 ZIP에 포함하지 않습니다.
+- 동봉 xdelta SHA-256: `d7ef05131f9f2f2809e73e7e77adf77f4ff19f89a2c59bcf6e604ec8f4cfc99b`
+- 지원 원본 ZIP:
+  - 크기 `574,208 bytes`
+  - MD5 `bca57cbe9a2f23c922118f40fffae43a`
+  - SHA-256 `19b662f038e50e99535f60dbe6e07a77e269f574ed9250d46fc0655bb2aa6b3a`
+- 검증된 결과 ISO:
+  - 파일명 `Alltynex (Kor v1.0).iso`
+  - 크기 `5,222,400 bytes`
+  - MD5 `d5a438b7c7aac9e5b08baea6cb361f70`
+  - SHA-256 `114a9ffa82e32bcc8cacb8b0475810422056560260eae5697ccf32b17bc91a54`
+- Windows x64/x86 실행파일과 공식 xdelta3 v3.2.0 도우미를 함께 배포합니다.
+- 생성되는 ISO의 부팅 환경에는 FreeTOWNSOS / TSUGARU OS를 사용하며 원 라이선스 전문을 배포물에 포함합니다.
+- ZIP 선택 시 종료되던 Win32 파일 선택 필터 문제를 수정한 v1.0 배포물입니다. 버전 번호는 올리지 않았습니다.
+- 사용자 환경에서 **원본 ZIP 선택 → xdelta 적용 → ISO 전체 해시 검증 → 게임 실행**까지 종단 간 확인했습니다.
+
+[PatchFM Alltynex 상세 문서](PATCHFM_ALLTYNEX.md)
