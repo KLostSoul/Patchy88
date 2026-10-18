@@ -8,6 +8,7 @@
 | 몽환전사 바리스 Python | `Patchy88_Valis1_PC88_Python_v1.0.7.zip` | 220,377 | `62b553cb010e86902d7edfca532e7a5a3c51ad5d3e434a2a351dc6ec944902e7` |
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
 | Alltynex PatchFM Windows x64/x86 | `PatchFM_Alltynex_v1.0.zip` | 3,058,282 | `52289113615d8d5b18e47a89d50136e20bb538d17f47cb4d0b782719091cddcd` |
+| Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.0.zip` | 2,588,290 | `ce46fe504d930f2fd27d4e50c1f2a4424ec336479e1066effbe5fac7887f734c` |
 
 ## 바리스 II v1.0.3
 
@@ -60,3 +61,16 @@
 - 사용자 환경에서 **원본 ZIP 선택 → xdelta 적용 → ISO 전체 해시 검증 → 게임 실행**까지 종단 간 확인했습니다.
 
 [PatchFM Alltynex 상세 문서](PATCHFM_ALLTYNEX.md)
+
+
+## PatchyFM_Yuuwaku_v1.0
+
+- Windows x64/x86 실행파일 `PatchyFM-Yuuwaku-x64.exe`, `PatchyFM-Yuuwaku-x86.exe`를 포함합니다.
+- 소스 별도 ZIP: `PatchyFM_Yuuwaku_v1.0_Source.zip` (14,193 bytes, SHA-256 `07cddaa6d6b9b8825253ca3a4ce67ca51756c292e590ba4463cd176c0728360b`).
+- 원본 이미지 폴더를 선택하면 하위 폴더까지 검색해 크기, MD5, SHA-256으로 정확한 원본 IMG/BIN을 자동 인식합니다. 개별 파일 선택은 하지 않습니다.
+- 한글판 `Temptation-Korean-v1.0.bin` 및 `.cue` 생성.
+- 사용자 원본 `Yuuwaku.img`와 사용자 제공 xdelta로 복원한 한글판 BIN이 전체 바이트 및 MD5/SHA-256 일치했습니다.
+- Go 단위 테스트, Windows x64/x86 빌드, 독립 디코더 기반 8건 통합 테스트를 통과했습니다. Windows GUI 직접 실행과 게임 부팅은 아직 별도로 확인하지 않았습니다.
+- 원본 및 완성 게임 이미지는 미배포. xdelta 및 xdelta3 헬퍼는 배포 ZIP에만 포함하며 소스 트리에는 중복 보관하지 않습니다.
+
+[PatchyFM Yuuwaku 상세 문서](PATCHYFM_YUUWAKU.md)

@@ -1,0 +1,12 @@
+xdelta3 v3.2.0
+
+Source: https://github.com/jmacd/xdelta/tree/v3.2.0
+License: Apache License 2.0
+License: https://github.com/jmacd/xdelta/blob/v3.2.0/xdelta3/LICENSE
+Official Windows x64: https://github.com/jmacd/xdelta/releases/download/v3.2.0/xdelta3-3.2.0-windows-x86_64.zip
+
+This release reuses the same verified xdelta3 helpers as PatchFM Alltynex v1.0.
+- assets/xdelta3-x64.exe: SHA-256 53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0
+- assets/xdelta3.exe: SHA-256 232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481
+
+PatchyFM uses xdelta3 -d -s ORIGINAL.img PATCH.xdelta OUTPUT.bin

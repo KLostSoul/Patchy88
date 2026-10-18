@@ -69,3 +69,18 @@ PatchFM Alltynex는 사용자가 준비한 원본 FM TOWNS 《Alltynex》 ZIP �
 FreeTOWNSOS 라이선스에 포함된 ORICON 및 Free386 관련 고지도 함께 유지합니다.
 
 [PatchFM Alltynex 사용법과 검증 정보](docs/PATCHFM_ALLTYNEX.md)
+
+
+## PatchyFM_Yuuwaku_v1.0 — FM TOWNS 《誘惑 / Yuuwaku》
+
+사용자가 지정한 폴더와 하위 폴더에서 원본 IMG/BIN 데이터 트랙을 크기·MD5·SHA-256으로 자동 식별하고, 제공된 xdelta로 한글판 BIN/CUE를 생성합니다. CUE/CCD/SUB를 개별 선택하지 않습니다.
+
+- 원본 IMG: 6,703,200 bytes, MD5 `000b8a4e832d952fb29ea6b831ed8cd0`
+- 한글판 BIN: 7,599,312 bytes, MD5 `e07f8348b3a3b48f2e02613edeb204db`
+- xdelta SHA-256: `01c25b644e222bdb432fe484f6faed8a20714cce571ed2989d8bba79ead42e1e`
+- 원본 IMG/CCD/CUE/SUB 및 완성 BIN은 저장소와 배포물에 포함하지 않습니다.
+- Windows x64/x86 컴파일, Go 테스트 및 대체 디코더를 사용한 폴더 모드 통합 테스트 8건 통과. Windows GUI 직접 실행 및 Tsugaru 실제 부팅은 미확인.
+- FreeTOWNSOS는 사용하지 않으며 포함되지 않습니다.
+- 패처 코드는 Apache-2.0; xdelta3의 상위 프로젝트는 jmacd/xdelta v3.2.0입니다.
+
+[사용 설명 및 전체 해시](docs/PATCHYFM_YUUWAKU.md)
