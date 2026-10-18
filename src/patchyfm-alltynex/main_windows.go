@@ -3,7 +3,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -143,11 +142,11 @@ func queuedLog(s string) {
 }
 func flushLogs() {
 	pendingMu.Lock()
-	x := pendingLogs
+	lines := pendingLogs
 	pendingLogs = nil
 	pendingMu.Unlock()
-	for _, s := range x {
-		logLine(s)
+	for _, line := range lines {
+		logLine(line)
 	}
 }
 func dialog(s string, flags uintptr) int {
@@ -161,10 +160,11 @@ func enable(h uintptr, on bool) {
 	}
 	enableWindow.Call(h, v)
 }
+
+// OPENFILENAMEW requires pairs of UTF-16 NUL-terminated strings.
+// Never pass an embedded-NUL filter to syscall.StringToUTF16.
 func pickZip() string {
 	var buf [32768]uint16
-	// OPENFILENAMEW filters are NUL-separated and double-NUL terminated.
-	// Build each UTF-16 field separately because StringToUTF16 rejects embedded NUL.
 	filter := append(syscall.StringToUTF16("ZIP 파일 (*.zip)"), syscall.StringToUTF16("*.zip")...)
 	filter = append(filter, syscall.StringToUTF16("모든 파일 (*.*)")...)
 	filter = append(filter, syscall.StringToUTF16("*.*")...)
@@ -207,7 +207,7 @@ func startPatch() {
 	if busy || sourcePath == "" {
 		return
 	}
-	if dialog("선택한 원본 ZIP에서 한글판 ISO를 생성합니다.\n\n원본 ZIP은 수정하지 않습니다.\n완성 ISO는 배포물에 포함되어 있지 않습니다.\n계속하시겠습니까?", mbYesNo|mbQuestion) != idYes {
+	if dialog("선택한 원본 ZIP에서 한글판 ISO를 생성합니다.\n\n원본 ZIP은 수정하지 않습니다.\n완성 ISO는 배포물에 포함되지 않습니다.\n계속하시겠습니까?", mbYesNo|mbQuestion) != idYes {
 		return
 	}
 	p := sourcePath
@@ -250,19 +250,19 @@ func layout() {
 	}
 	var r rect
 	getClientRect.Call(uiHWND, uintptr(unsafe.Pointer(&r)))
-	w := int(r.Right)
-	h := int(r.Bottom)
-	m := 22
-	bw := 120
+	w, h := int(r.Right), int(r.Bottom)
+	m, bw := 22, 140
+	if w < 570 {
+		return
+	}
 	moveWindow.Call(uiPath, uintptr(m), 124, uintptr(w-m*2-bw-8), 31, 1)
 	moveWindow.Call(uiBrowse, uintptr(w-m-bw), 124, uintptr(bw), 31, 1)
 	moveWindow.Call(uiPatch, uintptr(m), 170, 180, 34, 1)
 	moveWindow.Call(uiExit, uintptr(w-m-90), 170, 90, 34, 1)
-	top := 220
-	fh := 60
+	top, fh := 220, 72
 	lh := h - top - fh - 25
-	if lh < 160 {
-		lh = 160
+	if lh < 150 {
+		lh = 150
 	}
 	moveWindow.Call(uiLog, uintptr(m), uintptr(top), uintptr(w-m*2), uintptr(lh), 1)
 	moveWindow.Call(uiFooter, uintptr(m), uintptr(top+lh+8), uintptr(w-m*2), uintptr(fh), 1)
@@ -320,7 +320,7 @@ func runGUI() int {
 	}
 	hinst, _, _ := getModuleHandle.Call(0)
 	cursor, _, _ := loadCursor.Call(0, 32512)
-	name := u16("PatchFMAlltynexMainWindow")
+	name := u16("PatchyFMAlltynexMainWindow")
 	wc := wndClass{Size: uint32(unsafe.Sizeof(wndClass{})), Style: 3, WndProc: syscall.NewCallback(wndProc), Instance: hinst, Cursor: cursor, Background: 6, Name: name}
 	if r, _, _ := registerClass.Call(uintptr(unsafe.Pointer(&wc))); r == 0 {
 		return 2
@@ -333,16 +333,16 @@ func runGUI() int {
 	fontNormal, _, _ = createFont.Call(uintptr(h1), 0, 0, 0, 400, 0, 0, 0, 1, 0, 0, 0, 0, uintptr(unsafe.Pointer(u16("맑은 고딕"))))
 	h2 := int32(-29)
 	fontTitle, _, _ = createFont.Call(uintptr(h2), 0, 0, 0, 600, 0, 0, 0, 1, 0, 0, 0, 0, uintptr(unsafe.Pointer(u16("맑은 고딕"))))
-	title := createControl(0, "STATIC", "PatchFM — Alltynex", wsChild|wsVisible, 22, 18, 820, 41, 0)
+	title := createControl(0, "STATIC", "PatchyFM — Alltynex", wsChild|wsVisible, 22, 18, 840, 41, 0)
 	setFont(title, fontTitle)
-	createControl(0, "STATIC", "FM TOWNS 《Alltynex》 — 원본 ZIP을 검증하고 한글판 ISO를 생성합니다.", wsChild|wsVisible, 22, 69, 820, 27, 0)
-	createControl(0, "STATIC", "원본 ZIP", wsChild|wsVisible, 22, 102, 160, 20, 0)
-	uiPath = createControl(wsClientEdge, "EDIT", "", wsChild|wsVisible|esReadonly, 22, 124, 700, 31, 0)
-	uiBrowse = createControl(0, "BUTTON", "ZIP 선택...", wsChild|wsVisible|wsTabstop, 735, 124, 120, 31, idBrowse)
+	createControl(0, "STATIC", "FM TOWNS 《Alltynex》 — 원본 ZIP을 검증하고 한글판 ISO를 생성합니다.", wsChild|wsVisible, 22, 69, 840, 27, 0)
+	createControl(0, "STATIC", "원본 ZIP", wsChild|wsVisible, 22, 102, 240, 20, 0)
+	uiPath = createControl(wsClientEdge, "EDIT", "", wsChild|wsVisible|esReadonly, 22, 124, 692, 31, 0)
+	uiBrowse = createControl(0, "BUTTON", "ZIP 선택...", wsChild|wsVisible|wsTabstop, 730, 124, 140, 31, idBrowse)
 	uiPatch = createControl(0, "BUTTON", "한글패치 적용", wsChild|wsVisible|wsTabstop|btnDefault, 22, 170, 180, 34, idPatch)
-	uiExit = createControl(0, "BUTTON", "종료", wsChild|wsVisible|wsTabstop, 765, 170, 90, 34, idExit)
-	uiLog = createControl(wsClientEdge, "EDIT", "", wsChild|wsVisible|esReadonly|esMultiline|esAutoScroll|wsVScroll, 22, 220, 833, 380, 0)
-	uiFooter = createControl(0, "STATIC", "원본 ZIP과 완성 ISO는 PatchFM 배포물에 포함되지 않습니다. 원본 ZIP은 수정하지 않습니다.\r\n결과 ISO는 전체 크기·MD5·SHA-256 검증을 통과한 경우에만 확정합니다.", wsChild|wsVisible, 22, 608, 833, 60, 0)
+	uiExit = createControl(0, "BUTTON", "종료", wsChild|wsVisible|wsTabstop, 780, 170, 90, 34, idExit)
+	uiLog = createControl(wsClientEdge, "EDIT", "", wsChild|wsVisible|esReadonly|esMultiline|esAutoScroll|wsVScroll, 22, 220, 844, 370, 0)
+	uiFooter = createControl(0, "STATIC", "원본 ZIP과 완성 ISO는 PatchyFM 배포물에 포함되지 않습니다. 원본 ZIP은 수정하지 않습니다.\r\n결과 ISO는 전체 크기·MD5·SHA-256 검증을 통과한 경우에만 확정합니다.", wsChild|wsVisible, 22, 605, 844, 72, 0)
 	enable(uiPatch, false)
 	logLine(programName)
 	logLine("xdelta 및 xdelta3 무결성 검증 완료")
@@ -361,5 +361,3 @@ func runGUI() int {
 	return int(ms.WParam)
 }
 func main() { os.Exit(runGUI()) }
-
-var _ = fmt.Sprintf

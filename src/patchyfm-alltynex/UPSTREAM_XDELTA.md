@@ -1,6 +1,6 @@
 # xdelta3
 
-PatchFM Alltynex uses xdelta3 from the official jmacd/xdelta v3.2.0 release/source.
+PatchyFM Alltynex uses xdelta3 from the official jmacd/xdelta v3.2.0 release/source.
 
 - Upstream: https://github.com/jmacd/xdelta/tree/v3.2.0
 - License: Apache License 2.0

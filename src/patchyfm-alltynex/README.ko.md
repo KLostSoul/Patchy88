@@ -1,8 +1,8 @@
-# PatchFM — Alltynex Kor v1.0
+# PatchyFM — Alltynex Kor v1.0
 
 FM TOWNS용 《Alltynex》 한글판 ISO 생성 패처 소스입니다.
 
-PatchFM은 사용자가 준비한 **원본 Alltynex ZIP 전체 파일**을 MD5·SHA-256·크기로 검증한 다음 xdelta를 적용하여 `Alltynex (Kor v1.0).iso`를 생성합니다.
+PatchyFM은 사용자가 준비한 **원본 Alltynex ZIP 전체 파일**을 MD5·SHA-256·크기로 검증한 다음 xdelta를 적용하여 `Alltynex (Kor v1.0).iso`를 생성합니다.
 
 **원본 게임 ZIP과 완성 ISO는 저장소 및 배포물에 포함하지 않습니다.** 소스 저장소에도 원본 ZIP이나 ISO를 넣지 않습니다.
 
@@ -39,8 +39,8 @@ xdelta:
 
 ```sh
 go test ./...
-GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags="-H windowsgui -s -w" -o PatchFM-Alltynex-x64.exe .
-GOOS=windows GOARCH=386 CGO_ENABLED=0 go build -trimpath -ldflags="-H windowsgui -s -w" -o PatchFM-Alltynex-x86.exe .
+GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags="-H windowsgui -s -w" -o PatchyFM-Alltynex-x64.exe .
+GOOS=windows GOARCH=386 CGO_ENABLED=0 go build -trimpath -ldflags="-H windowsgui -s -w" -o PatchyFM-Alltynex-x86.exe .
 ```
 
 실행 시 실행파일 옆 `assets/`에 다음 파일이 필요합니다.
@@ -73,7 +73,7 @@ xdelta와 xdelta3 실행파일은 배포 자산이며 이 소스 디렉터리에
 
 ## 실제 검증 완료
 
-PatchFM Alltynex v1.0은 사용자 환경에서 다음 과정을 실제로 완료했습니다.
+PatchyFM Alltynex v1.0은 사용자 환경에서 다음 과정을 실제로 완료했습니다.
 
 - 원본 ZIP 선택
 - 원본 전체 해시 검증
@@ -95,6 +95,6 @@ PatchFM Alltynex v1.0은 사용자 환경에서 다음 과정을 실제로 완�
 
 현재 검증된 배포 ZIP:
 
-- 파일명: `PatchFM_Alltynex_v1.0.zip`
+- 파일명: `PatchyFM_Alltynex_v1.0.zip`
 - 크기: `3,058,282 bytes`
 - SHA-256: `52289113615d8d5b18e47a89d50136e20bb538d17f47cb4d0b782719091cddcd`

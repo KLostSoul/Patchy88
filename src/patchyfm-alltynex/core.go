@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	programName  = "PatchFM Alltynex v1.0"
+	programName  = "PatchyFM Alltynex v1.0"
 	manifestFile = "Alltynex_Kor_v1.0.json"
 )
 
@@ -25,7 +25,6 @@ type Hashes struct {
 	SHA256 string `json:"sha256"`
 	Size   int64  `json:"size"`
 }
-
 type Manifest struct {
 	Name   string `json:"name"`
 	Schema string `json:"schema"`
@@ -48,7 +47,6 @@ type Engine struct {
 	Decoder  string
 	Patch    string
 }
-
 type FileHashes struct{ Hashes }
 
 func hashFile(path string) (FileHashes, error) {
@@ -64,11 +62,9 @@ func hashFile(path string) (FileHashes, error) {
 	}
 	return FileHashes{Hashes{MD5: hex.EncodeToString(m.Sum(nil)), SHA256: hex.EncodeToString(s.Sum(nil)), Size: n}}, nil
 }
-
 func equalHashes(a, b Hashes) bool {
 	return a.Size == b.Size && strings.EqualFold(a.MD5, b.MD5) && strings.EqualFold(a.SHA256, b.SHA256)
 }
-
 func NewEngine(root string) (*Engine, error) {
 	abs, err := filepath.Abs(root)
 	if err != nil {
@@ -82,7 +78,7 @@ func NewEngine(root string) (*Engine, error) {
 	if err = json.Unmarshal(b, &m); err != nil {
 		return nil, fmt.Errorf("매니페스트 형식 오류: %w", err)
 	}
-	if m.Name != "Alltynex Kor v1.0" || m.Schema != "patchfm.alltynex.xdelta.v1" {
+	if m.Name != "Alltynex Kor v1.0" || m.Schema != "patchyfm.alltynex.xdelta.v1" {
 		return nil, errors.New("매니페스트 이름/형식이 올바르지 않습니다")
 	}
 	if m.Target.Filename != "Alltynex (Kor v1.0).iso" {
@@ -112,7 +108,6 @@ func NewEngine(root string) (*Engine, error) {
 	}
 	return &Engine{Root: abs, Manifest: m, Decoder: decoder, Patch: patch}, nil
 }
-
 func (e *Engine) ValidateSource(path string) error {
 	h, err := hashFile(path)
 	if err != nil {
@@ -123,7 +118,6 @@ func (e *Engine) ValidateSource(path string) error {
 	}
 	return nil
 }
-
 func (e *Engine) ValidateTarget(path string) error {
 	h, err := hashFile(path)
 	if err != nil {
@@ -134,7 +128,6 @@ func (e *Engine) ValidateTarget(path string) error {
 	}
 	return nil
 }
-
 func (e *Engine) Apply(source string, logf func(string)) (string, error) {
 	if err := e.ValidateSource(source); err != nil {
 		return "", err
@@ -148,7 +141,7 @@ func (e *Engine) Apply(source string, logf func(string)) (string, error) {
 	} else if !os.IsNotExist(err) {
 		return "", err
 	}
-	tmp, err := os.CreateTemp(filepath.Dir(source), "PatchFM-Alltynex-*.iso.tmp")
+	tmp, err := os.CreateTemp(filepath.Dir(source), "PatchyFM-Alltynex-*.iso.tmp")
 	if err != nil {
 		return "", err
 	}

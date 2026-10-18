@@ -1,12 +1,12 @@
-# PatchFM — Alltynex Kor v1.0
+# PatchyFM — Alltynex Kor v1.0
 
-PatchFM은 Patchy88의 검증 원칙을 FM TOWNS용으로 단순화한 xdelta 패처입니다.
+PatchyFM은 Patchy88의 검증 원칙을 FM TOWNS용으로 단순화한 xdelta 패처입니다.
 
 이 버전은 FM TOWNS판 《Alltynex》의 원본 ZIP을 직접 입력으로 받아 한글판 ISO를 생성합니다.
 
 ## 배포 원칙
 
-PatchFM 배포물에는 다음 파일을 포함하지 않습니다.
+PatchyFM 배포물에는 다음 파일을 포함하지 않습니다.
 
 - 원본 `alltynex_fmtowns.zip`
 - 완성 `Alltynex (Kor v1.0).iso`
@@ -16,9 +16,9 @@ PatchFM 배포물에는 다음 파일을 포함하지 않습니다.
 배포물에는 다음 요소만 포함합니다.
 
 ```text
-PatchFM_Alltynex_v1.0/
-├─ PatchFM-Alltynex-x64.exe
-├─ PatchFM-Alltynex-x86.exe
+PatchyFM_Alltynex_v1.0/
+├─ PatchyFM-Alltynex-x64.exe
+├─ PatchyFM-Alltynex-x86.exe
 ├─ README.ko.md
 ├─ LICENSE
 ├─ THIRD_PARTY_LICENSE.txt
@@ -36,7 +36,7 @@ PatchFM_Alltynex_v1.0/
 
 ## 지원 원본
 
-PatchFM은 파일명만으로 원본을 인정하지 않습니다. 선택한 ZIP 전체를 크기·MD5·SHA-256으로 검사합니다.
+PatchyFM은 파일명만으로 원본을 인정하지 않습니다. 선택한 ZIP 전체를 크기·MD5·SHA-256으로 검사합니다.
 
 | 항목 | 값 |
 |---|---|
@@ -56,7 +56,7 @@ SHA-256:
 
 `d7ef05131f9f2f2809e73e7e77adf77f4ff19f89a2c59bcf6e604ec8f4cfc99b`
 
-PatchFM 시작 시 xdelta 패치와 현재 실행 아키텍처에 맞는 xdelta3 실행파일의 SHA-256도 검증합니다.
+PatchyFM 시작 시 xdelta 패치와 현재 실행 아키텍처에 맞는 xdelta3 실행파일의 SHA-256도 검증합니다.
 
 ## 패치 절차
 
@@ -87,7 +87,7 @@ PatchFM 시작 시 xdelta 패치와 현재 실행 아키텍처에 맞는 xdelta3
 
 ## 실제 검증 상태
 
-PatchFM Alltynex v1.0은 사용자 환경에서 다음 과정을 실제로 완료했습니다.
+PatchyFM Alltynex v1.0은 사용자 환경에서 다음 과정을 실제로 완료했습니다.
 
 1. 원본 ZIP 선택
 2. 원본 해시 검증
@@ -115,7 +115,7 @@ UTF-16 필터 항목을 각각 생성하여 올바르게 결합하도록 수정�
 
 - Upstream: https://github.com/captainys/FreeTOWNSOS
 - Copyright 2021 Soji Yamakawa
-- 원본 라이선스: `src/patchfm-alltynex/FREETOWNSOS_LICENSE.md`
+- 원본 라이선스: `src/patchyfm-alltynex/FREETOWNSOS_LICENSE.md`
 
 원 프로젝트의 `LICENSE.md` 전문을 수정하지 않고 배포물에 포함합니다. FreeTOWNSOS 라이선스에 기재된 ORICON과 Free386 관련 고지도 유지합니다.
 
@@ -125,13 +125,13 @@ UTF-16 필터 항목을 각각 생성하여 올바르게 결합하도록 수정�
 
 - Upstream: https://github.com/jmacd/xdelta/tree/v3.2.0
 - License: Apache License 2.0
-- 상세 고지: `src/patchfm-alltynex/UPSTREAM_XDELTA.md`
+- 상세 고지: `src/patchyfm-alltynex/UPSTREAM_XDELTA.md`
 
 ## 소스
 
 소스 위치:
 
-`src/patchfm-alltynex/`
+`src/patchyfm-alltynex/`
 
 주요 파일:
 

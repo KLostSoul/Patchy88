@@ -7,7 +7,7 @@
 | 몽환전사 바리스 Windows x64/x86 | `Patchy88_Valis1_PC88_v1.0.7.zip` | 2,035,112 | `25537c9c97edebd1d958df0ffeb0067afa587ed227967d118f2f23dfcc0d5703` |
 | 몽환전사 바리스 Python | `Patchy88_Valis1_PC88_Python_v1.0.7.zip` | 220,377 | `62b553cb010e86902d7edfca532e7a5a3c51ad5d3e434a2a351dc6ec944902e7` |
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
-| Alltynex PatchFM Windows x64/x86 | `PatchFM_Alltynex_v1.0.zip` | 3,058,282 | `52289113615d8d5b18e47a89d50136e20bb538d17f47cb4d0b782719091cddcd` |
+| Alltynex PatchyFM Windows x64/x86 | `PatchyFM_Alltynex_v1.0.zip` | 3,041,670 | `bfac1cd128d39b4bda6df4a2cb033289f3387df97e2da205ec9357631a89237f` |
 | Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.0.zip` | 2,588,290 | `ce46fe504d930f2fd27d4e50c1f2a4424ec336479e1066effbe5fac7887f734c` |
 
 ## 바리스 II v1.0.3
@@ -41,7 +41,7 @@
 - 수정 전에는 영문판 최종 해시를 잘못 분리해 IMG 검증이 실패했습니다. 영문판 CCD·IMG·SUB xdelta 출력은 모두 공통 한글판 결과임을 실제 파일로 확인하고, 매니페스트와 기존 결과 판정을 수정했습니다.
 
 
-## PatchFM Alltynex v1.0
+## PatchyFM Alltynex v1.0
 
 - FM TOWNS판 《Alltynex》 원본 ZIP 하나를 입력으로 사용합니다.
 - 원본 ZIP과 완성 ISO는 저장소 및 배포 ZIP에 포함하지 않습니다.
@@ -60,7 +60,7 @@
 - ZIP 선택 시 종료되던 Win32 파일 선택 필터 문제를 수정한 v1.0 배포물입니다. 버전 번호는 올리지 않았습니다.
 - 사용자 환경에서 **원본 ZIP 선택 → xdelta 적용 → ISO 전체 해시 검증 → 게임 실행**까지 종단 간 확인했습니다.
 
-[PatchFM Alltynex 상세 문서](PATCHFM_ALLTYNEX.md)
+[PatchyFM Alltynex 상세 문서](PATCHYFM_ALLTYNEX.md)
 
 
 ## PatchyFM_Yuuwaku_v1.0
@@ -74,3 +74,12 @@
 - 원본 및 완성 게임 이미지는 미배포. xdelta 및 xdelta3 헬퍼는 배포 ZIP에만 포함하며 소스 트리에는 중복 보관하지 않습니다.
 
 [PatchyFM Yuuwaku 상세 문서](PATCHYFM_YUUWAKU.md)
+
+
+## PatchyFM Alltynex 이름 정리 (2026-10-19)
+
+- 배포 ZIP: `PatchyFM_Alltynex_v1.0.zip`, 크기 3,041,670 bytes, SHA-256 `bfac1cd128d39b4bda6df4a2cb033289f3387df97e2da205ec9357631a89237f`.
+- 소스 ZIP: `PatchyFM_Alltynex_v1.0_Source.zip`, 크기 15,321 bytes, SHA-256 `bf6833105be2f849eccb14b7f38940c105555ced0aa752b6ad23ddf70f409807`.
+- Windows 실행파일: `PatchyFM-Alltynex-x64.exe`, `PatchyFM-Alltynex-x86.exe`.
+- 기존 xdelta, 지원 원본과 결과 ISO 해시/파일명은 변경하지 않았으며, Go 테스트 및 Windows 양 아키텍처 재빌드 통과.
+- 이 환경에서 Windows GUI 실제 구동과 게임 실행은 추가로 확인하지 않았습니다.
