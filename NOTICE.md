@@ -71,7 +71,7 @@ FreeTOWNSOS 라이선스에 포함된 ORICON 및 Free386 관련 고지도 함께
 [PatchyFM Alltynex 사용법과 검증 정보](docs/PATCHYFM_ALLTYNEX.md)
 
 
-## PatchyFM_Yuuwaku_v1.0 — FM TOWNS 《誘惑 / Yuuwaku》
+## PatchyFM_Yuuwaku_v1.0 — FM TOWNS 《誘惑 / Yuuwaku》 (이전 버전)
 
 사용자가 지정한 폴더와 하위 폴더에서 원본 IMG/BIN 데이터 트랙을 크기·MD5·SHA-256으로 자동 식별하고, 제공된 xdelta로 한글판 BIN/CUE를 생성합니다. CUE/CCD/SUB를 개별 선택하지 않습니다.
 
@@ -84,3 +84,16 @@ FreeTOWNSOS 라이선스에 포함된 ORICON 및 Free386 관련 고지도 함께
 - 패처 코드는 Apache-2.0; xdelta3의 상위 프로젝트는 jmacd/xdelta v3.2.0입니다.
 
 [사용 설명 및 전체 해시](docs/PATCHYFM_YUUWAKU.md)
+
+
+## PatchyFM_Yuuwaku_v1.01 — FM TOWNS 《誘惑 / Yuuwaku》 (현재 배포)
+
+- 수정 xdelta `Temptation-Korean-v1.01.xdelta`: 330,728 bytes, SHA-256 `c936529c182cd2854644b5a839406937628437325ef161f9af6c77cf36919e09`.
+- 적용 결과 `Temptation-Korean-v1.01.bin`: 7,599,312 bytes, SHA-256 `1b456c4ff7d78c7f144986c6714f07a6fd62ecdd5b5c29c403656850653447c2`.
+- v1.0 출력과 비교하여 41,809 bytes 변경. 새 BIN/CUE 파일명으로 이전 출력과 충돌하지 않습니다.
+- 사용자 지정 폴더 및 하위 디렉터리에서 크기·MD5·SHA-256으로 원본 IMG/BIN 자동 인식; 원본·결과 전체 검증, 중복·변조·덮어쓰기 보호.
+- 제공받은 `Temptation-Korean-v1.0(1).xdelta`를 수정 없이 배포용 이름으로 변경했으며, 디코딩 결과의 Adler-32와 MD5/SHA-256을 확인했습니다.
+- Go 단위 테스트, Windows x64/x86 크로스 빌드, Linux 환경의 9개 통합 테스트 통과. Windows GUI 및 실제 Tsugaru 실행은 아직 검증되지 않았습니다.
+- 원본 게임 이미지 및 완성 BIN/ISO는 배포하지 않습니다. 패치 파일과 xdelta3 실행파일은 배포 ZIP에만 포함하며 Git 소스 트리에는 두지 않습니다.
+
+[PatchyFM Yuuwaku v1.01 사용법](docs/PATCHYFM_YUUWAKU.md)

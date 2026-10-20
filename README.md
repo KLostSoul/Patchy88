@@ -2,7 +2,7 @@
 
 Patchy88은 PC-8801 게임의 한글화 패치를 안전하게 적용하기 위한 도구 모음입니다. 《몽환전사 바리스》·《몽환전사 바리스 II》용 IPS 패처와 《Mirrors》용 xdelta 패처를 제공하며, 같은 검증 원칙을 바탕으로 만든 FM TOWNS용 변형 **PatchyFM**도 이 저장소에서 관리합니다.
 
-FM TOWNS 패처는 《Alltynex》용 PatchyFM과 《誘惑 / Yuuwaku》용 **PatchyFM_Yuuwaku_v1.0**을 제공합니다. Alltynex는 원본 ZIP에서 한글판 ISO를 생성하고, Yuuwaku는 지정 폴더와 하위 폴더의 원본 IMG/BIN을 해시로 자동 인식하여 한글판 BIN/CUE를 생성합니다. 두 패처 모두 결과 전체의 크기·MD5·SHA-256을 검증합니다.
+FM TOWNS 패처는 《Alltynex》용 PatchyFM과 《誘惑 / Yuuwaku》용 **PatchyFM_Yuuwaku_v1.01**을 제공합니다. Alltynex는 원본 ZIP에서 한글판 ISO를 생성하고, Yuuwaku v1.01은 지정 폴더와 하위 폴더의 원본 IMG/BIN을 해시로 자동 인식하고 수정된 xdelta를 적용하여 한글판 BIN/CUE를 생성합니다. 두 패처 모두 결과 전체의 크기·MD5·SHA-256을 검증합니다.
 
 《Mirrors》 v1.01은 일본판과 영문판의 원본이 서로 다르지만, 두 판본 모두 **동일한 최종 한글판 CCD·IMG·SUB**를 생성합니다. 원본과 결과는 모두 전체 MD5·SHA-256과 크기로 검증합니다.
 
@@ -18,7 +18,7 @@ FM TOWNS 패처는 《Alltynex》용 PatchyFM과 《誘惑 / Yuuwaku》용 **Pat
 - [몽환전사 바리스 II용 Patchy88](docs/VALIS2.md)
 - [Mirrors용 Patchy88 — Mirrors_Kor1.01](docs/MIRRORS.md)
 - [PatchyFM — Alltynex Kor v1.0](docs/PATCHYFM_ALLTYNEX.md)
-- [PatchyFM_Yuuwaku_v1.0 — 誘惑 한글패처](docs/PATCHYFM_YUUWAKU.md)
+- [PatchyFM_Yuuwaku_v1.01 — 誘惑 한글패처](docs/PATCHYFM_YUUWAKU.md)
 - [Mirrors용 Patchy88 소스 및 빌드](src/mirrors-go/README.ko.md)
 - [PatchyFM Alltynex 소스 및 빌드](src/patchyfm-alltynex/README.ko.md)
 - [PatchyFM Yuuwaku 소스 및 빌드](src/patchyfm-yuuwaku/README_SOURCE.md)
@@ -137,7 +137,7 @@ game.d88.2.bak
 
 PatchyFM Alltynex v1.0은 실제 원본 ZIP에서 ISO 생성, 결과 검증, 게임 실행까지 확인했습니다.
 
-### PatchyFM Yuuwaku
+### PatchyFM Yuuwaku v1.01
 
 ```text
 원본 IMG/BIN이 있는 폴더 선택

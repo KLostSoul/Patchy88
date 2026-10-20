@@ -8,7 +8,7 @@
 | 몽환전사 바리스 Python | `Patchy88_Valis1_PC88_Python_v1.0.7.zip` | 220,377 | `62b553cb010e86902d7edfca532e7a5a3c51ad5d3e434a2a351dc6ec944902e7` |
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
 | Alltynex PatchyFM Windows x64/x86 | `PatchyFM_Alltynex_v1.0.zip` | 3,041,670 | `bfac1cd128d39b4bda6df4a2cb033289f3387df97e2da205ec9357631a89237f` |
-| Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.0.zip` | 2,588,290 | `ce46fe504d930f2fd27d4e50c1f2a4424ec336479e1066effbe5fac7887f734c` |
+| Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.01.zip` | 2,588,171 | `0f7d6d216ccba39123aef43120be4cbcc99007318bbdbe5bca83a141cd334548` |
 
 ## 바리스 II v1.0.3
 
@@ -63,7 +63,7 @@
 [PatchyFM Alltynex 상세 문서](PATCHYFM_ALLTYNEX.md)
 
 
-## PatchyFM_Yuuwaku_v1.0
+## 이전 배포: PatchyFM_Yuuwaku_v1.0
 
 - Windows x64/x86 실행파일 `PatchyFM-Yuuwaku-x64.exe`, `PatchyFM-Yuuwaku-x86.exe`를 포함합니다.
 - 소스 별도 ZIP: `PatchyFM_Yuuwaku_v1.0_Source.zip` (14,193 bytes, SHA-256 `07cddaa6d6b9b8825253ca3a4ce67ca51756c292e590ba4463cd176c0728360b`).
@@ -83,3 +83,17 @@
 - Windows 실행파일: `PatchyFM-Alltynex-x64.exe`, `PatchyFM-Alltynex-x86.exe`.
 - 기존 xdelta, 지원 원본과 결과 ISO 해시/파일명은 변경하지 않았으며, Go 테스트 및 Windows 양 아키텍처 재빌드 통과.
 - 이 환경에서 Windows GUI 실제 구동과 게임 실행은 추가로 확인하지 않았습니다.
+
+
+## PatchyFM_Yuuwaku_v1.01 (2026-10-20)
+
+- Windows 배포 ZIP: `PatchyFM_Yuuwaku_v1.01.zip`, 2,588,171 bytes, SHA-256 `0f7d6d216ccba39123aef43120be4cbcc99007318bbdbe5bca83a141cd334548`.
+- Go 소스 ZIP: `PatchyFM_Yuuwaku_v1.01_Source.zip`, 19,394 bytes, SHA-256 `5ad5643d645554717872c80b2c70517d7cacee9c873e7229b0f0d3d1dbfb942e`.
+- 업데이트된 xdelta 330,728 bytes, SHA-256 `c936529c182cd2854644b5a839406937628437325ef161f9af6c77cf36919e09`.
+- 생성 BIN: `Temptation-Korean-v1.01.bin` (7,599,312 bytes), SHA-256 `1b456c4ff7d78c7f144986c6714f07a6fd62ecdd5b5c29c403656850653447c2`.
+- 생성 CUE: `Temptation-Korean-v1.01.cue`, 89 bytes, SHA-256 `bf7336f007be2f8a0c1b3cb2d1a2acda8677200fab41ee501271d58e914c5998`.
+- v1.0 대비 결과 BIN 41,809 bytes 변경. 기존 폴더 지정·자동 검색·전체 검증 로직은 유지합니다.
+- Go 단위 테스트와 Windows x64/x86 빌드, 별도 디코더 기반 9개 Linux 통합 테스트 성공. Windows GUI 직접 실행 및 Tsugaru 부팅은 별도로 검증하지 않았습니다.
+- 원본/완성 게임 디스크는 Git과 배포물 모두에 포함하지 않으며, xdelta와 디코더는 배포 ZIP에 포함하고 소스 트리에는 중복하지 않습니다.
+
+[상세 사용법](PATCHYFM_YUUWAKU.md)

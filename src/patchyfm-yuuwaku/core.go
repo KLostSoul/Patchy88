@@ -16,12 +16,12 @@ import (
 )
 
 const (
-	programName    = "PatchyFM Yuuwaku v1.0"
-	manifestFile   = "Yuuwaku_Kor_v1.0.json"
+	programName    = "PatchyFM Yuuwaku v1.01"
+	manifestFile   = "Yuuwaku_Kor_v1.01.json"
 	expectedSchema = "patchyfm.yuuwaku.xdelta.v1"
-	expectedName   = "Yuuwaku (Temptation) Kor v1.0"
-	expectedBIN    = "Temptation-Korean-v1.0.bin"
-	expectedCUE    = "Temptation-Korean-v1.0.cue"
+	expectedName   = "Yuuwaku (Temptation) Kor v1.01"
+	expectedBIN    = "Temptation-Korean-v1.01.bin"
+	expectedCUE    = "Temptation-Korean-v1.01.cue"
 )
 
 type Hashes struct {
@@ -89,7 +89,7 @@ func NewEngine(root string) (*Engine, error) {
 	if err = json.Unmarshal(data, &m); err != nil {
 		return nil, fmt.Errorf("매니페스트 JSON 오류: %w", err)
 	}
-	if m.Name != expectedName || m.Schema != expectedSchema || m.Target.Filename != expectedBIN || m.Cue.Filename != expectedCUE || m.Patch.Filename != "Temptation-Korean-v1.0.xdelta" {
+	if m.Name != expectedName || m.Schema != expectedSchema || m.Target.Filename != expectedBIN || m.Cue.Filename != expectedCUE || m.Patch.Filename != "Temptation-Korean-v1.01.xdelta" {
 		return nil, errors.New("매니페스트 이름 또는 형식이 올바르지 않습니다")
 	}
 	if m.Source.Size <= 0 || m.Target.Size <= 0 || m.Cue.Size <= 0 || m.Patch.Size <= 0 {
@@ -231,7 +231,7 @@ func fileExists(path string) (bool, error) {
 	return false, err
 }
 func stageCUE(dirname string, contents []byte) (string, error) {
-	f, err := os.CreateTemp(dirname, "PatchyFM-Yuuwaku-*.cue.tmp")
+	f, err := os.CreateTemp(dirname, "PatchyFM-Yuuwaku-v1.01-*.cue.tmp")
 	if err != nil {
 		return "", err
 	}
@@ -289,7 +289,7 @@ func (e *Engine) Apply(folder string, logf func(string)) (string, string, error)
 	}
 	tmpBIN := ""
 	if !binExists {
-		f, er := os.CreateTemp(outDir, "PatchyFM-Yuuwaku-*.bin.tmp")
+		f, er := os.CreateTemp(outDir, "PatchyFM-Yuuwaku-v1.01-*.bin.tmp")
 		if er != nil {
 			return "", "", er
 		}

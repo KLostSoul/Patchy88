@@ -1,23 +1,30 @@
-PatchyFM — Yuuwaku (Temptation) Kor v1.0
+PatchyFM — Yuuwaku (Temptation) Kor v1.01
 
-This Windows patching utility is adapted from the verified PatchFM Alltynex v1.0
-workflow in KLostSoul/Patchy88. It verifies the user's original FM TOWNS
-Yuuwaku IMG/BIN data track, automatically discovered under a selected folder
-by content hash, and creates the Korean BIN/CUE via a provided xdelta3
-patch, retaining no game image in the distribution.
+This FM TOWNS Windows patcher is based on the Patchy88 project's
+original validation approach. It recursively scans a user-selected folder
+for a verified Yuuwaku IMG/BIN CD data track, then applies the revised
+xdelta patch and produces Korean BIN/CUE output. The original game
+tracks and final game images are not redistributed.
 
-Unlike the Alltynex PatchFM package, this package does not generate an ISO
-using FreeTOWNSOS and does not ship FreeTOWNSOS components. The original
-CCD/CUE/SUB companions are not patched or redistributed.
+The supplied revised patch was uploaded as Temptation-Korean-v1.0(1).xdelta.
+For this v1.01 packaging, its raw bytes were preserved and the bundled
+copy was named Temptation-Korean-v1.01.xdelta.
 
-The patch was provided by the user for this packaging task. Original game,
-translated game content, and rights to any game patch are not covered by
-PatchyFM software's Apache-2.0 license.
+Updated patch SHA-256:
+  c936529c182cd2854644b5a839406937628437325ef161f9af6c77cf36919e09
+Updated Korean BIN SHA-256:
+  1b456c4ff7d78c7f144986c6714f07a6fd62ecdd5b5c29c403656850653447c2
 
-xdelta3: jmacd/xdelta version 3.2.0. See UPSTREAM_XDELTA.txt and
-THIRD_PARTY_LICENSE.txt for origin and licensing.
+The resulting BIN was reconstructed from the provided original IMG with
+a separate RFC 3284/VCDIFF decoder; its window-level Adler-32 checksum
+was verified. That decoder was cross-checked against the old v1.0 patch
+and the previously supplied v1.0 Korean BIN. Windows amd64/386 builds,
+Go unit tests, and nine Linux integration checks with a validated
+VCDIFF decoder substitute passed. These checks do NOT establish that
+the Windows GUI or bundled Windows xdelta3.exe ran on a Windows machine,
+and game boot in Tsugaru has not been verified here.
 
-Verification: uploaded source + patch decoded to a byte-for-byte match with
-the provided Korean BIN. Folder-mode tests passed, including recursive scan, wrong/duplicate source
-handling, and existing-file protection. Windows GUI binaries cross-compiled for x86/x64;
-Windows UI runtime and FM TOWNS gameplay were not tested here.
+The xdelta data and original/translated game copyrights are not covered
+by this utility's Apache-2.0 license. The xdelta3 helpers are from
+jmacd/xdelta v3.2.0, separately distributed under Apache-2.0.
+FreeTOWNSOS is not included in this package.
