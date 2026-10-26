@@ -1,0 +1,4 @@
+xdelta3 v3.2.0 — https://github.com/jmacd/xdelta/tree/v3.2.0
+License: Apache License 2.0.
+The two bundled Windows helper binaries are reused from the established PatchyFM distribution.
+Their complete SHA-256 checksums are stored in assets/Dune2_Kor_v1.01.json and checked at runtime.

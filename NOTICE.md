@@ -97,3 +97,18 @@ FreeTOWNSOS 라이선스에 포함된 ORICON 및 Free386 관련 고지도 함께
 - 원본 게임 이미지 및 완성 BIN/ISO는 배포하지 않습니다. 패치 파일과 xdelta3 실행파일은 배포 ZIP에만 포함하며 Git 소스 트리에는 두지 않습니다.
 
 [PatchyFM Yuuwaku v1.01 사용법](docs/PATCHYFM_YUUWAKU.md)
+
+
+## PatchyDOS_Dune2_v1.01 — MS-DOS 《Dune II: The Battle for Arrakis》
+
+PatchyDOS는 폴더 및 하위 폴더에서 지원 원본 IMG/BIN을 크기·MD5·SHA-256으로 식별하고 xdelta를 적용해 한글판 CD 이미지와 CUE를 생성합니다. 원본 이미지를 수정하지 않으며 기존 결과물이 다를 때 덮어쓰지 않습니다.
+
+- 원본: 15,664,320 bytes, SHA-256 `edcdce3de2e4d986421d99cc11be424277317fc3e8cd71cf78f8ed544bce81bf`.
+- v1.01 xdelta: 356,319 bytes, SHA-256 `41ef92e9a9cf062109371abce1e591fbe331e7b184b6614f6eedc1f74acef9db`.
+- 생성 BIN: 16,835,616 bytes, SHA-256 `5f3877d5d6be7b54b525ec91df19a46b01c4a6f5e83e3df6b683f05203053752`.
+- 전체 디코더 실행 제한 5분, 활동 없음 90초 중단, 5초 간격 경과/출력 크기 로그, 디코더 오류 출력 및 사용자 취소, 임시 파일 정리.
+- Windows x64/x86 빌드 및 Go 테스트, Linux 기반 xdelta 복원과 통합 검사 통과. Windows GUI 구동과 DOS 게임 실행 자체는 아직 직접 검증하지 않았습니다.
+- 게임 원본 IMG/CUE/CCD/SUB와 완성 BIN은 소스/배포 ZIP에 포함하지 않습니다. xdelta 및 디코더 실행파일은 배포 ZIP에만 포함합니다.
+- `FONT_ATTRIBUTIONS.md`: [달무리 글꼴](https://github.com/RanolP/dalmoori-font) Apache-2.0, [GNU Unifont](https://unifoundry.com/unifont/index.html) SIL OFL 1.1 또는 GPL v2 이상(폰트 임베딩 예외). 세부 고지 및 라이선스 전문은 `src/patchydos-dune2/LICENSES/` 참조.
+
+[PatchyDOS Dune II 사용법 및 검증 정보](docs/PATCHYDOS_DUNE2.md)

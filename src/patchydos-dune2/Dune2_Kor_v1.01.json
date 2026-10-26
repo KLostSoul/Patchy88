@@ -1,0 +1,28 @@
+{
+  "name": "Dune II Battle for Arrakis Kor v1.01",
+  "schema": "patchydos.dune2.xdelta.v1",
+  "source": {
+    "md5": "7ed518c967d786fc9a47ef7ab86aab97",
+    "sha256": "edcdce3de2e4d986421d99cc11be424277317fc3e8cd71cf78f8ed544bce81bf",
+    "size": 15664320
+  },
+  "target": {
+    "md5": "1cd47830e0925747622bb53e12590ae2",
+    "sha256": "5f3877d5d6be7b54b525ec91df19a46b01c4a6f5e83e3df6b683f05203053752",
+    "size": 16835616,
+    "filename": "Dune2-Battle-for-Arrakis-Korean-v1.01.bin"
+  },
+  "cue": {
+    "md5": "3d9445d3eae88e88d72e341f086b7164",
+    "sha256": "3d26796ff3eefd265b4f85f80a0ac6bf0ee95ae1f4f0c593fb93c8e009b3834b",
+    "size": 103,
+    "filename": "Dune2-Battle-for-Arrakis-Korean-v1.01.cue"
+  },
+  "patch": {
+    "filename": "Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta",
+    "sha256": "41ef92e9a9cf062109371abce1e591fbe331e7b184b6614f6eedc1f74acef9db",
+    "size": 356319
+  },
+  "xdelta3_sha256": "232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481",
+  "xdelta3_x64_sha256": "53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0"
+}

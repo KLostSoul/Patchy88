@@ -9,6 +9,7 @@
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
 | Alltynex PatchyFM Windows x64/x86 | `PatchyFM_Alltynex_v1.0.zip` | 3,041,670 | `bfac1cd128d39b4bda6df4a2cb033289f3387df97e2da205ec9357631a89237f` |
 | Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.01.zip` | 2,588,171 | `0f7d6d216ccba39123aef43120be4cbcc99007318bbdbe5bca83a141cd334548` |
+| Dune II PatchyDOS Windows x64/x86 | `PatchyDOS_Dune2_v1.01.zip` | 2,693,994 | `01e490a50e639fcb43c70392cfdd96af2dddd659f27319468ffab24cfddeb951` |
 
 ## 바리스 II v1.0.3
 
@@ -97,3 +98,19 @@
 - 원본/완성 게임 디스크는 Git과 배포물 모두에 포함하지 않으며, xdelta와 디코더는 배포 ZIP에 포함하고 소스 트리에는 중복하지 않습니다.
 
 [상세 사용법](PATCHYFM_YUUWAKU.md)
+
+
+## PatchyDOS_Dune2_v1.01 (2026-10-26)
+
+- Windows 배포 ZIP: `PatchyDOS_Dune2_v1.01.zip`, 2,693,994 bytes, SHA-256 `01e490a50e639fcb43c70392cfdd96af2dddd659f27319468ffab24cfddeb951`.
+- 소스 ZIP: `PatchyDOS_Dune2_v1.01_Source.zip`, 40,531 bytes, SHA-256 `793529354fd51db1743178762041acb7f04689bed21b90fefa7a961545a0a092`.
+- 지원 원본 IMG/BIN: 15,664,320 bytes (6,660 MODE1/2352 섹터), SHA-256 `edcdce3de2e4d986421d99cc11be424277317fc3e8cd71cf78f8ed544bce81bf`.
+- v1.01 xdelta: `Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta`, 356,319 bytes, SHA-256 `41ef92e9a9cf062109371abce1e591fbe331e7b184b6614f6eedc1f74acef9db`.
+- 결과 BIN: `Dune2-Battle-for-Arrakis-Korean-v1.01.bin`, 16,835,616 bytes (7,158 섹터), MD5 `1cd47830e0925747622bb53e12590ae2`, SHA-256 `5f3877d5d6be7b54b525ec91df19a46b01c4a6f5e83e3df6b683f05203053752`.
+- 결과 CUE: `Dune2-Battle-for-Arrakis-Korean-v1.01.cue`, 103 bytes, SHA-256 `3d26796ff3eefd265b4f85f80a0ac6bf0ee95ae1f4f0c593fb93c8e009b3834b`.
+- 폴더 자동 식별과 전체 무결성 검사 유지. xdelta3 실행 시간 최대 5분, 90초 무활동 감지, 5초 간격 진행 기록, 디코더 stdout/stderr 로깅, GUI 중단 및 실패/취소 시 임시 파일 정리 추가.
+- Go 단위 테스트 및 Windows x64/x86 컴파일 통과. 실제 원본으로 Linux CLI 종단 간 검증 및 독립 디코더 결과 전체 바이트 일치 확인. Windows GUI 및 DOS 게임 실행은 아직 별도 검증이 필요합니다.
+- 글꼴 고지와 전문: 달무리 Apache-2.0, GNU Unifont OFL-1.1 / GPLv2 이상(폰트 임베딩 예외).
+- 원본 게임 CD, 패치 완료 이미지, Windows EXE 및 xdelta는 Git 소스 트리에 저장하지 않습니다. 배포 ZIP과 소스 ZIP을 별도로 보관합니다. GitHub Releases 등록은 별도 작업입니다.
+
+[PatchyDOS Dune II 상세 문서](PATCHYDOS_DUNE2.md)

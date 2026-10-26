@@ -1,0 +1,12 @@
+PatchyDOS Dune II v1.01 — modification notice
+
+Derived from the PatchyFM Yuuwaku folder-scanning Go patcher architecture, with original source and output validation constants and Windows interface adapted specifically for MS-DOS Dune II: The Battle for Arrakis CD.
+
+The xdelta is the user-provided Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta (SHA-256 41ef92e9a9cf062109371abce1e591fbe331e7b184b6614f6eedc1f74acef9db); it is NOT created or modified by PatchyDOS.
+
+Windows xdelta3 binaries are carried over from the previously validated PatchyFM distribution and originate from the jmacd/xdelta v3.2.0 series, Apache License 2.0.
+
+The game CD image and patched full CD image are NOT included.
+The source has Apache-2.0 licensing. PatchyDOS does not assert ownership over the source game or Korean translation.
+
+Dalmoori (Apache-2.0) and GNU Unifont (GPL with font embedding exception / OFL-1.1) attribution and full licenses are included. The v1.01 xdelta differs from v1.00; the patcher source and binaries were updated to add execution timeout, stall detection, progress, diagnostics and user cancellation.
