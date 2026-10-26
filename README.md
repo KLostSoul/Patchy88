@@ -2,7 +2,7 @@
 
 Patchy88은 PC-8801 게임의 한글화 패치를 안전하게 적용하기 위한 도구 모음입니다. 《몽환전사 바리스》·《몽환전사 바리스 II》용 IPS 패처와 《Mirrors》용 xdelta 패처를 제공하며, 같은 검증 원칙을 바탕으로 만든 FM TOWNS용 변형 **PatchyFM**도 이 저장소에서 관리합니다.
 
-**PatchyDOS**는 MS-DOS판 《Dune II: The Battle for Arrakis》 CD 한글패치 전용 도구입니다. 폴더에서 원본 IMG/BIN을 자동 인식하고 xdelta를 적용하여 검증된 BIN/CUE를 생성합니다. v1.01은 디코더 무응답 감지, 5분 실행 제한, 로그 및 작업 중단을 지원합니다.
+**PatchyDOS**는 MS-DOS판 《Dune II: The Battle for Arrakis》 CD 한글패치 전용 도구입니다. 폴더에서 원본 IMG/BIN을 자동 인식하고 xdelta를 적용하여 검증된 BIN/CUE를 생성합니다. v1.01 최신 수정본은 디코더 무응답 감지, 5분 실행 제한, 작업 중단, WaitDelay 오류 보정 및 실행 시각별 자동 진단 로그 저장을 지원합니다. 로그는 실행파일 옆 `logs/` 폴더에 생성되며 쓰기 불가 시 `%APPDATA%`의 사용자 설정 폴더를 이용합니다.
 
 FM TOWNS 패처는 《Alltynex》용 PatchyFM과 《誘惑 / Yuuwaku》용 **PatchyFM_Yuuwaku_v1.01**을 제공합니다. Alltynex는 원본 ZIP에서 한글판 ISO를 생성하고, Yuuwaku v1.01은 지정 폴더와 하위 폴더의 원본 IMG/BIN을 해시로 자동 인식하고 수정된 xdelta를 적용하여 한글판 BIN/CUE를 생성합니다. 두 패처 모두 결과 전체의 크기·MD5·SHA-256을 검증합니다.
 
@@ -166,7 +166,7 @@ CD 이미지가 있는 폴더 선택
 → 검증 후 결과 확정 (실패/취소 시 임시 파일 정리)
 ```
 
-기존 원본 게임 이미지는 수정하지 않습니다. [Dune II v1.01 사용법 및 검증값](docs/PATCHYDOS_DUNE2.md)을 참조하십시오.
+기존 원본 게임 이미지는 수정하지 않습니다. 최신 v1.01 수정 배포 ZIP은 `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log.zip`이며, 종료 지연 오류 수정과 .log 파일 자동 저장을 포함합니다. [Dune II v1.01 사용법 및 검증값](docs/PATCHYDOS_DUNE2.md)을 참조하십시오.
 
 ## 저장소 구조
 

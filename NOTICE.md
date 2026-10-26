@@ -111,4 +111,13 @@ PatchyDOS는 폴더 및 하위 폴더에서 지원 원본 IMG/BIN을 크기·MD5
 - 게임 원본 IMG/CUE/CCD/SUB와 완성 BIN은 소스/배포 ZIP에 포함하지 않습니다. xdelta 및 디코더 실행파일은 배포 ZIP에만 포함합니다.
 - `FONT_ATTRIBUTIONS.md`: [달무리 글꼴](https://github.com/RanolP/dalmoori-font) Apache-2.0, [GNU Unifont](https://unifoundry.com/unifont/index.html) SIL OFL 1.1 또는 GPL v2 이상(폰트 임베딩 예외). 세부 고지 및 라이선스 전문은 `src/patchydos-dune2/LICENSES/` 참조.
 
+### v1.01 최신 수정본 (WaitDelayFix + Log)
+
+- Go `exec.ErrWaitDelay` 발생 시에도 xdelta3의 정상 종료와 최종 BIN의 크기·MD5·SHA-256 전체 검증이 충족되는 경우에만 성공 처리합니다. 실제 패치 실패나 이미지 불일치는 계속 거부합니다.
+- Windows GUI 실행 시 `logs/PatchyDOS_Dune2_YYYYMMDD_HHMMSS.log`를 자동 생성합니다. 저장 불가 시 `%APPDATA%\\PatchyDOS\\Dune2\\logs`에 저장합니다.
+- 5초 간격 진행 상황, 임시 BIN 크기, xdelta3 stdout/stderr, 취소 및 오류, 최종 BIN/CUE 해시와 출력 파일 경로를 로그에 남깁니다.
+- Windows x64/x86 빌드 및 Go 단위 테스트 통과. Windows GUI 실제 실행과 DOS 게임 구동은 별도로 검증해야 합니다.
+- 최신 배포 ZIP: `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log.zip` (SHA-256 `277baa7295334eb205522a9bcc3283b8a86ac532c85f5fd59be0ddf7b052e6a5`). 소스 ZIP: `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_Source.zip` (SHA-256 `0776e8efac59179c27d310d1aa39b1c657b4b3e6fd6e1d0f677ec09bedc939c6`).
+- 원본 게임 CD·완성 BIN은 배포하지 않으며 xdelta·Windows 실행파일은 배포 ZIP에만 포함합니다.
+
 [PatchyDOS Dune II 사용법 및 검증 정보](docs/PATCHYDOS_DUNE2.md)

@@ -17,3 +17,12 @@ v1.01 execution safeguards: 5-minute total decoder timeout, 90-second no-activit
 and temporary-output cleanup after failure or cancellation.
 
 Go's source scan checks for SHA256+MD5+size; no user file is modified. See README.ko.md and verification/.
+
+Automatic Windows diagnostic logs (WaitDelayFix + Log): `session_logger.go` is used by
+`main_windows.go` to mirror the visible GUI log, including success/failure,
+progress, xdelta3 stdout/stderr, and validated BIN/CUE hashes. Logs are created
+per process launch in `<exe directory>/logs/PatchyDOS_Dune2_YYYYMMDD_HHMMSS.log`;
+if installation is not writable, the fallback is `%APPDATA%/PatchyDOS/Dune2/logs`.
+The exact path is shown in the GUI and result dialogs. Logging is tested by
+`session_logger_test.go`; older log files are never overwritten. No release ZIP
+contains original or patched game CD images.

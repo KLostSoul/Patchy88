@@ -10,3 +10,12 @@ The game CD image and patched full CD image are NOT included.
 The source has Apache-2.0 licensing. PatchyDOS does not assert ownership over the source game or Korean translation.
 
 Dalmoori (Apache-2.0) and GNU Unifont (GPL with font embedding exception / OFL-1.1) attribution and full licenses are included. The v1.01 xdelta differs from v1.00; the patcher source and binaries were updated to add execution timeout, stall detection, progress, diagnostics and user cancellation.
+
+2026-10-26 v1.01 WaitDelay correction: accept Go exec.ErrWaitDelay only if the full generated CD BIN (size, MD5, SHA-256) matches the pinned verified output. Includes success/failure regression tests with inherited stdout/stderr handles. No change to xdelta, decoder helpers, or output manifest.
+
+2026-10-26: Added automatic Windows GUI diagnostic log files. A timestamped
+session log records progress, xdelta3 stderr/stdout, patch cancellation and
+errors, verified final hashes and output paths. Uses a user configuration
+folder fallback if the executable directory is read-only. Existing WaitDelay
+hash verification remains mandatory. All xdelta, manifest, CUE, and licensing
+data are unchanged.

@@ -112,6 +112,8 @@ var pendingMu sync.Mutex
 var pendingLogs []string
 var pendingErr error
 var pendingBIN, pendingCUE string
+var activeSessionLog *sessionLogger
+var logStorageWarned bool
 
 func u16(s string) *uint16 { return syscall.StringToUTF16Ptr(s) }
 func send(h uintptr, m uint32, w, l uintptr) uintptr {
@@ -125,6 +127,12 @@ func setFont(h, f uintptr) {
 }
 func textOn(h uintptr, s string) { setWindowText.Call(h, uintptr(unsafe.Pointer(u16(s)))) }
 func logLine(s string) {
+	if activeSessionLog != nil {
+		if err := activeSessionLog.WriteLine(s); err != nil && !logStorageWarned {
+			logStorageWarned = true
+			s += "\n[주의] 로그 파일 기록 실패: " + err.Error() + "\n화면의 로그 내용을 복사하여 보관하세요."
+		}
+	}
 	if uiLog == 0 {
 		return
 	}
@@ -230,6 +238,7 @@ func startPatch() {
 		return
 	}
 	p := sourceFolder
+	logLine("[작업 시작] 한글패치 적용: " + p)
 	ctx, cancel := context.WithCancel(context.Background())
 	cancelPatch = cancel
 	setBusy(true)
@@ -255,13 +264,26 @@ func finishPatch() {
 	}
 	pendingErr = nil
 	pendingMu.Unlock()
+	logPath := ""
+	if activeSessionLog != nil {
+		logPath = activeSessionLog.Path()
+	}
 	if err != nil {
 		logLine("[패치 실패] " + err.Error())
-		dialog("패치 실패:\n"+err.Error(), mbOk|mbError)
 	} else {
 		logLine("[완료] BIN: " + bin)
 		logLine("[완료] CUE: " + cue)
-		dialog("한글판 BIN/CUE 생성 및 전체 해시 검증 완료.\n\n"+bin+"\n"+cue, mbOk|mbInfo)
+		logLine("[완료] BIN 전체 크기·MD5·SHA-256 및 CUE 검증 성공")
+	}
+	if activeSessionLog != nil {
+		if syncErr := activeSessionLog.Sync(); syncErr != nil {
+			logLine("[주의] 로그 파일 동기화 실패: " + syncErr.Error())
+		}
+	}
+	if err != nil {
+		dialog("패치 실패:\n"+err.Error()+"\n\n진단 로그:\n"+logPath, mbOk|mbError)
+	} else {
+		dialog("한글판 BIN/CUE 생성 및 전체 해시 검증 완료.\n\n"+bin+"\n"+cue+"\n\n진단 로그:\n"+logPath, mbOk|mbInfo)
 	}
 	setBusy(false)
 }
@@ -336,6 +358,7 @@ func wndProc(h uintptr, m uint32, w, l uintptr) uintptr {
 		destroyWindow.Call(h)
 		return 0
 	case wmDestroy:
+		logLine("[종료] PatchyDOS 프로그램 종료")
 		postQuit.Call(0)
 		return 0
 	}
@@ -349,9 +372,19 @@ func runGUI() int {
 	if err != nil {
 		return 2
 	}
+	activeSessionLog, err = newSessionLogger(exe)
+	if err != nil {
+		msgBox.Call(0, uintptr(unsafe.Pointer(u16("진단 로그 저장 경로를 사용할 수 없습니다.\n"+err.Error()))), uintptr(unsafe.Pointer(u16(programName))), mbOk|mbError)
+		return 2
+	}
+	defer activeSessionLog.Close()
+	activeSessionLog.WriteLine("[시작] " + programName)
+	activeSessionLog.WriteLine("[로그 경로] " + activeSessionLog.Path())
 	uiEngine, err = NewEngine(filepath.Join(filepath.Dir(exe), "assets"))
 	if err != nil {
-		msgBox.Call(0, uintptr(unsafe.Pointer(u16("필수 파일 검증 실패:\n"+err.Error()))), uintptr(unsafe.Pointer(u16(programName))), mbOk|mbError)
+		activeSessionLog.WriteLine("[시작 실패] 필수 파일 검증 실패: " + err.Error())
+		activeSessionLog.Sync()
+		msgBox.Call(0, uintptr(unsafe.Pointer(u16("필수 파일 검증 실패:\n"+err.Error()+"\n\n진단 로그:\n"+activeSessionLog.Path()))), uintptr(unsafe.Pointer(u16(programName))), mbOk|mbError)
 		return 2
 	}
 	hinst, _, _ := getModuleHandle.Call(0)
@@ -383,6 +416,7 @@ func runGUI() int {
 	enable(uiPatch, false)
 	enable(uiCancel, false)
 	logLine(programName)
+	logLine("[로그 파일] " + activeSessionLog.Path())
 	logLine("xdelta, CUE 템플릿, xdelta3 무결성 검사 완료")
 	layout()
 	showWindow.Call(uiHWND, 10)

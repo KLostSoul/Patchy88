@@ -296,6 +296,8 @@ func (e *Engine) ApplyContext(ctx context.Context, folder string, logf func(stri
 	if binExists && cueExists {
 		if logf != nil {
 			logf("[확인] 기존 BIN/CUE가 검증값과 일치합니다.")
+			logf(fmt.Sprintf("[검증 성공] BIN %d bytes / MD5 %s / SHA-256 %s", e.Manifest.Target.Size, e.Manifest.Target.MD5, e.Manifest.Target.SHA256))
+			logf(fmt.Sprintf("[검증 성공] CUE %d bytes / SHA-256 %s", e.Manifest.Cue.Size, e.Manifest.Cue.SHA256))
 		}
 		return outBIN, outCUE, nil
 	}
@@ -321,6 +323,9 @@ func (e *Engine) ApplyContext(ctx context.Context, folder string, logf func(stri
 		if er = e.ValidateBIN(tmpBIN); er != nil {
 			return "", "", er
 		}
+		if logf != nil {
+			logf(fmt.Sprintf("[검증 성공] BIN %d bytes / MD5 %s / SHA-256 %s", e.Manifest.Target.Size, e.Manifest.Target.MD5, e.Manifest.Target.SHA256))
+		}
 	}
 	tmpCUE := ""
 	if !cueExists {
@@ -331,6 +336,9 @@ func (e *Engine) ApplyContext(ctx context.Context, folder string, logf func(stri
 		defer os.Remove(tmpCUE)
 		if err = e.ValidateCUE(tmpCUE); err != nil {
 			return "", "", err
+		}
+		if logf != nil {
+			logf(fmt.Sprintf("[검증 성공] CUE %d bytes / SHA-256 %s", e.Manifest.Cue.Size, e.Manifest.Cue.SHA256))
 		}
 	}
 	// Avoid overwrites if another process created an output during processing.
@@ -356,6 +364,12 @@ func (e *Engine) ApplyContext(ctx context.Context, folder string, logf func(stri
 	if err := ctx.Err(); err != nil {
 		return "", "", fmt.Errorf("사용자 요청으로 결과 확정 전에 중단했습니다: %w", err)
 	}
+	if binExists && logf != nil {
+		logf(fmt.Sprintf("[검증 성공] 기존 BIN %d bytes / MD5 %s / SHA-256 %s", e.Manifest.Target.Size, e.Manifest.Target.MD5, e.Manifest.Target.SHA256))
+	}
+	if cueExists && logf != nil {
+		logf(fmt.Sprintf("[검증 성공] 기존 CUE %d bytes / SHA-256 %s", e.Manifest.Cue.Size, e.Manifest.Cue.SHA256))
+	}
 	if !binExists {
 		if err = os.Rename(tmpBIN, outBIN); err != nil {
 			return "", "", fmt.Errorf("검증된 BIN 확정 실패: %w", err)
@@ -377,6 +391,7 @@ var (
 	decoderStallTimeout     = 90 * time.Second
 	decoderPollInterval     = 2 * time.Second
 	decoderProgressInterval = 5 * time.Second
+	decoderPipeWaitDelay    = 3 * time.Second
 )
 
 // diagnosticWriter records bounded stdout/stderr and forwards complete lines.
@@ -475,7 +490,7 @@ func (e *Engine) runDecoder(ctx context.Context, src, tmpBIN string, logf func(s
 	cmd.Stdout = outWriter
 	cmd.Stderr = errWriter
 	// If the child inherits a pipe into another process, do not hang forever.
-	cmd.WaitDelay = 3 * time.Second
+	cmd.WaitDelay = decoderPipeWaitDelay
 	if logf != nil {
 		logf(fmt.Sprintf("[xdelta3] 실행 시작 / 전체 제한 %s / 무응답 판정 %s", decoderTotalTimeout, decoderStallTimeout))
 	}
@@ -508,6 +523,21 @@ func (e *Engine) runDecoder(ctx context.Context, src, tmpBIN string, logf func(s
 			}
 			if totalCtx.Err() == context.DeadlineExceeded {
 				return fmt.Errorf("xdelta3 실행 시간 제한(%s)을 초과해 중단했습니다. 임시 파일은 정리합니다.\n진단: %s", decoderTotalTimeout, errWriter.summary())
+			}
+			// Go reports ErrWaitDelay when the decoder process exited successfully,
+			// but a stdout/stderr pipe stayed open (for example, inherited by a
+			// Windows helper process). Do NOT treat this as a patching error when
+			// the *entire* produced image matches the trusted target hashes.
+			// No other command error is bypassed, and cancellation/deadline checks
+			// above always take priority.
+			if errors.Is(err, exec.ErrWaitDelay) {
+				if verifyErr := e.ValidateBIN(tmpBIN); verifyErr != nil {
+					return fmt.Errorf("xdelta3 출력 파이프 종료 지연; 생성된 BIN 검증에도 실패했습니다: %w\n[xdelta3 stderr] %s\n[xdelta3 stdout] %s", verifyErr, errWriter.summary(), outWriter.summary())
+				}
+				if logf != nil {
+					logf("[xdelta3] 출력 파이프 종료만 지연됨(exec.ErrWaitDelay). 프로세스 정상 종료 및 결과 BIN 전체 MD5/SHA-256 일치 확인; 패치를 계속합니다.")
+				}
+				return nil
 			}
 			if err != nil {
 				return fmt.Errorf("xdelta3 적용 실패 (경과 %s, 임시 BIN %s): %w\n[xdelta3 stderr] %s\n[xdelta3 stdout] %s", elapsed, fmtBytes(size), err, errWriter.summary(), outWriter.summary())

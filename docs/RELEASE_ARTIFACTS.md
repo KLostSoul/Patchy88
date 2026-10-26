@@ -9,7 +9,7 @@
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
 | Alltynex PatchyFM Windows x64/x86 | `PatchyFM_Alltynex_v1.0.zip` | 3,041,670 | `bfac1cd128d39b4bda6df4a2cb033289f3387df97e2da205ec9357631a89237f` |
 | Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.01.zip` | 2,588,171 | `0f7d6d216ccba39123aef43120be4cbcc99007318bbdbe5bca83a141cd334548` |
-| Dune II PatchyDOS Windows x64/x86 | `PatchyDOS_Dune2_v1.01.zip` | 2,693,994 | `01e490a50e639fcb43c70392cfdd96af2dddd659f27319468ffab24cfddeb951` |
+| Dune II PatchyDOS Windows x64/x86 (최신 수정본) | `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log.zip` | 2,711,063 | `277baa7295334eb205522a9bcc3283b8a86ac532c85f5fd59be0ddf7b052e6a5` |
 
 ## 바리스 II v1.0.3
 
@@ -100,7 +100,7 @@
 [상세 사용법](PATCHYFM_YUUWAKU.md)
 
 
-## PatchyDOS_Dune2_v1.01 (2026-10-26)
+## PatchyDOS_Dune2_v1.01 최초 배포 기록 (2026-10-26)
 
 - Windows 배포 ZIP: `PatchyDOS_Dune2_v1.01.zip`, 2,693,994 bytes, SHA-256 `01e490a50e639fcb43c70392cfdd96af2dddd659f27319468ffab24cfddeb951`.
 - 소스 ZIP: `PatchyDOS_Dune2_v1.01_Source.zip`, 40,531 bytes, SHA-256 `793529354fd51db1743178762041acb7f04689bed21b90fefa7a961545a0a092`.
@@ -114,3 +114,17 @@
 - 원본 게임 CD, 패치 완료 이미지, Windows EXE 및 xdelta는 Git 소스 트리에 저장하지 않습니다. 배포 ZIP과 소스 ZIP을 별도로 보관합니다. GitHub Releases 등록은 별도 작업입니다.
 
 [PatchyDOS Dune II 상세 문서](PATCHYDOS_DUNE2.md)
+
+
+## PatchyDOS_Dune2_v1.01 — WaitDelayFix + Log (2026-10-26)
+
+- **최신 배포 ZIP:** `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log.zip`, 2,711,063 bytes, SHA-256 `277baa7295334eb205522a9bcc3283b8a86ac532c85f5fd59be0ddf7b052e6a5`.
+- **최신 소스 ZIP:** `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_Source.zip`, 46,484 bytes, SHA-256 `0776e8efac59179c27d310d1aa39b1c657b4b3e6fd6e1d0f677ec09bedc939c6`.
+- xdelta 및 결과 BIN/CUE의 크기·MD5·SHA-256 검증값은 기존 v1.01과 같습니다.
+- `exec: WaitDelay expired before I/O complete`로 정상적인 BIN까지 오류 처리하는 경우를 수정했습니다. 전체 결과 해시가 일치할 때에만 성공 처리합니다.
+- Windows GUI 실행별 자동 진단 로그를 `logs/PatchyDOS_Dune2_YYYYMMDD_HHMMSS.log`에 생성하고, 쓰기 권한이 없으면 `%APPDATA%\\PatchyDOS\\Dune2\\logs`를 사용합니다.
+- 진행 시간과 임시 BIN 크기, xdelta3 stdout/stderr, 오류·중단·성공, 최종 BIN/CUE 무결성 검증값과 결과 경로를 로그에 남깁니다.
+- Go 테스트 및 Windows x64/x86 크로스 빌드 통과. Windows GUI 및 DOS 게임의 실제 구동은 별도로 확인해야 합니다.
+- 원본 CD·완성 BIN은 저장소나 배포 ZIP에 포함하지 않습니다. 배포 ZIP과 소스 ZIP은 GitHub Releases에 자동 등록되지 않습니다.
+
+[PatchyDOS 사용법 및 로그 수집 안내](PATCHYDOS_DUNE2.md)
