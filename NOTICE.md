@@ -120,4 +120,14 @@ PatchyDOS는 폴더 및 하위 폴더에서 지원 원본 IMG/BIN을 크기·MD5
 - 최신 배포 ZIP: `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log.zip` (SHA-256 `277baa7295334eb205522a9bcc3283b8a86ac532c85f5fd59be0ddf7b052e6a5`). 소스 ZIP: `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_Source.zip` (SHA-256 `0776e8efac59179c27d310d1aa39b1c657b4b3e6fd6e1d0f677ec09bedc939c6`).
 - 원본 게임 CD·완성 BIN은 배포하지 않으며 xdelta·Windows 실행파일은 배포 ZIP에만 포함합니다.
 
+### v1.01 최신 xdelta 교체본 — NoHeader (2026-10-27)
+
+- 새 xdelta의 VCDIFF 인디케이터는 `0x01`이며, 이전 애플리케이션/파일명 헤더(`0x04` 비트)가 없습니다. 기존 파일에서 단순 헤더만 삭제된 것은 아니며 대상 CD 이미지도 변경되었습니다.
+- xdelta: `Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta`, 361,314 bytes, SHA-256 `26467e7dad84594deda58faa7e9d2535d5aaa0746f0bce993f9544aefbdd7647`.
+- 생성 BIN: 16,859,136 bytes / 7,168 sectors, MD5 `d8e86aea5934408132a5a8f2d6493dfd`, SHA-256 `d8c4e5025ad35886cd29b164ab69134eb4fce502b507ac3af15fc7e647d263e5`.
+- 이전 v1.01 생성 BIN(16,835,616 bytes)은 동일한 파일명이나 내용이 다르며 덮어쓰지 않습니다. 다시 패치하려면 이전 BIN/CUE를 별도로 이동해야 합니다.
+- 기존 WaitDelay 오류 수정, 자동 로그 저장, 파일명 기반이 아닌 입력 해시 검사, 임시 파일 정리, 글꼴 라이선스는 그대로 유지합니다.
+- 최신 배포 ZIP `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_NoHeader.zip`: SHA-256 `9bf97b1200a79d05c18ea9446e3a33cd48323b5711421be4db63ed286804ba18`. 최신 소스 ZIP `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_NoHeader_Source.zip`: SHA-256 `6081f9f1aca346b443583eebff70cbfb0464b1055095743aad847b6bb85476e4`.
+- 원본 게임 CD, 완성 BIN, xdelta 및 Windows 실행파일은 Git 소스 트리에 저장하지 않습니다. xdelta·EXE는 배포 ZIP에서 제공합니다.
+
 [PatchyDOS Dune II 사용법 및 검증 정보](docs/PATCHYDOS_DUNE2.md)

@@ -6,7 +6,7 @@ MS-DOS판 **《Dune II: The Battle for Arrakis》 CD-ROM**용 한글패치 적�
 
 ## Windows 사용법
 
-1. `PatchyDOS_Dune2_v1.01.zip`을 폴더에 모두 압축 해제합니다. EXE만 이동하면 동작하지 않습니다.
+1. `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_NoHeader.zip`을 폴더에 모두 압축 해제합니다. EXE만 이동하면 동작하지 않습니다.
 2. Windows 64비트에서는 `PatchyDOS-Dune2-x64.exe`, 32비트에서는 `PatchyDOS-Dune2-x86.exe`를 실행합니다.
 3. **폴더 선택...**으로 원본 CD 이미지가 있는 폴더를 선택합니다.
 4. 해당 폴더와 하위 폴더에서 원본 **IMG/BIN** 파일을 자동 인식합니다. CUE/CCD/SUB를 개별 지정할 필요가 없습니다.
@@ -33,13 +33,13 @@ Dune2-Battle-for-Arrakis-Korean-v1.01.cue
 ## 패치와 결과 무결성
 
 패치: `Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta`
-- 크기: `356,319 bytes`
-- SHA-256: `41ef92e9a9cf062109371abce1e591fbe331e7b184b6614f6eedc1f74acef9db`
+- 크기: `361,314 bytes`
+- SHA-256: `26467e7dad84594deda58faa7e9d2535d5aaa0746f0bce993f9544aefbdd7647`
 
 생성 BIN:
-- 크기: `16,835,616 bytes` (7,158 sectors)
-- MD5: `1cd47830e0925747622bb53e12590ae2`
-- SHA-256: `5f3877d5d6be7b54b525ec91df19a46b01c4a6f5e83e3df6b683f05203053752`
+- 크기: `16,859,136 bytes` (7,168 sectors)
+- MD5: `d8e86aea5934408132a5a8f2d6493dfd`
+- SHA-256: `d8c4e5025ad35886cd29b164ab69134eb4fce502b507ac3af15fc7e647d263e5`
 
 생성 CUE:
 - 크기: `103 bytes`
@@ -81,7 +81,7 @@ Windows GUI를 실행할 때마다 새 진단 로그를 자동으로 생성합�
 2026-10-26 20:30:00.125 [로그 경로] C:\PatchyDOS_Dune2_v1.01\logs\PatchyDOS_Dune2_20261026_203000.log
 2026-10-26 20:30:05.100 [작업 시작] 한글패치 적용: D:\DUNE2
 2026-10-26 20:30:07.000 [xdelta3] 실행 시작 / 전체 제한 5m0s / 무응답 판정 1m30s
-2026-10-26 20:30:09.000 [검증 성공] BIN 16835616 bytes / MD5 1cd47830e0925747622bb53e12590ae2 / SHA-256 5f3877d5d6be7b54b525ec91df19a46b01c4a6f5e83e3df6b683f05203053752
+2026-10-26 20:30:09.000 [검증 성공] BIN 16859136 bytes / MD5 d8e86aea5934408132a5a8f2d6493dfd / SHA-256 d8c4e5025ad35886cd29b164ab69134eb4fce502b507ac3af15fc7e647d263e5
 ```
 
 위 시각은 설명용 예시입니다.
@@ -112,3 +112,14 @@ Windows GUI를 실행할 때마다 새 진단 로그를 자동으로 생성합�
 ## v1.01 WaitDelay 오류 수정판 (2026-10-26)
 
 특정 Windows 환경에서 정상 크기의 BIN이 생성된 뒤에도 `exec: WaitDelay expired before I/O complete` 오류가 발생하는 문제를 수정했습니다. xdelta3 프로세스가 종료 코드 0으로 끝났지만 하위 프로세스가 표준 출력/오류 파이프를 유지하는 경우, **생성된 BIN의 전체 크기·MD5·SHA-256을 다시 검증하고 세 값이 모두 일치할 때만** 완료를 인정합니다. 결과 검증에 실패하거나 xdelta3가 실제 오류로 종료한 경우에는 이전과 같이 오류를 반환하고 임시 파일을 정리합니다. 5분 제한, 90초 무응답 감지, GUI 중단 기능은 유지합니다.
+
+## v1.01 xdelta 교체 — 파일명 헤더 제거 (2026-10-27)
+
+사용자 제공 파일 `Dune2-Battle-for-Arrakis-Korean-v1.01.bin(1).xdelta`를 확인하여 패처 배포용 표준 이름 `Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta`로 **내용 변경 없이 교체**했습니다. 이름의 `(1)`은 업로드 파일을 구분하기 위한 접미사이며 배포된 패치의 내부 이름 기록을 의미하지 않습니다.
+
+- VCDIFF 헤더 인디케이터: `0x01` — 보조 압축 정보 있음, **애플리케이션/파일명 헤더 없음** (`0x04` 비트 0).
+- xdelta: **361,314바이트**, SHA-256 `26467e7dad84594deda58faa7e9d2535d5aaa0746f0bce993f9544aefbdd7647`.
+- 결과 BIN: **16,859,136바이트 (7,168 CD 섹터)**, MD5 `d8e86aea5934408132a5a8f2d6493dfd`, SHA-256 `d8c4e5025ad35886cd29b164ab69134eb4fce502b507ac3af15fc7e647d263e5`.
+- 기존 초기 v1.01 BIN(16,835,616바이트)과는 내용이 다릅니다. ISO9660 파일 목록은 37개로 동일하며, `DUNEHAN.TBL` 용량이 13,362바이트에서 33,144바이트로 증가했습니다. 따라서 단순 헤더 제거만 한 패치가 아닙니다.
+- 기존 v1.01에서 생성한 BIN이 같은 파일명으로 남아 있으면 **덮어쓰지 않고 기존 결과 불일치 오류를 표시**합니다. 기존 출력 BIN/CUE는 삭제하거나 다른 폴더로 옮긴 뒤 새 패처를 실행하십시오. 원본 CD IMG는 수정하거나 삭제하지 마십시오.
+- Windows x64/x86 실행파일 및 로그/WaitDelay 처리 코드는 변경하지 않았습니다. 바뀐 부분은 xdelta, 대상 해시 매니페스트, 문서 및 검증 정보입니다.

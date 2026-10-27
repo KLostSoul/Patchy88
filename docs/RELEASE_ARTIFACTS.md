@@ -9,7 +9,7 @@
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
 | Alltynex PatchyFM Windows x64/x86 | `PatchyFM_Alltynex_v1.0.zip` | 3,041,670 | `bfac1cd128d39b4bda6df4a2cb033289f3387df97e2da205ec9357631a89237f` |
 | Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.01.zip` | 2,588,171 | `0f7d6d216ccba39123aef43120be4cbcc99007318bbdbe5bca83a141cd334548` |
-| Dune II PatchyDOS Windows x64/x86 (최신 수정본) | `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log.zip` | 2,711,063 | `277baa7295334eb205522a9bcc3283b8a86ac532c85f5fd59be0ddf7b052e6a5` |
+| Dune II PatchyDOS Windows x64/x86 (최신 NoHeader 수정본) | `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_NoHeader.zip` | 2,716,928 | `9bf97b1200a79d05c18ea9446e3a33cd48323b5711421be4db63ed286804ba18` |
 
 ## 바리스 II v1.0.3
 
@@ -128,3 +128,17 @@
 - 원본 CD·완성 BIN은 저장소나 배포 ZIP에 포함하지 않습니다. 배포 ZIP과 소스 ZIP은 GitHub Releases에 자동 등록되지 않습니다.
 
 [PatchyDOS 사용법 및 로그 수집 안내](PATCHYDOS_DUNE2.md)
+
+
+## PatchyDOS_Dune2_v1.01 — NoHeader xdelta 교체 (2026-10-27)
+
+- **최신 Windows 배포 ZIP:** `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_NoHeader.zip`, 2,716,928 bytes, SHA-256 `9bf97b1200a79d05c18ea9446e3a33cd48323b5711421be4db63ed286804ba18`.
+- **최신 Go 소스 ZIP:** `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_NoHeader_Source.zip`, 47,674 bytes, SHA-256 `6081f9f1aca346b443583eebff70cbfb0464b1055095743aad847b6bb85476e4`.
+- 새 xdelta `Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta`: 361,314 bytes, SHA-256 `26467e7dad84594deda58faa7e9d2535d5aaa0746f0bce993f9544aefbdd7647`.
+- VCDIFF header indicator `0x01`: 보조 압축 정보 유지, application/file-name 헤더 제외. 기존 v1.01 xdelta를 단순히 헤더 제거한 것이 아니라 최종 이미지 내용도 다릅니다.
+- 새 결과 `Dune2-Battle-for-Arrakis-Korean-v1.01.bin`: 16,859,136 bytes (7,168 sectors), MD5 `d8e86aea5934408132a5a8f2d6493dfd`, SHA-256 `d8c4e5025ad35886cd29b164ab69134eb4fce502b507ac3af15fc7e647d263e5`.
+- 이전 v1.01 BIN 16,835,616 bytes와 내용 불일치: 기존 결과물을 덮어쓰지 않고 거부하므로 새 적용 전 이전 출력 BIN/CUE를 다른 곳으로 이동하거나 삭제해야 합니다. 원본 게임 CD는 변경하지 않습니다.
+- WaitDelayFix, 5분 제한/90초 무응답 감지 및 사용자 중단, GUI 로그 자동 저장 기능은 변경하지 않았습니다.
+- 원본 CD·완성 BIN은 배포 및 Git 소스 트리에서 제외; Windows 실행파일과 xdelta는 배포 ZIP에만 포함합니다. GitHub Releases 등록은 별도입니다.
+
+[상세 사용법](PATCHYDOS_DUNE2.md)

@@ -7,9 +7,9 @@
     "size": 15664320
   },
   "target": {
-    "md5": "1cd47830e0925747622bb53e12590ae2",
-    "sha256": "5f3877d5d6be7b54b525ec91df19a46b01c4a6f5e83e3df6b683f05203053752",
-    "size": 16835616,
+    "md5": "d8e86aea5934408132a5a8f2d6493dfd",
+    "sha256": "d8c4e5025ad35886cd29b164ab69134eb4fce502b507ac3af15fc7e647d263e5",
+    "size": 16859136,
     "filename": "Dune2-Battle-for-Arrakis-Korean-v1.01.bin"
   },
   "cue": {
@@ -20,8 +20,8 @@
   },
   "patch": {
     "filename": "Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta",
-    "sha256": "41ef92e9a9cf062109371abce1e591fbe331e7b184b6614f6eedc1f74acef9db",
-    "size": 356319
+    "sha256": "26467e7dad84594deda58faa7e9d2535d5aaa0746f0bce993f9544aefbdd7647",
+    "size": 361314
   },
   "xdelta3_sha256": "232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481",
   "xdelta3_x64_sha256": "53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0"

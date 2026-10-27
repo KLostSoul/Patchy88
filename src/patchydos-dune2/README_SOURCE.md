@@ -26,3 +26,5 @@ if installation is not writable, the fallback is `%APPDATA%/PatchyDOS/Dune2/logs
 The exact path is shown in the GUI and result dialogs. Logging is tested by
 `session_logger_test.go`; older log files are never overwritten. No release ZIP
 contains original or patched game CD images.
+
+2026-10-27 updated patch: The distributed v1.01 xdelta no longer includes a VCDIFF application/file-name header (header_indicator 0x01). The patch and target file hashes/sizes in Dune2_Kor_v1.01.json match the new source patch. The source ZIP intentionally excludes the copyrighted source and complete patched CD image and also excludes the distribution xdelta. The Windows binaries use the same Go source; no recompilation changes are required.

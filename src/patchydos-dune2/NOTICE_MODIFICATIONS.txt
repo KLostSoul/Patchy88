@@ -2,7 +2,7 @@ PatchyDOS Dune II v1.01 — modification notice
 
 Derived from the PatchyFM Yuuwaku folder-scanning Go patcher architecture, with original source and output validation constants and Windows interface adapted specifically for MS-DOS Dune II: The Battle for Arrakis CD.
 
-The xdelta is the user-provided Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta (SHA-256 41ef92e9a9cf062109371abce1e591fbe331e7b184b6614f6eedc1f74acef9db); it is NOT created or modified by PatchyDOS.
+The xdelta is the user-provided Dune2-Battle-for-Arrakis-Korean-v1.01.bin.xdelta (SHA-256 26467e7dad84594deda58faa7e9d2535d5aaa0746f0bce993f9544aefbdd7647); it is NOT created or modified by PatchyDOS.
 
 Windows xdelta3 binaries are carried over from the previously validated PatchyFM distribution and originate from the jmacd/xdelta v3.2.0 series, Apache License 2.0.
 
@@ -19,3 +19,5 @@ errors, verified final hashes and output paths. Uses a user configuration
 folder fallback if the executable directory is read-only. Existing WaitDelay
 hash verification remains mandatory. All xdelta, manifest, CUE, and licensing
 data are unchanged.
+
+2026-10-27: Replaced the v1.01 patch with the user's new xdelta (361,314 bytes, SHA-256 26467e7dad84594deda58faa7e9d2535d5aaa0746f0bce993f9544aefbdd7647) without modifying its contents. Its VCDIFF header indicator is 0x01 (no application/file name header). Updated full target image validation: 16,859,136 bytes, MD5 d8e86aea5934408132a5a8f2d6493dfd, SHA-256 d8c4e5025ad35886cd29b164ab69134eb4fce502b507ac3af15fc7e647d263e5. The new target image differs from earlier v1.01 output, because DUNEHAN.TBL grew in the new patched CD image. No changes to executable code or helper binaries; previous notices describe historical editions.
