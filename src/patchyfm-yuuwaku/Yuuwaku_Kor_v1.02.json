@@ -1,0 +1,28 @@
+{
+  "name": "Yuuwaku (Temptation) Kor v1.02",
+  "schema": "patchyfm.yuuwaku.xdelta.v1",
+  "source": {
+    "md5": "000b8a4e832d952fb29ea6b831ed8cd0",
+    "sha256": "09095579184db0d9e1de7b17071550090782e134058b1d93aa432409dfc1557b",
+    "size": 6703200
+  },
+  "target": {
+    "md5": "6a83336e6b2b85f63567712e3144895d",
+    "sha256": "746c23498bbac452c314ca4f07962dc65cd6c0dfcb2dd90441ee7a2de904b5f5",
+    "size": 7599312,
+    "filename": "Temptation-Korean-v1.02.bin"
+  },
+  "cue": {
+    "md5": "b524f19d88ecb7db5afe6b8ea160a356",
+    "sha256": "eadcea111c967e4df85bb8a91b341a707a2b9bdade5a06dcb659ba7571ab02c4",
+    "size": 89,
+    "filename": "Temptation-Korean-v1.02.cue"
+  },
+  "patch": {
+    "filename": "Temptation-Korean-v1.02.xdelta",
+    "sha256": "7201fa46c7603e29a7d9deb3cececc00836eee424546ea1463aba69fa8c4808a",
+    "size": 330776
+  },
+  "xdelta3_sha256": "232a8e8ac9fb47a54d0ca4d6acdb322e456a8c72cbfe3b212cf2f7e498760481",
+  "xdelta3_x64_sha256": "53d90226615f217d3380c39892833311b4e24acd863e1ca01f14b5e772e2e6d0"
+}

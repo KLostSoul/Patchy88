@@ -1,63 +1,67 @@
-# PatchyFM_Yuuwaku_v1.01 — FM TOWNS 《誘惑 / Yuuwaku》
+# PatchyFM_Yuuwaku_v1.02 — FM TOWNS 《誘惑 / Yuuwaku》
 
-FM TOWNS판 《誘惑》(Yuuwaku / Temptation) 원본 CD의 데이터 트랙 IMG/BIN에 **수정된 v1.01 xdelta**를 적용하여 한글판 BIN/CUE를 만드는 Windows 패처입니다. 기존 v1.0의 **폴더 지정·하위 폴더 자동 검색** 방식을 유지합니다.
+《誘惑》(Yuuwaku / Temptation) FM TOWNS 원본 CD의 데이터 트랙 IMG/BIN에
+사용자 제공 한국어 v1.02 xdelta를 적용해 검증된 BIN/CUE를 생성하는 Windows 패처입니다.
+
+## v1.02 — 릴리스 빌드의 메모리 사용과 배포 안전성 개선
+
+- 한글화 빌드에서 **스택 메모리 오류 수정**을 반영한 새 xdelta를 사용합니다. v1.01과 비교하면 CD 이미지 내 `TMB.COM`의 내용이 변경되며, 그 외 273개 수록 파일은 동일합니다.
+- `TMB.COM`이 변경됐다는 사실과 패치의 복원 무결성은 확인했으나, 실제 게임 실행 중 스택 메모리 문제가 완전히 해결됐는지는 **실기 또는 에뮬레이터 테스트가 필요**합니다.
+- 새 결과를 `Temptation-Korean-v1.02.bin`과 `Temptation-Korean-v1.02.cue`로 생성하여 기존 v1.0/v1.01 출력과 충돌하지 않도록 했습니다.
+- 원본·패치·결과의 해시와 크기를 검증하고, 잘못된 결과물을 덮어쓰지 않습니다.
+- 패처의 입력·출력 검사에 스트리밍 해시를 사용하며, 외부 xdelta3 진단 데이터의 메모리 점유를 **출력별 최대 64KiB**로 제한합니다. xdelta3 실행 **5분 제한**, 출력 파이프 종료 지연 시 전체 결과 해시 검증을 통해서만 정상 처리하는 안전 절차를 추가했습니다.
 
 ## 사용법
 
-1. 배포 ZIP을 폴더 전체에 압축 해제합니다. EXE만 단독 실행하지 마십시오.
-2. Windows 64비트: `PatchyFM-Yuuwaku-x64.exe`, 32비트: `PatchyFM-Yuuwaku-x86.exe`를 실행합니다.
-3. **폴더 선택...**에서 원본 IMG/BIN 이미지가 있는 폴더를 지정합니다.
-4. 선택 폴더와 하위 폴더에서 IMG/BIN을 검색하고 **크기·MD5·SHA-256**으로 원본을 자동 인식합니다. CUE/CCD/SUB를 직접 고를 필요가 없습니다.
-5. **한글패치 적용**을 누르면 발견한 원본 IMG/BIN과 같은 폴더에 **`Temptation-Korean-v1.01.bin`**, **`Temptation-Korean-v1.01.cue`**가 생성됩니다.
-6. Tsugaru 등에서는 생성된 CUE를 CD-ROM으로 선택합니다. 별도의 게임 User Disk가 필요할 수 있으며 이 배포물에 포함하지 않습니다.
+1. `PatchyFM_Yuuwaku_v1.02.zip`의 내용을 **한 폴더에 모두** 압축 해제합니다. EXE만 이동하면 `assets/` 검증에 실패합니다.
+2. Windows 64비트는 `PatchyFM-Yuuwaku-x64.exe`, 32비트는 `PatchyFM-Yuuwaku-x86.exe`를 실행합니다.
+3. **폴더 선택...**으로 원본 IMG/BIN이 있는 폴더를 지정합니다. 하위 폴더도 검색하며 CUE/CCD/SUB를 지정할 필요는 없습니다.
+4. **한글패치 적용**을 누르면 원본 이미지가 있는 폴더에 결과 BIN/CUE가 생성됩니다.
+5. Tsugaru 등에서 새로 생성한 CUE를 CD-ROM으로 사용합니다. 별도의 게임 User Disk가 필요할 수 있으며 포함하지 않습니다.
 
-원본 IMG/BIN/CCD/CUE/SUB는 수정하지 않습니다. 지정 폴더에 복수의 동일 원본 이미지가 있으면 작업을 중단합니다. 이미 검증된 결과 BIN/CUE가 있다면 재사용하고, 같은 이름의 **내용이 다른 파일은 덮어쓰지 않습니다.** 기존 v1.0 결과는 새 파일명과 충돌하지 않습니다.
+```text
+Temptation-Korean-v1.02.bin
+Temptation-Korean-v1.02.cue
+```
 
-## 파일 무결성
+원본 IMG/BIN/CCD/CUE/SUB는 수정하지 않습니다. 같은 원본 IMG/BIN이 여러 개 있으면 중단합니다. 이미 정상적인 BIN/CUE가 존재하면 재사용하며, 같은 이름의 **내용이 다른 파일은 덮어쓰지 않습니다**. 임시 `.bin.tmp`·`.cue.tmp` 파일은 작업 성공/실패 후 정리됩니다. 오래된 결과를 보관하려면 기존 파일은 따로 보관하십시오.
+
+## 전체 무결성 검증값
 
 | 대상 | 크기 (바이트) | MD5 | SHA-256 |
 |---|---:|---|---|
-| 원본 Yuuwaku.img | 6,703,200 | `000b8a4e832d952fb29ea6b831ed8cd0` | `09095579184db0d9e1de7b17071550090782e134058b1d93aa432409dfc1557b` |
-| 수정 xdelta `Temptation-Korean-v1.01.xdelta` | 330,728 | `1c49f1bed50839abd768e8c74b684f43` | `c936529c182cd2854644b5a839406937628437325ef161f9af6c77cf36919e09` |
-| 한글판 `Temptation-Korean-v1.01.bin` | 7,599,312 | `c1f300af9d099e0c61234762c7fa96e6` | `1b456c4ff7d78c7f144986c6714f07a6fd62ecdd5b5c29c403656850653447c2` |
-| `Temptation-Korean-v1.01.cue` | 89 | `470955c61b88294f7da020ec7903d0e1` | `bf7336f007be2f8a0c1b3cb2d1a2acda8677200fab41ee501271d58e914c5998` |
+| 원본 `Yuuwaku.img` | 6,703,200 | `000b8a4e832d952fb29ea6b831ed8cd0` | `09095579184db0d9e1de7b17071550090782e134058b1d93aa432409dfc1557b` |
+| v1.02 `Temptation-Korean-v1.02.xdelta` | 330,776 | `74f5f1d6980bb68b7cedf1456baa22db` | `7201fa46c7603e29a7d9deb3cececc00836eee424546ea1463aba69fa8c4808a` |
+| v1.02 `Temptation-Korean-v1.02.bin` | 7,599,312 | `6a83336e6b2b85f63567712e3144895d` | `746c23498bbac452c314ca4f07962dc65cd6c0dfcb2dd90441ee7a2de904b5f5` |
+| v1.02 `Temptation-Korean-v1.02.cue` | 89 | `b524f19d88ecb7db5afe6b8ea160a356` | `eadcea111c967e4df85bb8a91b341a707a2b9bdade5a06dcb659ba7571ab02c4` |
 
-새 패치는 업로드된 **`Temptation-Korean-v1.0(1).xdelta`**의 바이트를 수정하지 않고 배포용으로 `Temptation-Korean-v1.01.xdelta`이라고 명명한 것입니다. 패치의 원본 파일명에 v1.0이 있었지만, **패처의 버전 및 새 결과물을 v1.01로 구분**합니다.
+v1.02 xdelta는 사용자가 제공한 `Temptation-Korean-v1.0(2).xdelta`의 **바이트를 변경하지 않고 이름만 변경**해 배포합니다. xdelta와 생성 BIN의 해시는 이전 버전과 다르며, CD 이미지의 변경 바이트 수는 v1.01 대비 **1,651바이트**입니다. 이 수에는 CD 섹터 검사·패리티 데이터 등도 포함됩니다.
 
-## v1.0 대비
+## 검증 및 배포 정책
 
-- 제공받은 새 xdelta: **330,728바이트** (기존 330,715바이트).
-- 결과 BIN 크기: **7,599,312바이트**, 동일.
-- 기존 v1.0 결과와 새 결과 BIN: **41,809바이트가 변경됨**.
-- 새 BIN의 MD5/SHA-256을 재측정하고 매니페스트에 반영함.
-- 결과물을 `v1.01.bin/.cue`로 구분하여 기존 v1.0 결과와 충돌하지 않음.
-- 원본 자동 탐색, 안전한 임시 파일 생성, 입력·출력 무결성 검증, 중복 검색 방지 등 기존 로직 유지.
+- 새 xdelta를 **실제 원본 `Yuuwaku.img`에 독립 디코더로 적용**하여 VCDIFF 윈도우 Adler-32 체크섬 `0x45ed3812`와 위 출력 BIN의 MD5·SHA-256을 검증했습니다.
+- Go 단위 테스트, Windows x64/x86 크로스 빌드, 출력 파일 보호 및 외부 디코더 실패/시간 제한/임시 파일 정리 테스트를 수행했습니다.
+- Windows GUI와 동봉된 Windows xdelta3 실행파일의 실제 동작, FM TOWNS 게임 플레이 중 메모리 오류 수정 여부는 **아직 별도 검증이 필요**합니다.
+- 원본 게임 CD, User Disk, 완성 BIN은 **배포 ZIP과 소스 ZIP에 포함하지 않습니다**. 배포물에는 오직 한글패치 xdelta, 실행파일, 검증 매니페스트, CUE 템플릿, 라이선스·고지 문서만 포함됩니다.
+- 패처 소스는 Apache License 2.0이며, 동봉 xdelta3 v3.2.0도 Apache 2.0입니다. 게임과 한글 번역 콘텐츠의 권리는 각각의 권리자에게 있습니다. **FreeTOWNSOS는 사용하거나 포함하지 않습니다.**
 
-## 검증 범위
-
-수정 xdelta를 직접 해독한 VCDIFF 결과는 7,599,312바이트이며, VCDIFF 윈도우의 **Adler-32 무결성 검사 통과** 및 최종 MD5/SHA-256을 확인했습니다. 같은 자체 디코더로 기존 v1.0 xdelta를 해독하면 업로드된 v1.0 한글판 BIN과 완전히 일치함을 교차 확인했습니다. Go 단위 테스트, Windows x64/x86 빌드 및 별도 디코더를 사용하는 9가지 Linux 통합 검사(정상 생성·하위 폴더·재실행·변조/오류 거부 등)를 수행했습니다.
-
-**이 Linux 환경에서 Windows GUI와 xdelta3.exe의 실제 실행 및 Tsugaru 부팅은 검증하지 않았습니다.** 따라서 검증된 범위와 실기 동작을 혼동하지 않습니다.
-
-## 배포 구성
+## 배포 파일 구성
 
 ```text
-PatchyFM_Yuuwaku_v1.01/
-├─ PatchyFM-Yuuwaku-x64.exe
-├─ PatchyFM-Yuuwaku-x86.exe
-├─ README.ko.md
-├─ LICENSE
-├─ THIRD_PARTY_LICENSE.txt
-├─ NOTICE_MODIFICATIONS.txt
-├─ UPSTREAM_XDELTA.txt
-├─ SHA256SUMS.txt
-└─ assets/
-   ├─ Yuuwaku_Kor_v1.01.json
-   ├─ Temptation-Korean-v1.01.cue
-   ├─ xdelta3.exe
-   ├─ xdelta3-x64.exe
-   └─ patches/
-      └─ Temptation-Korean-v1.01.xdelta
+PatchyFM_Yuuwaku_v1.02/
+├── PatchyFM-Yuuwaku-x64.exe
+├── PatchyFM-Yuuwaku-x86.exe
+├── README.ko.md
+├── LICENSE
+├── THIRD_PARTY_LICENSE.txt
+├── NOTICE_MODIFICATIONS.txt
+├── UPSTREAM_XDELTA.txt
+├── SHA256SUMS.txt
+└── assets/
+    ├── Yuuwaku_Kor_v1.02.json
+    ├── Temptation-Korean-v1.02.cue
+    ├── xdelta3.exe
+    ├── xdelta3-x64.exe
+    └── patches/
+        └── Temptation-Korean-v1.02.xdelta
 ```
-
-원본 게임 이미지 및 완성 한글판 이미지/BIN은 배포하지 않습니다. 패치 툴 소스 코드는 Apache-2.0을 사용하며, 게임 원작과 번역 패치의 권리는 별개입니다. xdelta3는 jmacd/xdelta v3.2.0 (Apache-2.0)이며 FreeTOWNSOS는 포함하지 않습니다.

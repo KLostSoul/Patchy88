@@ -1,24 +1,32 @@
-# PatchyFM Yuuwaku v1.01 — source
+# PatchyFM Yuuwaku v1.02 — build and verification
 
-Windows GUI patcher for FM TOWNS Yuuwaku, developed from the previous PatchFM Alltynex approach.
+Standalone Windows patcher for FM TOWNS Yuuwaku, written in Go 1.23+.
 
-Build (Go 1.23+):
+## Build
 
 ```sh
+go test ./...
 GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -H windowsgui" -o PatchyFM-Yuuwaku-x64.exe .
 GOOS=windows GOARCH=386 CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -H windowsgui" -o PatchyFM-Yuuwaku-x86.exe .
-go test ./...
 ```
 
-The executable must run beside `assets/`, which contains the supplied user xdelta patch, expected Korean CUE template, manifest, and separately licensed xdelta3 executables.
+`assets/` from the binary release is required beside the executables. It contains the supplied xdelta, the template CUE, integrity manifest and the externally licensed xdelta3 helpers. These payload binaries are deliberately **not** duplicated inside the source ZIP or source Git tree.
 
-- `core.go`: metadata validation, recursive automatic source IMG/BIN discovery by hash, safely verified xdelta3 workflow, exact Korean BIN/CUE output.
-- `main_windows.go`: native Win32 GUI with a Windows shell folder picker; no individual image file selection.
-- `main_cli.go`: non-Windows CLI (`apply ORIGINAL_FOLDER`) for source debugging; requires a compatible native xdelta3 helper at the configured path.
-- `core_test.go`: unit tests.
+## Memory and deployment safety
 
-Generated binaries were cross-compiled and 9 folder-mode integration tests passed. The Windows GUI was not interactively run in the Linux build environment.
+- `hashFile()` computes MD5 and SHA-256 by streaming with `io.Copy`; whole CD images are **not** held in patcher memory.
+- xdelta stdout/stderr are capped to the most recent 64 KiB each to avoid unbounded diagnostic buffering. Important previous output might be omitted if excessive diagnostics are emitted.
+- External decoding has a 5-minute wall-clock deadline, 3-second `WaitDelay`, and differentiated timeout / nonzero-exit diagnostics.
+- The `WaitDelay` workaround does not blindly accept an exit status: only a complete expected BIN matching size, MD5 and SHA-256 can be accepted.
+- Input, patch, decoder helper and CUE template hashes are checked. Existing non-matching outputs are refused without overwrite; newly created temporary files are cleaned on failure.
+- The on-disk output is named v1.02, intentionally separate from v1.01.
 
-Apache-2.0 applies to this PatchyFM utility code only. It does not license the original game, Korean translation content, or supplied xdelta patch. xdelta3 is separately distributed under Apache-2.0.
+## Tests and scope
 
-Updated v1.01 patch SHA-256: `c936529c182cd2854644b5a839406937628437325ef161f9af6c77cf36919e09`. Expected v1.01 BIN SHA-256: `1b456c4ff7d78c7f144986c6714f07a6fd62ecdd5b5c29c403656850653447c2`. The file format schema remains `patchyfm.yuuwaku.xdelta.v1`.
+`release_safety_test.go` covers bounded diagnostics, safety timeouts, failure cleanup, output verification, overwrite protection and idempotence. `core_test.go` covers source discovery and hash checking. `verification/verify_vcdiff_lzma.py` independently replays the actual user xdelta, **using Python memory buffers**; this development-only script is not used by the shipping patcher.
+
+The patch comes from user-supplied `Temptation-Korean-v1.0(2).xdelta`, SHA-256 `7201fa46c7603e29a7d9deb3cececc00836eee424546ea1463aba69fa8c4808a` (330,776 bytes). The expected BIN is 7,599,312 bytes, SHA-256 `746c23498bbac452c314ca4f07962dc65cd6c0dfcb2dd90441ee7a2de904b5f5`.
+
+The emulator/game runtime memory fault is not verified as fixed by these patch-integrity tests. Windows GUI and packaged xdelta3 helper runtime were not executed in the Linux cross-build environment.
+
+Apache-2.0 applies to the PatchyFM utility code; xdelta3 v3.2.0 is separately distributed under Apache-2.0. Original game data and translation patch rights are separate.

@@ -8,7 +8,7 @@
 | 몽환전사 바리스 Python | `Patchy88_Valis1_PC88_Python_v1.0.7.zip` | 220,377 | `62b553cb010e86902d7edfca532e7a5a3c51ad5d3e434a2a351dc6ec944902e7` |
 | 몽환전사 바리스 II Windows x64/x86 | `Patchy88_Valis2_PC88_v1.0.3.zip` | 2,127,737 | `4e7d3c488cfddabbb15e36c4580c4a974421cb7c52f783270f41c6c3d3365028` |
 | Alltynex PatchyFM Windows x64/x86 | `PatchyFM_Alltynex_v1.0.zip` | 3,041,670 | `bfac1cd128d39b4bda6df4a2cb033289f3387df97e2da205ec9357631a89237f` |
-| Yuuwaku PatchyFM Windows x64/x86 | `PatchyFM_Yuuwaku_v1.01.zip` | 2,588,171 | `0f7d6d216ccba39123aef43120be4cbcc99007318bbdbe5bca83a141cd334548` |
+| Yuuwaku PatchyFM Windows x64/x86 (v1.02) | `PatchyFM_Yuuwaku_v1.02.zip` | 2,618,291 | `45ab5cf39088660d4c849b4028f6051032b2828252f6a2c520ff8bb3170d837b` |
 | Dune II PatchyDOS Windows x64/x86 (최신 NoHeader 수정본) | `PatchyDOS_Dune2_v1.01_WaitDelayFix_Log_NoHeader.zip` | 2,716,928 | `9bf97b1200a79d05c18ea9446e3a33cd48323b5711421be4db63ed286804ba18` |
 
 ## 바리스 II v1.0.3
@@ -98,6 +98,21 @@
 - 원본/완성 게임 디스크는 Git과 배포물 모두에 포함하지 않으며, xdelta와 디코더는 배포 ZIP에 포함하고 소스 트리에는 중복하지 않습니다.
 
 [상세 사용법](PATCHYFM_YUUWAKU.md)
+
+
+## PatchyFM_Yuuwaku_v1.02 (2026-10-29)
+
+- 배포 ZIP: `PatchyFM_Yuuwaku_v1.02.zip`, 2,618,291 bytes, SHA-256 `45ab5cf39088660d4c849b4028f6051032b2828252f6a2c520ff8bb3170d837b`.
+- 소스 ZIP: `PatchyFM_Yuuwaku_v1.02_Source.zip`, 25,330 bytes, SHA-256 `39db288ba5e6fc90b4f5b6ec38e3b84cbece346957caa0722cb9bd1c6466996f`.
+- 사용자 제공 xdelta: 330,776 bytes, SHA-256 `7201fa46c7603e29a7d9deb3cececc00836eee424546ea1463aba69fa8c4808a`.
+- 출력 BIN: `Temptation-Korean-v1.02.bin`, 7,599,312 bytes, MD5 `6a83336e6b2b85f63567712e3144895d`, SHA-256 `746c23498bbac452c314ca4f07962dc65cd6c0dfcb2dd90441ee7a2de904b5f5`.
+- 출력 CUE: `Temptation-Korean-v1.02.cue`, 89 bytes, SHA-256 `eadcea111c967e4df85bb8a91b341a707a2b9bdade5a06dcb659ba7571ab02c4`.
+- 변경 게임 파일: `TMB.COM`(스택 메모리 오류 수정 취지); 나머지 273개 수록 파일은 변경 없음. 실제 게임 오류 해결은 별도 검증해야 합니다.
+- 패처 개선: 스트리밍 MD5·SHA-256, xdelta3 진단 출력 스트림별 64KiB 제한, 5분 디코더 제한, WaitDelay 발생 시 결과 해시 검증, 원본 및 기존 출력 보호, 실패 임시 파일 정리.
+- Go 단위 테스트와 Windows x64/x86 크로스 빌드, 제공 원본에서 결과 이미지 복원과 해시 검증 통과. Windows GUI 실구동/게임 플레이 미확인.
+- 원본 CD·완성 BIN은 배포 ZIP과 Git 트리 모두에 포함하지 않습니다. xdelta/디코더는 배포 ZIP에만 포함하며 GitHub Releases 등록은 별도입니다.
+
+[Yuuwaku v1.02 상세 문서](PATCHYFM_YUUWAKU.md)
 
 
 ## PatchyDOS_Dune2_v1.01 최초 배포 기록 (2026-10-26)

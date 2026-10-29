@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
@@ -13,15 +14,16 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 )
 
 const (
-	programName    = "PatchyFM Yuuwaku v1.01"
-	manifestFile   = "Yuuwaku_Kor_v1.01.json"
+	programName    = "PatchyFM Yuuwaku v1.02"
+	manifestFile   = "Yuuwaku_Kor_v1.02.json"
 	expectedSchema = "patchyfm.yuuwaku.xdelta.v1"
-	expectedName   = "Yuuwaku (Temptation) Kor v1.01"
-	expectedBIN    = "Temptation-Korean-v1.01.bin"
-	expectedCUE    = "Temptation-Korean-v1.01.cue"
+	expectedName   = "Yuuwaku (Temptation) Kor v1.02"
+	expectedBIN    = "Temptation-Korean-v1.02.bin"
+	expectedCUE    = "Temptation-Korean-v1.02.cue"
 )
 
 type Hashes struct {
@@ -89,7 +91,7 @@ func NewEngine(root string) (*Engine, error) {
 	if err = json.Unmarshal(data, &m); err != nil {
 		return nil, fmt.Errorf("매니페스트 JSON 오류: %w", err)
 	}
-	if m.Name != expectedName || m.Schema != expectedSchema || m.Target.Filename != expectedBIN || m.Cue.Filename != expectedCUE || m.Patch.Filename != "Temptation-Korean-v1.01.xdelta" {
+	if m.Name != expectedName || m.Schema != expectedSchema || m.Target.Filename != expectedBIN || m.Cue.Filename != expectedCUE || m.Patch.Filename != "Temptation-Korean-v1.02.xdelta" {
 		return nil, errors.New("매니페스트 이름 또는 형식이 올바르지 않습니다")
 	}
 	if m.Source.Size <= 0 || m.Target.Size <= 0 || m.Cue.Size <= 0 || m.Patch.Size <= 0 {
@@ -231,7 +233,7 @@ func fileExists(path string) (bool, error) {
 	return false, err
 }
 func stageCUE(dirname string, contents []byte) (string, error) {
-	f, err := os.CreateTemp(dirname, "PatchyFM-Yuuwaku-v1.01-*.cue.tmp")
+	f, err := os.CreateTemp(dirname, "PatchyFM-Yuuwaku-v1.02-*.cue.tmp")
 	if err != nil {
 		return "", err
 	}
@@ -246,6 +248,78 @@ func stageCUE(dirname string, contents []byte) (string, error) {
 		return "", err
 	}
 	return tmp, nil
+}
+
+// Keep diagnostic output bounded: a noisy or faulty external decoder must not
+// exhaust the patcher's process memory even when the source image is small.
+const maxDecoderDiagnostics = 64 * 1024
+
+var decoderRunTimeout = 5 * time.Minute // overridable in tests
+
+type boundedDiagnostics struct {
+	data      []byte
+	truncated bool
+}
+
+func (b *boundedDiagnostics) Write(p []byte) (int, error) {
+	n := len(p)
+	if len(p) >= maxDecoderDiagnostics {
+		b.data = append(b.data[:0], p[len(p)-maxDecoderDiagnostics:]...)
+		b.truncated = true
+	} else {
+		extra := len(b.data) + len(p) - maxDecoderDiagnostics
+		if extra > 0 {
+			copy(b.data, b.data[extra:])
+			b.data = b.data[:len(b.data)-extra]
+			b.truncated = true
+		}
+		b.data = append(b.data, p...)
+	}
+	return n, nil
+}
+func (b *boundedDiagnostics) String() string {
+	msg := strings.TrimSpace(strings.ToValidUTF8(string(b.data), "?"))
+	if b.truncated {
+		return "[오래된 출력은 메모리 보호를 위해 생략됨]\n" + msg
+	}
+	return msg
+}
+
+// runDecoder limits the lifetime and diagnostics of xdelta3. A successful
+// process can return ErrWaitDelay if inherited I/O pipes remain open; in that
+// case only a fully validated target may be accepted (not just a file size).
+func (e *Engine) runDecoder(src, tmpBIN string, logf func(string)) error {
+	ctx, cancel := context.WithTimeout(context.Background(), decoderRunTimeout)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, e.Decoder, "-d", "-s", src, e.Patch, tmpBIN)
+	cmd.Dir = e.Root
+	stdout, stderr := &boundedDiagnostics{}, &boundedDiagnostics{}
+	cmd.Stdout, cmd.Stderr = stdout, stderr
+	cmd.WaitDelay = 3 * time.Second
+	start := time.Now()
+	if logf != nil {
+		logf("[xdelta3] 실행 시작; 메모리 제한 진단 캡처 및 5분 안전 시간 제한 적용")
+	}
+	err := cmd.Run()
+	elapsed := time.Since(start).Round(time.Millisecond)
+	if ctx.Err() == context.DeadlineExceeded {
+		return fmt.Errorf("xdelta3 실행 시간 제한 초과 (%s). 임시 파일을 정리합니다. stderr: %s", elapsed, stderr.String())
+	}
+	if errors.Is(err, exec.ErrWaitDelay) {
+		if vErr := e.ValidateBIN(tmpBIN); vErr == nil {
+			if logf != nil {
+				logf("[xdelta3] 종료 후 출력 파이프 지연 발생; BIN 전체 MD5/SHA-256 일치 확인, 계속 진행")
+			}
+			return nil
+		}
+	}
+	if err != nil {
+		return fmt.Errorf("xdelta3 적용 실패 (%s): %w\n[xdelta3 stderr] %s\n[xdelta3 stdout] %s", elapsed, err, stderr.String(), stdout.String())
+	}
+	if logf != nil {
+		logf(fmt.Sprintf("[xdelta3] 정상 종료 (%s); 전체 BIN 해시 검증 중", elapsed))
+	}
+	return nil
 }
 
 // Apply only ever publishes verified results. Existing mismatched target files are not overwritten.
@@ -289,7 +363,7 @@ func (e *Engine) Apply(folder string, logf func(string)) (string, string, error)
 	}
 	tmpBIN := ""
 	if !binExists {
-		f, er := os.CreateTemp(outDir, "PatchyFM-Yuuwaku-v1.01-*.bin.tmp")
+		f, er := os.CreateTemp(outDir, "PatchyFM-Yuuwaku-v1.02-*.bin.tmp")
 		if er != nil {
 			return "", "", er
 		}
@@ -300,10 +374,8 @@ func (e *Engine) Apply(folder string, logf func(string)) (string, string, error)
 		if logf != nil {
 			logf("원본 IMG에서 xdelta 적용 중...")
 		}
-		cmd := exec.Command(e.Decoder, "-d", "-s", src, e.Patch, tmpBIN)
-		cmd.Dir = e.Root
-		if data, er := cmd.CombinedOutput(); er != nil {
-			return "", "", fmt.Errorf("xdelta 적용 실패: %v\n%s", er, strings.TrimSpace(string(data)))
+		if er := e.runDecoder(src, tmpBIN, logf); er != nil {
+			return "", "", er
 		}
 		if logf != nil {
 			logf("생성 BIN 전체 크기/MD5/SHA-256 검증 중...")

@@ -1,30 +1,24 @@
-PatchyFM — Yuuwaku (Temptation) Kor v1.01
+PatchyFM Yuuwaku v1.02 — modification and distribution notice
 
-This FM TOWNS Windows patcher is based on the Patchy88 project's
-original validation approach. It recursively scans a user-selected folder
-for a verified Yuuwaku IMG/BIN CD data track, then applies the revised
-xdelta patch and produces Korean BIN/CUE output. The original game
-tracks and final game images are not redistributed.
+PatchyFM v1.02 applies a user-provided Korean translation patch to the FM TOWNS
+Yuuwaku MODE1/2352 CD data track. The previous v1.01 packaging was the base.
 
-The supplied revised patch was uploaded as Temptation-Korean-v1.0(1).xdelta.
-For this v1.01 packaging, its raw bytes were preserved and the bundled
-copy was named Temptation-Korean-v1.01.xdelta.
+1) Replaced `Temptation-Korean-v1.01.xdelta` by the 330,776-byte user file
+   originally supplied as `Temptation-Korean-v1.0(2).xdelta`, redistributed without
+   modification to its bytes as `Temptation-Korean-v1.02.xdelta`.
+2) Updated all manifest output hashes, generated BIN/CUE names, user documentation
+   and the two Windows GUI executables to v1.02.
+3) Strengthened patcher memory and delivery safety: bounded xdelta diagnostic
+   capture (64KiB per stream); 5-minute external process timeout; complete
+   content hash checks even when Go reports a late-closing output pipe; verified
+   target publication and cleanup of incomplete temporary output files.
+4) The supplied patch changes TMB.COM compared with v1.01 (stack-memory error
+   fix reported by patch author). No claim of independent FM TOWNS runtime testing.
+5) No original game files, complete CD image, translated full BIN, User Disk,
+   or FreeTOWNSOS are included with the distribution.
 
-Updated patch SHA-256:
-  c936529c182cd2854644b5a839406937628437325ef161f9af6c77cf36919e09
-Updated Korean BIN SHA-256:
-  1b456c4ff7d78c7f144986c6714f07a6fd62ecdd5b5c29c403656850653447c2
+Patch (SHA-256): 7201fa46c7603e29a7d9deb3cececc00836eee424546ea1463aba69fa8c4808a
+Verified full BIN (SHA-256): 746c23498bbac452c314ca4f07962dc65cd6c0dfcb2dd90441ee7a2de904b5f5
 
-The resulting BIN was reconstructed from the provided original IMG with
-a separate RFC 3284/VCDIFF decoder; its window-level Adler-32 checksum
-was verified. That decoder was cross-checked against the old v1.0 patch
-and the previously supplied v1.0 Korean BIN. Windows amd64/386 builds,
-Go unit tests, and nine Linux integration checks with a validated
-VCDIFF decoder substitute passed. These checks do NOT establish that
-the Windows GUI or bundled Windows xdelta3.exe ran on a Windows machine,
-and game boot in Tsugaru has not been verified here.
-
-The xdelta data and original/translated game copyrights are not covered
-by this utility's Apache-2.0 license. The xdelta3 helpers are from
-jmacd/xdelta v3.2.0, separately distributed under Apache-2.0.
-FreeTOWNSOS is not included in this package.
+PatchyFM code: Apache License 2.0. xdelta3 v3.2.0: Apache License 2.0.
+Original game and localization content retain their respective owners' rights.

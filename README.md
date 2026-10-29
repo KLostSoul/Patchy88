@@ -4,7 +4,7 @@ Patchy88은 PC-8801 게임의 한글화 패치를 안전하게 적용하기 위�
 
 **PatchyDOS**는 MS-DOS판 《Dune II: The Battle for Arrakis》 CD 한글패치 전용 도구입니다. 폴더에서 원본 IMG/BIN을 자동 인식하고 xdelta를 적용하여 검증된 BIN/CUE를 생성합니다. v1.01 최신 수정본은 디코더 무응답 감지, 5분 실행 제한, 작업 중단, WaitDelay 오류 보정 및 실행 시각별 자동 진단 로그 저장을 지원합니다. 2026-10-27 교체된 xdelta는 파일명 애플리케이션 헤더가 없는 VCDIFF 형식(0x01)이며, 출력 BIN이 16,859,136바이트로 변경되었습니다. 로그는 실행파일 옆 `logs/` 폴더에 생성되며 쓰기 불가 시 `%APPDATA%`의 사용자 설정 폴더를 이용합니다.
 
-FM TOWNS 패처는 《Alltynex》용 PatchyFM과 《誘惑 / Yuuwaku》용 **PatchyFM_Yuuwaku_v1.01**을 제공합니다. Alltynex는 원본 ZIP에서 한글판 ISO를 생성하고, Yuuwaku v1.01은 지정 폴더와 하위 폴더의 원본 IMG/BIN을 해시로 자동 인식하고 수정된 xdelta를 적용하여 한글판 BIN/CUE를 생성합니다. 두 패처 모두 결과 전체의 크기·MD5·SHA-256을 검증합니다.
+FM TOWNS 패처는 《Alltynex》용 PatchyFM과 《誘惑 / Yuuwaku》용 **PatchyFM_Yuuwaku_v1.02**를 제공합니다. Alltynex는 원본 ZIP에서 한글판 ISO를 생성합니다. Yuuwaku v1.02는 지정 폴더에서 원본 IMG/BIN을 자동 인식하고 스택 메모리 오류 수정 xdelta를 적용해 한글판 BIN/CUE를 생성합니다. 스트리밍 해시 검사, xdelta3 진단 출력 제한, 5분 실행 제한과 결과 해시 검증을 제공합니다.
 
 《Mirrors》 v1.01은 일본판과 영문판의 원본이 서로 다르지만, 두 판본 모두 **동일한 최종 한글판 CCD·IMG·SUB**를 생성합니다. 원본과 결과는 모두 전체 MD5·SHA-256과 크기로 검증합니다.
 
@@ -20,7 +20,7 @@ FM TOWNS 패처는 《Alltynex》용 PatchyFM과 《誘惑 / Yuuwaku》용 **Pat
 - [몽환전사 바리스 II용 Patchy88](docs/VALIS2.md)
 - [Mirrors용 Patchy88 — Mirrors_Kor1.01](docs/MIRRORS.md)
 - [PatchyFM — Alltynex Kor v1.0](docs/PATCHYFM_ALLTYNEX.md)
-- [PatchyFM_Yuuwaku_v1.01 — 誘惑 한글패처](docs/PATCHYFM_YUUWAKU.md)
+- [PatchyFM_Yuuwaku_v1.02 — 誘惑 한글패처](docs/PATCHYFM_YUUWAKU.md)
 - [PatchyDOS_Dune2_v1.01 — Dune II 한글패처](docs/PATCHYDOS_DUNE2.md)
 - [Mirrors용 Patchy88 소스 및 빌드](src/mirrors-go/README.ko.md)
 - [PatchyFM Alltynex 소스 및 빌드](src/patchyfm-alltynex/README.ko.md)
@@ -141,7 +141,7 @@ game.d88.2.bak
 
 PatchyFM Alltynex v1.0은 실제 원본 ZIP에서 ISO 생성, 결과 검증, 게임 실행까지 확인했습니다.
 
-### PatchyFM Yuuwaku v1.01
+### PatchyFM Yuuwaku v1.02
 
 ```text
 원본 IMG/BIN이 있는 폴더 선택
@@ -152,7 +152,7 @@ PatchyFM Alltynex v1.0은 실제 원본 ZIP에서 ISO 생성, 결과 검증, 게
 → 한글판 BIN/CUE 확정
 ```
 
-CUE·CCD·SUB의 수동 지정은 필요하지 않으며 원본은 수정하지 않습니다. 원본과 동일한 이미지가 여러 개 검색되면 잘못된 폴더에 결과가 생성되는 것을 방지하기 위해 중단합니다. 자세한 내용은 [Yuuwaku 사용법](docs/PATCHYFM_YUUWAKU.md)을 참조하십시오.
+v1.02는 `Temptation-Korean-v1.02.bin/.cue`를 생성합니다. CUE·CCD·SUB의 수동 지정은 필요하지 않으며 원본은 수정하지 않습니다. 원본과 동일한 이미지가 여러 개 검색되면 잘못된 폴더에 결과가 생성되는 것을 방지하기 위해 중단합니다. 자세한 내용은 [Yuuwaku 사용법](docs/PATCHYFM_YUUWAKU.md)을 참조하십시오.
 
 ### PatchyDOS Dune II
 

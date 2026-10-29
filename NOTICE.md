@@ -86,7 +86,7 @@ FreeTOWNSOS 라이선스에 포함된 ORICON 및 Free386 관련 고지도 함께
 [사용 설명 및 전체 해시](docs/PATCHYFM_YUUWAKU.md)
 
 
-## PatchyFM_Yuuwaku_v1.01 — FM TOWNS 《誘惑 / Yuuwaku》 (현재 배포)
+## PatchyFM_Yuuwaku_v1.01 — FM TOWNS 《誘惑 / Yuuwaku》 (이전 배포)
 
 - 수정 xdelta `Temptation-Korean-v1.01.xdelta`: 330,728 bytes, SHA-256 `c936529c182cd2854644b5a839406937628437325ef161f9af6c77cf36919e09`.
 - 적용 결과 `Temptation-Korean-v1.01.bin`: 7,599,312 bytes, SHA-256 `1b456c4ff7d78c7f144986c6714f07a6fd62ecdd5b5c29c403656850653447c2`.
@@ -97,6 +97,20 @@ FreeTOWNSOS 라이선스에 포함된 ORICON 및 Free386 관련 고지도 함께
 - 원본 게임 이미지 및 완성 BIN/ISO는 배포하지 않습니다. 패치 파일과 xdelta3 실행파일은 배포 ZIP에만 포함하며 Git 소스 트리에는 두지 않습니다.
 
 [PatchyFM Yuuwaku v1.01 사용법](docs/PATCHYFM_YUUWAKU.md)
+
+
+## PatchyFM_Yuuwaku_v1.02 — FM TOWNS 《誘惑 / Yuuwaku》 (현재 배포)
+
+- 새 xdelta `Temptation-Korean-v1.02.xdelta`: 330,776 bytes, SHA-256 `7201fa46c7603e29a7d9deb3cececc00836eee424546ea1463aba69fa8c4808a`. 원래 제공된 `Temptation-Korean-v1.0(2).xdelta`의 바이트를 바꾸지 않고 이름만 변경했습니다.
+- v1.01 대비 CD의 `TMB.COM`이 변경되고 다른 273개 파일의 내용은 동일합니다. 게임 실행 중 스택 메모리 오류 해결 여부는 별도 확인이 필요합니다.
+- 결과 BIN `Temptation-Korean-v1.02.bin`: 7,599,312 bytes, MD5 `6a83336e6b2b85f63567712e3144895d`, SHA-256 `746c23498bbac452c314ca4f07962dc65cd6c0dfcb2dd90441ee7a2de904b5f5`.
+- 결과 CUE `Temptation-Korean-v1.02.cue`: 89 bytes, SHA-256 `eadcea111c967e4df85bb8a91b341a707a2b9bdade5a06dcb659ba7571ab02c4`.
+- 스트리밍 전체 해시 검사, xdelta3 stdout/stderr 각각 64KiB 메모리 제한, 5분 실행 제한, WaitDelay 상황에서 전체 출력 해시 검증, 기존 결과 보호 및 임시 파일 정리 기능을 적용했습니다.
+- Go 단위 테스트, Windows x64/x86 빌드, 실제 원본을 이용한 복원 결과의 크기·해시 검증 통과. Windows GUI 실구동과 게임 내 수정 효과는 별도 검증이 필요합니다.
+- 배포 ZIP `PatchyFM_Yuuwaku_v1.02.zip` (2,618,291 bytes, SHA-256 `45ab5cf39088660d4c849b4028f6051032b2828252f6a2c520ff8bb3170d837b`)과 소스 ZIP `PatchyFM_Yuuwaku_v1.02_Source.zip` (25,330 bytes, SHA-256 `39db288ba5e6fc90b4f5b6ec38e3b84cbece346957caa0722cb9bd1c6466996f`).
+- 게임 원본 CD·완성 BIN·User Disk는 배포하지 않습니다. xdelta와 xdelta3는 배포 ZIP에만 포함하고 Git 소스 트리에는 포함하지 않습니다.
+
+[PatchyFM Yuuwaku v1.02 사용법](docs/PATCHYFM_YUUWAKU.md)
 
 
 ## PatchyDOS_Dune2_v1.01 — MS-DOS 《Dune II: The Battle for Arrakis》
